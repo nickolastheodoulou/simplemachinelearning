@@ -1,4 +1,4 @@
-#Drag and drop into main
+#Drag and drop into main and run the code to get the two plots
 
 #print(Counter(matrix._train["ExterQual"]))#prints the number of each classification for ExterQual
 # print(train.head())#prints the first 5 columns of train
@@ -13,6 +13,11 @@
 #matrix.sale_price_against_attribute_scatter_plot('BsmtFinSF2')
 #matrix.sale_price_against_attribute_scatter_plot('TotalBsmtSF')
 #matrix.sale_price_against_attribute_scatter_plot('MSSubClass')
+
+
+#print(matrix._train.dtypes) #type of each classification used to test whether splitting the data set still doesnt loose any data
+#print(matrix._train.head())prints the first 5 columns of train.head
+
 
 ##################################################################################################################################################################
 # This attribute is already ordered as excellent, good, average, fair, poor can be converted to 5,4,3,2,1 easily
