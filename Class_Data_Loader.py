@@ -10,5 +10,8 @@ class data_matrix:  # class that creates a test and train matrix so that they ca
 
 
 
+
+
+
         
 
