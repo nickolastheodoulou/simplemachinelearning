@@ -27,29 +27,17 @@ def main():
     matrix.dim_data()  # called again to verify everything worked correctly with the following print statement
     print("The dimension of train_X is: ", matrix._train_X_dim, "The dimension of test_X is: ", matrix._test_X_dim)
 
-
     print(matrix._train_Y.head())
     print(matrix._train_X.head())
 
     matrix.sale_price_against_attribute_scatter_plot('1stFlrSF')#creates the plot of sale price against house
 
+    matrix.split_attributes()
+
+    print(matrix._train_X_int_float.head())
 #need to come up with one method that does both by passing in either matrix.test or matrix._train
 
     '''
-    string_train = matrix.split_string_attributes_train()#splits train into the string attributes
-    int_float_train = matrix.split_int_float_attributes_train()#splits train into int and float attributes
-
-    string_test = matrix.split_string_attributes_test()#split test to make sure functions in class work correctly
-    int_float_test = matrix.split_int_float_attributes_test()
-
-
-    print("The size of the whole train is", matrix._train.shape)
-    print("The size of the string train is", string_train.shape)
-    print("The size of the int_float train is", int_float_train.shape)
-
-    print("The size of the whole test is", matrix._test.shape)
-    print("The size of the string test is", string_test.shape)
-    print("The size of the int_float test is", int_float_test.shape)#print functions to check all the numbers add correctly
 
 
     one_hot_encoded_train = pd.get_dummies(string_train)#method to convert all the string attributes into one hot encoded
