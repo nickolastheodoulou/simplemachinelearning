@@ -19,20 +19,27 @@ class data_matrix:  # class that creates the data matrix by initializing test_X 
     def dim_data(self):#function that finds the dimensions of both the train and test set and stores them in the object
         self._train_X_dim = self._train_X.shape
         self._test_X_dim = self._test_X.shape
+        return None
 
     def first_column_drop(self):  # method that drops the first column of both train_X and test_X
         self._train_X = self._train_X.drop(self._train_X.columns[0], axis=1)#drops the first column of the train set as the id so that it isnt included in the model
         self._test_X = self._test_X.drop(self._test_X.columns[0], axis=1)  # drops the first column of the test set as the id so that it isnt included in the model
+        return None
 
     def move_classification_to_train_y(self):#function that removes the last column of Train_X and puts it into Train_Y
         final_column = self._train_X_dim[1] - 1#finds the final column using the train_X_dim variable
         self._train_Y = self._train_X.iloc[:, final_column]#updates the dataframe train_Y
         self._train_X = self._train_X.drop(self._train_X.columns[(self._train_X.shape[1]-1)], axis=1)  # drops the first column of the train set as it has been moved
+        return None
 
     def split_attributes(self):#method that updates the variables: _train_X_string, _test_X_string, _train_X_int_float, _test_X_int_float
         self._train_X_string = self._train_X.select_dtypes(include=['object']).copy()#updates the dataset variable: _train_X_string that contains all the "object" datatypes in train
         self._test_X_string = self._test_X.select_dtypes(include=['object']).copy()  # updates the dataset variable: _test_X_string that contains all the "object" datatypes in test
         self._train_X_int_float = self._train_X.select_dtypes(include=['int64', 'float64']).copy()# updates the dataset variable: _train_X_string that contains all the "object" datatypes in train
         self._test_X_int_float = self._test_X.select_dtypes(include=['int64', 'float64']).copy()# updates the dataset variable: _test_X_string that contains all the "object" datatypes in test
+        return None
 
-
+    def one_hot_encoding(self):#function that performs one_hot_encoding on the variables _train_X_string and _test_X_string then updates the variables
+        self._train_X_string = pd.get_dummies(self._train_X_string)  # method to convert all the string attributes into one hot encoded by updating the dataframe from pandas
+        self._test_X_string = pd.get_dummies(self._test_X_string)  # method to convert all the string attributes into one hot encoded
+        return None
