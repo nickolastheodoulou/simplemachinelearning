@@ -43,8 +43,8 @@ class data_matrix:  # class that creates the data matrix by initializing test_X 
     def normalise_data(self):#normalises the desired dataframes
         self._train_X_int_float = (self._train_X_int_float - self._train_X_int_float.mean()) / self._train_X_int_float.std()#normalise _train_X_int_float using standard score
         self._test_X_int_float = (self._test_X_int_float - self._test_X_int_float.mean()) / self._test_X_int_float.std()
-        self._train_Y = (self._train_Y - self._train_Y.mean()) / self._train_Y.std()
         #_train_X_string and _test_X_string are not normalised as there is no point when one hot encoding
+        #also shouldnt normalise train_Y
 
     def one_hot_encoding(self):#function that performs one_hot_encoding on the variables _train_X_string and _test_X_string then updates the variables
         self._train_X_string = pd.get_dummies(self._train_X_string)  # method to convert all the string attributes into one hot encoded by updating the dataframe from pandas
