@@ -16,26 +16,26 @@ def main():
     matrix.sale_price_against_attribute_scatter_plot('1stFlrSF')#creates the plot of sale price against house
     matrix.split_attributes()#splits the attributes into a string dataset and a float + int dataset so that one hot encoding can be used
 
-    print(matrix._train_X_int_float.head())
-    matrix.one_hot_encoding()
+    #print(matrix._train_X_int_float.head())
+    matrix.one_hot_encoding()#method to convert all the string attributes into one hot encoded
+    #print(matrix._train_X_string.head())#print one_hot encoded to ensure it actually works
 
-    #one_hot_encoded_train = pd.get_dummies(matrix._train_X_string)#method to convert all the string attributes into one hot encoded
-    print(matrix._train_X_string.head())#print one_hot encoded to ensure it actually works
+    matrix.normalise_data()#normalises train_X_int_float, test_X_int_float, train_Y
 
-
-
-
-
-    np.savetxt('Test/intfloat.out', matrix._train_X_int_float, delimiter=',')  # ,fmt="%s" creates a file so that the data is easier to look at
-
-    print(matrix._train_X_string.head())
-    print(matrix._test_X_string.head())
     print(matrix._train_X_int_float.head())
 
-    np.savetxt('Test/test.out', matrix._train_X_int_float, delimiter=',' ) #,fmt="%i" # creates a file so that the data is easier to look at
+
+
+    #np.savetxt('Test/intfloat.out', matrix._train_X_int_float, delimiter=',')  # ,fmt="%s" creates a file so that the data is easier to look at
+
+    #print(matrix._train_X_string.head())
+    #print(matrix._test_X_string.head())
+    #print(matrix._train_X_int_float.head())
+
+    #np.savetxt('Test/test.out', matrix._train_X_int_float, delimiter=',' ) #,fmt="%i" # creates a file so that the data is easier to look at
 #get error as I never got rid of NA, NaN in the int_float test and train need to do this before combining the two datasets to make a prediction
 
     df_new = pd.concat([matrix._train_X_string, matrix._train_X_int_float],sort=False)
-
+    matrix._train_X_int_float.to_csv('Test/int_and_float_attributes_of_Train_X.csv', index=False)
 if __name__ == "__main__":
     main()
