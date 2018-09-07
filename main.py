@@ -1,10 +1,11 @@
+
 import pandas as pd # Load the Pandas libraries with alias 'pd'
 import numpy as np
 import matplotlib.pyplot as plt
 from Class_Data_Exploration import Data_Exploration
 from Class_Data_Loader import data_matrix
 from collections import Counter#used to count size of each classification for an attribute
-
+import fancyimpute as fi
 
 def main():
     matrix = Data_Exploration(pd.read_csv("Data/test.csv"), pd.read_csv("Data/train.csv"))#load in the data, the other variables within the object will then be initialised later on using other functions
@@ -21,21 +22,12 @@ def main():
     #print(matrix._train_X_string.head())#print one_hot encoded to ensure it actually works
 
     matrix.normalise_data()#normalises train_X_int_float, test_X_int_float, train_Y
+    matrix.fill_missing_values()#fills in the missing values of train_X_int_float
+    matrix.normalise_data()  # normalises train_X_int_float, test_X_int_float, train_Y
 
-    print(matrix._train_X_int_float.head())
+    matrix.combine_string_int_float()#combines the two objexts for both test_X and train_X
+    matrix.export_CSV()#exports the train_X, train_Y and test_X to a csv file
 
 
-
-    #np.savetxt('Test/intfloat.out', matrix._train_X_int_float, delimiter=',')  # ,fmt="%s" creates a file so that the data is easier to look at
-
-    #print(matrix._train_X_string.head())
-    #print(matrix._test_X_string.head())
-    #print(matrix._train_X_int_float.head())
-
-    #np.savetxt('Test/test.out', matrix._train_X_int_float, delimiter=',' ) #,fmt="%i" # creates a file so that the data is easier to look at
-#get error as I never got rid of NA, NaN in the int_float test and train need to do this before combining the two datasets to make a prediction
-
-    df_new = pd.concat([matrix._train_X_string, matrix._train_X_int_float],sort=False)
-    matrix._train_X_int_float.to_csv('Test/int_and_float_attributes_of_Train_X.csv', index=False)
 if __name__ == "__main__":
     main()

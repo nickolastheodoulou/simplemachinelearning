@@ -1,4 +1,5 @@
 import pandas as pd
+import fancyimpute as fi
 import matplotlib.pyplot as plt
 
 class data_matrix:  # class that creates the data matrix by initializing test_X and train_X from main
@@ -49,3 +50,17 @@ class data_matrix:  # class that creates the data matrix by initializing test_X 
         self._train_X_string = pd.get_dummies(self._train_X_string)  # method to convert all the string attributes into one hot encoded by updating the dataframe from pandas
         self._test_X_string = pd.get_dummies(self._test_X_string)  # method to convert all the string attributes into one hot encoded
         return None
+
+    def fill_missing_values(self):#function that inputs the missing values into _train_X_int_float
+        X_filled_knn = fi.KNN(k=3).complete(self._train_X_int_float)  # completes the missing attributes using KNN from fancy impute using the 3 closes complete columns
+        self._train_X_int_float = pd.DataFrame(X_filled_knn, columns=self._train_X_int_float.columns.copy())  #updates _train_X_int_float with the missing data
+
+    def combine_string_int_float(self):#combines the int/float matrices and the string matrices and update them to _train_X and _test_X
+        self._train_X = pd.concat([self._train_X_int_float, self._train_X_string], axis=1)#combines the train_X
+        self._test_X = pd.concat([self._test_X_int_float, self._test_X_string], axis=1)
+
+
+    def export_CSV(self):#exports the cleaned train_X, train_Y and test_X data to a seperate CSV file
+        self._train_X.to_csv('Data_Out/train_X_up.csv', index=False)
+        self._test_X.to_csv('Data_Out/test_X_up.csv', index=False)
+        self._train_Y.to_csv('Data_Out/test_Y_up.csv', index=False)
