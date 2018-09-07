@@ -7,8 +7,9 @@ from Class_Data_Loader import data_matrix
 from collections import Counter#used to count size of each classification for an attribute
 import fancyimpute as fi
 
+
 def main():
-    matrix = Data_Exploration(pd.read_csv("Data/test.csv"), pd.read_csv("Data/train.csv"))#load in the data, the other variables within the object will then be initialised later on using other functions
+    matrix = Data_Exploration(pd.read_csv("Data_In/test.csv"), pd.read_csv("Data_In/train.csv"))#load in the data, the other variables within the object will then be initialised later on using other functions
     matrix.dim_data()#method that updates the dimension of the train and test data which is the 4th and 5th variable in object matrix
     matrix.first_column_drop()#drops the first column of both test_X and train_X
     matrix.dim_data()#called again so that the dimension can be updated so the function that initialised train.Y with the correct values works properly

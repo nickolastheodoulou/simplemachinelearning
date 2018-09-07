@@ -1,6 +1,6 @@
 #copy and paste into main
 
-matrix = Data_Exploration(pd.read_csv("Data/test.csv"), pd.read_csv("Data/train.csv"))
+matrix = Data_Exploration(pd.read_csv("Data_In/test.csv"), pd.read_csv("Data_In/train.csv"))
     #matrix = data_matrix()#load in the data, the other variables within the object will then be
     # initialised later on using other functions
     matrix.dim_data()#method that updates the dimension of the train and test data which is the 4th and 5th variable in object matrix
