@@ -40,13 +40,35 @@ def main():
     # simple linear model
 
 
-    regr = sklearn.linear_model.LinearRegression()# Create linear regression object
-    regr.fit(matrix._train_X, matrix._train_Y)# Train the model using the training sets
-    Pred_Y_list = regr.predict(matrix._test_X)# Make predictions using the testing set
-    Pred_Y = pd.DataFrame(data=Pred_Y_list, columns={'SalePrice'})#
+    #regr = sklearn.linear_model.LinearRegression()# Create linear regression object
+    #regr.fit(matrix._train_X, matrix._train_Y)# Train the model using the training sets
+    #Pred_Y_list = regr.predict(matrix._test_X)# Make predictions using the testing set
+    #Pred_Y = pd.DataFrame(data=Pred_Y_list, columns={'SalePrice'})#
+    #linear_model = pd.concat([matrix._id, Pred_Y], axis=1)
+    #linear_model.to_csv('Data_Out/linear_model.csv', index=False)
 
-    a = pd.concat([matrix._id, Pred_Y], axis=1)
-    a.to_csv('Data_Out/predict_Y_up.csv', index=False)
+
+
+    # Create a function called lasso,
+    def lasso(alphas):#Takes in a list of alphas. Outputs a dataframe containing the coefficients of lasso regressions from each alpha.
+        df = pd.DataFrame()# Create an empty data frame
+        df['Feature Name'] = matrix._train_X.columns# Create a column of feature names
+        for alpha in alphas:# For each alpha value in the list of alpha values,
+            lasso = sklearn.linear_model.Lasso(alpha=alpha)# Create a lasso regression with that alpha value,
+            lasso.fit(matrix._train_X, matrix._train_Y)# Fit the lasso regression
+            column_name = 'Alpha = %f' % alpha# Create a column name for that alpha value
+            df[column_name] = lasso.coef_# Create a column of coefficient values
+        return df# Return the datafram
+
+    # Run the function called, Lasso
+    lasso([1000, 2000, 3000, 4000, 5000]).to_csv('Data_Out/Lasso_model_alpha_1000_2000_3000_4000_5000.csv', index=False)
+
+    regr = sklearn.linear_model.Lasso(alpha=1000)
+    regr.fit(matrix._train_X, matrix._train_Y)
+    Pred_Y_list = regr.predict(matrix._test_X)  # Make predictions using the testing set
+    Pred_Y = pd.DataFrame(data=Pred_Y_list, columns={'SalePrice'})  #
+    linear_model = pd.concat([matrix._id, Pred_Y], axis=1)
+    linear_model.to_csv('Data_Out/Lasso_model_alpha_1000.csv', index=False)
 
     # The coefficients
     # print('Coefficients: \n', regr.coef_)
