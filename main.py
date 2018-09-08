@@ -19,44 +19,10 @@ def main():
     matrix.sale_price_against_attribute_scatter_plot('1stFlrSF')#creates the plot of sale price against house
 
     matrix.dim_data()
-
-    print('the dimension of train_X is: ', matrix._train_X.shape)
-    print('the dimension of test_X is: ', matrix._test_X.shape)
-
-
     matrix.split_attributes()#splits the attributes into a string dataset and a float + int dataset so that one hot encoding can be used
-
-    matrix.dim_data()
-
-    print('the dimension of _train_X_int_float is: ', matrix._train_X_int_float.shape)
-    print('the dimension of _train_X_string is: ', matrix._train_X_string.shape)
-    print('the dimension of _test_X_int_float is: ', matrix._test_X_int_float.shape)
-    print('the dimension of _test_X_string is: ', matrix._test_X_string.shape)
-
-    #print(matrix._train_X_int_float.head())
     matrix.one_hot_encoding()#method to convert all the string attributes into one hot encoded
-
-    matrix.dim_data()
-
-    print('the dimension of _train_X_int_float is: ', matrix._train_X_int_float.shape)
-    print('the dimension of _train_X_string is: ', matrix._train_X_string.shape)
-    print('the dimension of _test_X_int_float is: ', matrix._test_X_int_float.shape)
-    print('the dimension of _test_X_string is: ', matrix._test_X_string.shape)
-
-    # Get missing columns in the training test
-    missing_cols = set(matrix._train_X_string.columns) - set(matrix._test_X_string.columns)
-    # Add a missing column in test set with default value equal to 0
-    for c in missing_cols:
-        matrix._test_X_string[c] = 0
-    # Ensure the order of column in the test set is in the same order than in train set
-    matrix._test_X_string = matrix._test_X_string[matrix._train_X_string.columns]
-
-    matrix.dim_data()
-
-    print('the dimension of _train_X_int_float is: ', matrix._train_X_int_float.shape)
-    print('the dimension of _train_X_string is: ', matrix._train_X_string.shape)
-    print('the dimension of _test_X_int_float is: ', matrix._test_X_int_float.shape)
-    print('the dimension of _test_X_string is: ', matrix._test_X_string.shape)
+    matrix._train_X_string.to_csv('Data_Out/_train_X_string.csv', index=False)
+    matrix._test_X_string.to_csv('Data_Out/_test_X_string.csv', index=False)
 
     #print(matrix._train_X_string.head())#print one_hot encoded to ensure it actually works
 

@@ -63,7 +63,15 @@ class data_matrix:  # class that creates the data matrix by initializing test_X 
 #
 ####################################################################################################################################################################################
 
-    def combine_string_int_float(self):#combines the int/float matrices and the string matrices and update them to _train_X and _test_X
+    def combine_string_int_float(self):#first finds the missing columns of test_X and fills them with zeros in the correct place
+        #might run into error if test_X has more columns than train_X in other situations
+        #combines the int/float matrices and the string matrices and update them to _train_X and _test_X
+
+        missing_cols = set(self._train_X_string.columns) - set(self._test_X_string.columns)  # Get missing columns in the training test
+        for i in missing_cols:  # Add a missing column in test set with default value equal to 0
+            self._test_X_string[i] = 0
+        self._test_X_string = self._test_X_string[self._train_X_string.columns]  # Ensure the order of column in the test set is in the same order than in train set
+
         self._train_X = pd.concat([self._train_X_int_float, self._train_X_string], axis=1)#combines the train_X
         self._test_X = pd.concat([self._test_X_int_float, self._test_X_string], axis=1)
 
