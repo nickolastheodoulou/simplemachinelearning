@@ -15,6 +15,8 @@ def main():
     matrix.first_column_drop()#drops the first column of both test_X and train_X
     matrix.dim_data()#called again so that the dimension can be updated so the function that initialised train.Y with the correct values works properly
     matrix.move_classification_to_train_y()#moves the final column of train_X to train_Y
+
+
     matrix.dim_data()  # called again to verify everything worked correctly with the following print statement
     matrix.sale_price_against_attribute_scatter_plot('1stFlrSF')#creates the plot of sale price against house
 
@@ -33,30 +35,21 @@ def main():
     matrix.combine_string_int_float()#combines the two objexts for both test_X and train_X
     matrix.export_CSV()#exports the train_X, train_Y and test_X to a csv file
 
-    matrix.dim_data()
-
-    print('the dimension of train_X is: ', matrix._train_X.shape)
-    print('the dimension of test_X is: ', matrix._test_X.shape)
 
     ################################################################################################################################################################
     # simple linear model
 
-    # Create linear regression object
-    regr = sklearn.linear_model.LinearRegression()
 
-    # Train the model using the training sets
-    regr.fit(matrix._train_X, matrix._train_Y)
+    regr = sklearn.linear_model.LinearRegression()# Create linear regression object
+    regr.fit(matrix._train_X, matrix._train_Y)# Train the model using the training sets
+    Pred_Y_list = regr.predict(matrix._test_X)# Make predictions using the testing set
+    Pred_Y = pd.DataFrame(data=Pred_Y_list, columns={'SalePrice'})#
 
-    # Make predictions using the testing set
-    diabetes_y_pred = regr.predict(matrix._test_X)
-
-
-    a = pd.DataFrame(diabetes_y_pred)
-    print(a)
+    a = pd.concat([matrix._id, Pred_Y], axis=1)
     a.to_csv('Data_Out/predict_Y_up.csv', index=False)
 
     # The coefficients
-    print('Coefficients: \n', regr.coef_)
+    # print('Coefficients: \n', regr.coef_)
 
 
 if __name__ == "__main__":
