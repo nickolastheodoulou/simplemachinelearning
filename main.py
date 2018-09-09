@@ -2,15 +2,16 @@
 import pandas as pd # Load the Pandas libraries with alias 'pd'
 import numpy as np
 import matplotlib.pyplot as plt
-from Class_Data_Exploration import Data_Exploration
-from Class_Data_Loader import data_matrix
+from Class_Data_Exploration import data_exploration
+from Class_Data_Loader import data_loader
 from collections import Counter#used to count size of each classification for an attribute
 import fancyimpute as fi
+from Class_Fit_Model import data_model
 import sklearn
 
 
 def main():
-    matrix = Data_Exploration(pd.read_csv("Data_In/test.csv"), pd.read_csv("Data_In/train.csv"))#load in the data, the other variables within the object will then be initialised later on using other functions
+    matrix = data_model(pd.read_csv("Data_In/test.csv"), pd.read_csv("Data_In/train.csv"))#load in the data, the other variables within the object will then be initialised later on using other functions
     matrix.dim_data()#method that updates the dimension of the train and test data which is the 4th and 5th variable in object matrix
     matrix.first_column_drop()#drops the first column of both test_X and train_X
     matrix.dim_data()#called again so that the dimension can be updated so the function that initialised train.Y with the correct values works properly
@@ -36,32 +37,16 @@ def main():
     matrix.export_CSV()#exports the train_X, train_Y and test_X to a csv file
 
 
-    ################################################################################################################################################################
-    # simple linear model
-
-
-    #regr = sklearn.linear_model.LinearRegression()# Create linear regression object
-    #regr.fit(matrix._train_X, matrix._train_Y)# Train the model using the training sets
-    #Pred_Y_list = regr.predict(matrix._test_X)# Make predictions using the testing set
-    #Pred_Y = pd.DataFrame(data=Pred_Y_list, columns={'SalePrice'})#
-    #linear_model = pd.concat([matrix._id, Pred_Y], axis=1)
-    #linear_model.to_csv('Data_Out/linear_model.csv', index=False)
 
 
 
-    # Create a function called lasso,
-    def lasso(alphas):#Takes in a list of alphas. Outputs a dataframe containing the coefficients of lasso regressions from each alpha.
-        df = pd.DataFrame()# Create an empty data frame
-        df['Feature Name'] = matrix._train_X.columns# Create a column of feature names
-        for alpha in alphas:# For each alpha value in the list of alpha values,
-            lasso = sklearn.linear_model.Lasso(alpha=alpha)# Create a lasso regression with that alpha value,
-            lasso.fit(matrix._train_X, matrix._train_Y)# Fit the lasso regression
-            column_name = 'Alpha = %f' % alpha# Create a column name for that alpha value
-            df[column_name] = lasso.coef_# Create a column of coefficient values
-        return df# Return the datafram
 
-    # Run the function called, Lasso
-    lasso([1000, 2000, 3000, 4000, 5000]).to_csv('Data_Out/Lasso_model_alpha_1000_2000_3000_4000_5000.csv', index=False)
+
+
+
+
+    matrix.linear().to_csv('Data_Out/linear_model.csv', index=False)#run the linear model and save output to a CSV file
+    matrix.lasso([1000, 2000, 3000, 4000, 5000]).to_csv('Data_Out/Lasso_model_alpha_1000_2000_3000_4000_5000.csv', index=False)# Run the function called, Lasso
 
     regr = sklearn.linear_model.Lasso(alpha=1000)
     regr.fit(matrix._train_X, matrix._train_Y)

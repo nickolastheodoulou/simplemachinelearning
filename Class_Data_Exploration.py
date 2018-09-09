@@ -1,9 +1,9 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-from Class_Data_Loader import data_matrix
+from Class_Data_Loader import data_loader
+import sklearn
 
-
-class Data_Exploration(data_matrix):  # inherits the members test and train from data_matrix
+class data_exploration(data_loader):  # inherits the members test and train from data_matrix
     def sale_price_against_attribute_scatter_plot(self, attribute):#method that plots sales against an attribute
         x = self._train_X[attribute].values
         y = self._train_Y  # defines the sold price so that it can be loaded into the function each time rather than loading the whole train matrix

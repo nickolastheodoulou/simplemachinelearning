@@ -3,7 +3,7 @@ import fancyimpute as fi
 import sklearn
 import matplotlib.pyplot as plt
 
-class data_matrix:  # class that creates the data matrix by initializing test_X and train_X from main
+class data_loader:  # class that creates the data matrix by initializing test_X and train_X from main
     def __init__(self, test_X, train_X):#initialise the object with the test and train matrices from the CSV file
         self._test_X = test_X                           #test dataframe
         self._train_X = train_X                         #train dataframe
