@@ -1,13 +1,11 @@
 import pandas as pd
-import matplotlib.pyplot as plt
-from Class_Data_Loader import data_loader
-from Class_Data_Preprocessing import data_preprocessing
+from Class_Data_Preprocessing import DataPreprocessing
 import sklearn
 
 
-class data_model(data_preprocessing):
-    def __init__(self, test_X, train_X):
-        super().__init__(test_X, train_X)
+class data_model(DataPreprocessing):
+    def __init__(self, train_X, test_X,  train_Y, test_Y):
+        super().__init__(train_X, test_X, train_Y, test_Y)
         self._Pred_Y = 0  # prediction object
 
     # Create a function called lasso,
@@ -22,9 +20,9 @@ class data_model(data_preprocessing):
         return df  # Return the dataframe
 
     def linear(self):# simple linear model
-        regr = sklearn.linear_model.LinearRegression()# Create linear regression object
-        regr.fit(self._train_X, self._train_Y)# Train the model using the training sets
-        Pred_Y_list = regr.predict(self._test_X)# Make predictions using the testing set
+        regr = sklearn.linear_model.LinearRegression()  # Create linear regression object
+        regr.fit(self._train_X, self._train_Y)  # Train the model using the training sets
+        Pred_Y_list = regr.predict(self._test_X)  # Make predictions using the testing set
         Pred_Y = pd.DataFrame(data=Pred_Y_list, columns={'SalePrice'})#
         _pred_Y_with_index = pd.concat([self._pred_Y, Pred_Y], axis=1)
         return _pred_Y_with_index
