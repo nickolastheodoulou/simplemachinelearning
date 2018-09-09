@@ -6,6 +6,10 @@ import sklearn
 
 
 class data_model(data_preprocessing):
+    def __init__(self, test_X, train_X):
+        super().__init__(test_X, train_X)
+        self._Pred_Y = 0  # prediction object
+
     # Create a function called lasso,
     def lasso(self, alphas):  # Takes in a list of alphas. Outputs a dataframe containing the coefficients of lasso regressions from each alpha.
         df = pd.DataFrame()  # Create an empty data frame
@@ -22,5 +26,5 @@ class data_model(data_preprocessing):
         regr.fit(self._train_X, self._train_Y)# Train the model using the training sets
         Pred_Y_list = regr.predict(self._test_X)# Make predictions using the testing set
         Pred_Y = pd.DataFrame(data=Pred_Y_list, columns={'SalePrice'})#
-        linear_model = pd.concat([self._id, Pred_Y], axis=1)
-        return linear_model
+        _pred_Y_with_index = pd.concat([self._pred_Y, Pred_Y], axis=1)
+        return _pred_Y_with_index

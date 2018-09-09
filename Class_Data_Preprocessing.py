@@ -5,6 +5,14 @@ import fancyimpute as fi
 from Class_Data_Exploration import data_exploration
 
 class data_preprocessing(data_exploration):
+    def __init__(self, test_X, train_X):
+        super().__init__(test_X, train_X)
+        self._train_X_string = 0  # all string attributes of train_X
+        self._test_X_string = 0  # all string attributes for test_X
+        self._train_X_int_float = 0  # all int and float attributes for train_X
+        self._test_X_int_float = 0  # all int and float attributes for test_X
+
+
     def split_attributes(self):#method that updates the variables: _train_X_string, _test_X_string, _train_X_int_float, _test_X_int_float
         self._train_X_string = self._train_X.select_dtypes(include=['object']).copy()#updates the dataset variable: _train_X_string that contains all the "object" datatypes in train
         self._test_X_string = self._test_X.select_dtypes(include=['object']).copy()  # updates the dataset variable: _test_X_string that contains all the "object" datatypes in test

@@ -13,13 +13,14 @@ import sklearn
 def main():
     matrix = data_model(pd.read_csv("Data_In/test.csv"), pd.read_csv("Data_In/train.csv"))#load in the data, the other variables within the object will then be initialised later on using other functions
     matrix.dim_data()#method that updates the dimension of the train and test data which is the 4th and 5th variable in object matrix
-    matrix.first_column_drop()#drops the first column of both test_X and train_X
+    matrix.index_column_drop('Id')#drops the first column of both test_X and train_X
     matrix.dim_data()#called again so that the dimension can be updated so the function that initialised train.Y with the correct values works properly
-    matrix.move_classification_to_train_y()#moves the final column of train_X to train_Y
+
+    matrix.move_target_to_train_y('SalePrice')#moves the final column of train_X to train_Y
 
 
     matrix.dim_data()  # called again to verify everything worked correctly with the following print statement
-    matrix.sale_price_against_attribute_scatter_plot('1stFlrSF')#creates the plot of sale price against house
+    matrix.sale_price_against_attribute_scatter_plot('SalePrice', '1stFlrSF')#creates the plot of sale price against house
 
     matrix.dim_data()
     matrix.split_attributes()#splits the attributes into a string dataset and a float + int dataset so that one hot encoding can be used
@@ -52,7 +53,7 @@ def main():
     regr.fit(matrix._train_X, matrix._train_Y)
     Pred_Y_list = regr.predict(matrix._test_X)  # Make predictions using the testing set
     Pred_Y = pd.DataFrame(data=Pred_Y_list, columns={'SalePrice'})  #
-    linear_model = pd.concat([matrix._id, Pred_Y], axis=1)
+    linear_model = pd.concat([matrix._pred_Y, Pred_Y], axis=1)
     linear_model.to_csv('Data_Out/Lasso_model_alpha_1000.csv', index=False)
 
     # The coefficients
