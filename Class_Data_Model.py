@@ -1,11 +1,11 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from Class_Data_Loader import data_loader
-from Class_Data_Exploration import data_exploration
+from Class_Data_Preprocessing import data_preprocessing
 import sklearn
 
 
-class data_model(data_exploration):
+class data_model(data_preprocessing):
     # Create a function called lasso,
     def lasso(self, alphas):  # Takes in a list of alphas. Outputs a dataframe containing the coefficients of lasso regressions from each alpha.
         df = pd.DataFrame()  # Create an empty data frame

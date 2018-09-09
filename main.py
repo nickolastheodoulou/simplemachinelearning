@@ -6,7 +6,7 @@ from Class_Data_Exploration import data_exploration
 from Class_Data_Loader import data_loader
 from collections import Counter#used to count size of each classification for an attribute
 import fancyimpute as fi
-from Class_Fit_Model import data_model
+from Class_Data_Model import data_model
 import sklearn
 
 
