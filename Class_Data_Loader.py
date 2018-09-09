@@ -1,3 +1,6 @@
+import pandas as pd
+
+
 class DataLoader:  # class that creates the data matrix by initializing test_X and train_X from main
     def __init__(self, train_X, test_X, train_Y, test_Y):#initialise the object with the test and train matrices from the CSV file
 
@@ -19,13 +22,15 @@ class DataLoader:  # class that creates the data matrix by initializing test_X a
 
     def move_target_to_train_y(self, target):  # function that removes the last column of Train_X and puts it into Train_Y (only called if an index column is in the datasets
         final_column = self._train_X.columns.get_loc(target)  # finds the target column by name passed through from the function
-        self._train_Y = self._train_X.iloc[:, final_column]  # updates the dataframe train_Y using the index column
+        d = {target: self._train_X.iloc[:, final_column]}  # updates the dataframe train_Y using the index column
+        self._train_Y = pd.DataFrame(data=d)
         self._train_X = self._train_X.drop(self._train_X.columns[final_column], axis=1)  # drops the first column of the train set as it has been moved
         return None
 
     def move_target_to_test_y(self, target):  # function that removes the last column of Train_X and puts it into Train_Y
         final_column = self._test_X.columns.get_loc(target)  # finds the target column by name
-        self._test_Y = self._test_X.iloc[:, final_column]  # updates the dataframe train_Y
+        d = {target: self._test_X.iloc[:, final_column]}  # updates the dataframe train_Y using the index column
+        self._test_Y = pd.DataFrame(data=d)# updates the dataframe train_Y
         self._test_X = self._test_X.drop(self._train_X.columns[final_column], axis=1)  # drops the first column of the train set as it has been moved
         return None
 

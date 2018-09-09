@@ -15,3 +15,8 @@ class DataExploration(DataLoader):  # inherits the members test and train from d
         # plt.legend(loc=2)
         plt.show()
 
+    def describe_target(self):
+        print(self._train_Y.describe())
+
+    def describe_attribute(self, attribute):
+        print(self._train_X[attribute].describe())

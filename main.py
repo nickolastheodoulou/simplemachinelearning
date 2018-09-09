@@ -1,7 +1,8 @@
 import pandas as pd # Load the Pandas libraries with alias 'pd'
 from Class_Data_Model import data_model
 import sklearn
-
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 def main():
     matrix = data_model(pd.read_csv("Data_In/train.csv"), pd.read_csv("Data_In/test.csv"), 0, 0)  # load in the data, the other variables within the object will then be initialised later on using other functions
@@ -13,7 +14,14 @@ def main():
     # matrix._train_X.to_csv('Data_In/train_X.csv', index=False)
 
     matrix.dim_data()  # called again to verify everything worked correctly with the following print statement
-    matrix.sale_price_against_attribute_scatter_plot('SalePrice', '1stFlrSF')  # creates the plot of sale price against house
+    #matrix.sale_price_against_attribute_scatter_plot('SalePrice', '1stFlrSF')  # creates the plot of sale price against house
+
+    matrix.describe_attribute('1stFlrSF')
+    matrix.describe_target()
+    matrix._train_Y.to_csv('Data_In/train_Y.csv', index=False)
+
+    sns.distplot(matrix._train_X['1stFlrSF'])
+    plt.show()
 
     matrix.dim_data()
     matrix.split_attributes()  # splits the attributes into a string dataset and a float + int dataset so that one hot encoding can be used
