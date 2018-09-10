@@ -1,8 +1,10 @@
-import pandas as pd # Load the Pandas libraries with alias 'pd'
+import pandas as pd
 from Class_Data_Model import data_model
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy import stats
+from scipy.special import boxcox1p, inv_boxcox
 
 
 def main():
@@ -12,13 +14,17 @@ def main():
     matrix.index_column_drop('Id')  # drops the first column of both test_X and train_X
     #matrix.dim_data()  # called again so that the dimension can be updated so the function that initialised train.Y with the correct values works properly
 
-    matrix.sale_price_against_attribute_scatter_plot('SalePrice', '1stFlrSF')  # creates the plot of sale price against house
+    #matrix.sale_price_against_attribute_scatter_plot('SalePrice', '1stFlrSF')  # creates the plot of sale price against house
     #matrix.describe_attribute('SalePrice')
-    matrix.histogram('SalePrice')
-    matrix.boxplot('Exterior1st', 'SalePrice')
+    matrix.histogram_and_q_q('SalePrice')
 
-    matrix.heatmap()
-    matrix.heatmap_correlated_attributes(10, 'SalePrice')
+    matrix.boxcox('SalePrice', -0.3)
+    matrix.histogram_and_q_q('SalePrice')
+    matrix.boxcox_inv('SalePrice', -0.3)
+
+    #matrix.boxplot('Exterior1st', 'SalePrice')
+    #matrix.heatmap()
+    #matrix.heatmap_correlated_attributes(10, 'SalePrice')
 
 
 

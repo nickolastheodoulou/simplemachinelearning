@@ -14,7 +14,7 @@ class DataExploration(DataLoader):  # inherits the members test and train from d
         x = self._train_X[attribute].values
         y = self._train_X[target].values  # defines the sold price so that it can be loaded into the function each time rather than loading the whole train matrix
         plt.subplots(figsize=(16, 8))  # changes the size of the fig
-        plt.scatter(x, y, c="g", alpha=0.2, label="")  # scatter plot of the sold price and user chosen attribute
+        plt.scatter(x, y, c="g", alpha=0.5, marker="s")  # scatter plot of the sold price and user chosen attribute
         plt.title('Scatter graph of ' + str(target) + ' against ' + str(attribute))
         plt.xlabel(attribute)
         plt.ylabel(target)
@@ -23,7 +23,7 @@ class DataExploration(DataLoader):  # inherits the members test and train from d
     def describe_attribute(self, attribute):
         print(self._train_X[attribute].describe())
 
-    def histogram(self, attribute):
+    def histogram_and_q_q(self, attribute):
         x_sigma = self._train_X[attribute].values.std()  # standard deviation
         x_max = self._train_X[attribute].values.max()  # max value
         x_min = self._train_X[attribute].values.min()  # min value
@@ -35,23 +35,30 @@ class DataExploration(DataLoader):  # inherits the members test and train from d
 
         # defined y to find y max to place the text
         plt.subplots(figsize=(16, 8))  # changes the size of the fig
-        y, i, _ = plt.hist(attribute_being_plotted, density=True, bins=number_bins, facecolor='paleturquoise', alpha=0.75)
+        y, i, _ = plt.hist(attribute_being_plotted, density=True, bins=number_bins, facecolor='paleturquoise',
+            alpha=0.75,edgecolor='black', linewidth=1.2,
+                label='Histogram: (Skewness: ' + "{0:.3f}".format(self._train_X[attribute].skew()) +
+                        ' and Kurtosis: ' + "{0:.3f}".format(self._train_X[attribute].kurt())+')')
 
 
         x = np.linspace(x_min, x_max, len(attribute_being_plotted))
         param = stats.rayleigh.fit(attribute_being_plotted)  # distribution fitting
         pdf_fitted = stats.rayleigh.pdf(x, loc=param[0], scale=param[1])  # fitted distribution
-        plt.plot(x, pdf_fitted, 'cornflowerblue', label='rayleigh')#plots the fit
+        plt.plot(x, pdf_fitted, 'cornflowerblue', label='Rayleigh distribution')#plots the fit
 
-        plt.legend(loc=0)#adds the legend
+
+        (mu, sigma) = stats.norm.fit(self._train_X[attribute]) # Get the fitted parameters used by the function for the normal distribution
+        normal_distribution = stats.norm.pdf(x, mu, sigma) #  define the norml distribution in terms of x, mu and sigma
+        plt.plot(x, normal_distribution, 'k', linewidth=2 ,label='Normal distribution: ($\mu=$ {:.2f} and $\sigma=$ {:.2f} )'.format(mu, sigma))
+
+        plt.legend(loc='best')#adds the legend
         plt.ylabel('Probability')
         plt.xlabel(attribute)
-
-        #text that shows the Skewness and Kurtosis
-        plt.text((6/9)*x_max, (7/9)*y.max(), r'Skewness: ' + "{0:.3f}".format(self._train_X[attribute].skew()) + '\n' + 'Kurtosis: ' + "{0:.3f}".format(self._train_X[attribute].kurt()), fontsize=12)
-
         plt.title('Histogram of ' + str(attribute))
+        plt.show()
 
+        stats.probplot(self._train_X[attribute], plot=plt)  # Q-Q plot
+        plt.title('Quantile-Quantile plot of ' + attribute)
         plt.show()
 
     def boxplot(self, attribute, target):# box plot overallqual/salepricedata = pd.concat([matrix._train_X[target], matrix._train_X[attribute]], axis=1)  # defines the data
@@ -64,19 +71,19 @@ class DataExploration(DataLoader):  # inherits the members test and train from d
         plt.show()
 
     def heatmap(self):
-        corrmat = self._train_X.corr()  # correlation matrix
+        correlation_matrix = self._train_X.corr()  # correlation matrix
         plt.subplots(figsize=(12, 9))#size of fig
-        z_text = np.around(corrmat, decimals=1)  # Only show rounded value (full value on hover)
+        z_text = np.around(correlation_matrix, decimals=1)  # Only show rounded value (full value on hover)
         sns.heatmap(z_text, vmax=.8, square=True, annot=True, fmt='.1f', annot_kws={'size': 7})  # creates the heatmap
         plt.savefig('Plots/heatmap.svg', format='svg', index=False)
         plt.show()
-        return corrmat
+        return correlation_matrix
 
     def heatmap_correlated_attributes(self, number_of_highest_correlated_attributes, target):#most correlated attributes to the target
-        corrmat = self._train_X.corr()  # correlation matrix
-        cols = corrmat.nlargest(number_of_highest_correlated_attributes, target)[target].index
-        cm = np.corrcoef(self._train_X[cols].values.T)  # saleprice correlation matrix
+        correlation_matrix = self._train_X.corr()  # correlation matrix
+        cols = correlation_matrix.nlargest(number_of_highest_correlated_attributes, target)[target].index
+        correlation_matrix_highest_correlated = np.corrcoef(self._train_X[cols].values.T)  # saleprice correlation matrix
         sns.set(font_scale=1.25)
-        sns.heatmap(cm, cbar=True, annot=True, square=True, fmt='.2f', annot_kws={'size': 7}, yticklabels=cols.values, xticklabels=cols.values)
+        sns.heatmap(correlation_matrix_highest_correlated, cbar=True, annot=True, square=True, fmt='.2f', annot_kws={'size': 7}, yticklabels=cols.values, xticklabels=cols.values)
         #annot includes the number within the graph, fmt set to two decimal places, annot_kws is the size of font inside the plot
         plt.show()
