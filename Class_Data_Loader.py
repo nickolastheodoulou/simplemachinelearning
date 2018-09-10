@@ -14,11 +14,9 @@ class DataLoader:  # class that creates the data matrix by initializing test_X a
     def dim_data(self):  # function that finds the dimensions of both the train and test set and stores them in the object
         print('The dimensions of train_X is', self._train_X.shape, 'and the dimension of test_X is ', self._test_X.shape)
 
-    def index_column_drop(self, index_column_label):  # method that drops the first column of both train_X and test_X
-        self._train_X = self._train_X.drop(self._train_X.columns[0], axis=1)  # drops the first column of the train set as the id so that it isnt included in the model
-        self._pred_Y = self._test_X[index_column_label]  # define id so that it can be added to pred_Y
-        self._test_X = self._test_X.drop(self._test_X.columns[0], axis=1)  # drops the first column of the test set as the id so that it isnt included in the model
-        return None
+    def add_train_Y_to_train_X(self):#function to add train_Y to train_X if it is separate so that only 1 function is made to analyse the data in train_X,
+        #  there is later a function that splits them in the data_preprocessing class
+        self._train_X = pd.concat([self._train_X, self._train_Y], axis=1)  # combines the train_X
 
     def move_target_to_train_y(self, target):  # function that removes the last column of Train_X and puts it into Train_Y (only called if an index column is in the datasets
         final_column = self._train_X.columns.get_loc(target)  # finds the target column by name passed through from the function
@@ -27,12 +25,20 @@ class DataLoader:  # class that creates the data matrix by initializing test_X a
         self._train_X = self._train_X.drop(self._train_X.columns[final_column], axis=1)  # drops the first column of the train set as it has been moved
         return None
 
-    def move_target_to_test_y(self, target):  # function that removes the last column of Train_X and puts it into Train_Y
+    def move_target_to_test_y(self, target):  # function that removes the last column of Test_X and puts it into Test_Y
         final_column = self._test_X.columns.get_loc(target)  # finds the target column by name
         d = {target: self._test_X.iloc[:, final_column]}  # updates the dataframe train_Y using the index column
         self._test_Y = pd.DataFrame(data=d)# updates the dataframe train_Y
         self._test_X = self._test_X.drop(self._train_X.columns[final_column], axis=1)  # drops the first column of the train set as it has been moved
         return None
+
+    def index_column_drop(self, index_column_label):  # method that drops the first column of both train_X and test_X
+        self._train_X = self._train_X.drop(self._train_X.columns[0], axis=1)  # drops the first column of the train set as the id so that it isnt included in the model
+        self._pred_Y = self._test_X[index_column_label]  # define id so that it can be added to pred_Y
+        self._test_X = self._test_X.drop(self._test_X.columns[0], axis=1)  # drops the first column of the test set as the id so that it isnt included in the model
+        return None
+
+
 
 
 

@@ -7,34 +7,25 @@ import matplotlib.pyplot as plt
 import matplotlib.mlab as mlab
 
 
-
 def main():
     matrix = data_model(pd.read_csv("Data_In/train.csv"), pd.read_csv("Data_In/test.csv"), 0, 0)  # load in the data, the other variables within the object will then be initialised later on using other functions
     matrix.dim_data()  # method that updates the dimension of the train and test data which is the 4th and 5th variable in object matrix
     matrix.index_column_drop('Id')  # drops the first column of both test_X and train_X
     matrix.dim_data()  # called again so that the dimension can be updated so the function that initialised train.Y with the correct values works properly
-
-    matrix.move_target_to_train_y('SalePrice')  # moves the final column of train_X to train_Y
-    # matrix._train_X.to_csv('Data_In/train_X.csv', index=False)
-
-    matrix.dim_data()  # called again to verify everything worked correctly with the following print statement
     matrix.sale_price_against_attribute_scatter_plot('SalePrice', '1stFlrSF')  # creates the plot of sale price against house
 
     matrix.describe_attribute('1stFlrSF')
-    matrix.describe_target()
-    matrix._train_Y.to_csv('Data_In/train_Y.csv', index=False)
-
+    matrix.describe_attribute('SalePrice')
     matrix.histogram('1stFlrSF')
-    sns.distplot(matrix._train_X['1stFlrSF'])
-    plt.show()
+    matrix.histogram('SalePrice')
 
-    matrix.histogram_train_Y('SalePrice')
-    sns.distplot(matrix._train_Y)
-    plt.show()
+
+    # matrix._train_X.to_csv('Data_In/train_X.csv', index=False)
 
 
 
-
+    #matrix.add_train_Y_to_train_X()
+    #matrix.move_target_to_train_y('SalePrice')  # moves the final column of train_X to train_Y
 
 
 '''
