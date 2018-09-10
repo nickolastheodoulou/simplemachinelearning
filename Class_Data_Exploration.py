@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from Class_Data_Loader import DataLoader
 from scipy import stats
+import seaborn as sns
+import pandas as pd
 
 
 class DataExploration(DataLoader):  # inherits the members test and train from data_matrix
@@ -11,6 +13,7 @@ class DataExploration(DataLoader):  # inherits the members test and train from d
     def sale_price_against_attribute_scatter_plot(self, target, attribute):  # method that plots sales against an attribute
         x = self._train_X[attribute].values
         y = self._train_X[target].values  # defines the sold price so that it can be loaded into the function each time rather than loading the whole train matrix
+        plt.subplots(figsize=(16, 8))  # changes the size of the fig
         plt.scatter(x, y, c="g", alpha=0.2, label="")  # scatter plot of the sold price and user chosen attribute
         plt.title('Scatter graph of ' + str(target) + ' against ' + str(attribute))
         plt.xlabel(attribute)
@@ -31,6 +34,7 @@ class DataExploration(DataLoader):  # inherits the members test and train from d
         attribute_being_plotted = self._train_X[attribute].values#values being plotted into the histogram
 
         # defined y to find y max to place the text
+        plt.subplots(figsize=(16, 8))  # changes the size of the fig
         y, i, _ = plt.hist(attribute_being_plotted, density=True, bins=number_bins, facecolor='paleturquoise', alpha=0.75)
 
 
@@ -50,6 +54,29 @@ class DataExploration(DataLoader):  # inherits the members test and train from d
 
         plt.show()
 
+    def boxplot(self, attribute, target):# box plot overallqual/salepricedata = pd.concat([matrix._train_X[target], matrix._train_X[attribute]], axis=1)  # defines the data
+        data = pd.concat([self._train_X[target], self._train_X[attribute]], axis=1)  # defines the data
+        plt.subplots(figsize=(16, 8))#changes the size of the fig
+        fig = sns.boxplot(x=attribute, y=target, data=data)
+        fig.axis(ymin=0, ymax=self._train_X[target].values.max())  # defines the y axis
+        plt.xticks(rotation=90)  # rotates the x ticks so that they are easier to read when the strings are longer
+        #  plt.savefig('Plots/boxplot.png', index=False)
+        plt.show()
 
+    def heatmap(self):
+        corrmat = self._train_X.corr()  # correlation matrix
+        plt.subplots(figsize=(12, 9))#size of fig
+        z_text = np.around(corrmat, decimals=1)  # Only show rounded value (full value on hover)
+        sns.heatmap(z_text, vmax=.8, square=True, annot=True, fmt='.1f', annot_kws={'size': 7})  # creates the heatmap
+        plt.savefig('Plots/heatmap.svg', format='svg', index=False)
+        plt.show()
+        return corrmat
 
-
+    def heatmap_correlated_attributes(self, number_of_highest_correlated_attributes, target):#most correlated attributes to the target
+        corrmat = self._train_X.corr()  # correlation matrix
+        cols = corrmat.nlargest(number_of_highest_correlated_attributes, target)[target].index
+        cm = np.corrcoef(self._train_X[cols].values.T)  # saleprice correlation matrix
+        sns.set(font_scale=1.25)
+        sns.heatmap(cm, cbar=True, annot=True, square=True, fmt='.2f', annot_kws={'size': 7}, yticklabels=cols.values, xticklabels=cols.values)
+        #annot includes the number within the graph, fmt set to two decimal places, annot_kws is the size of font inside the plot
+        plt.show()
