@@ -1,7 +1,7 @@
 import pandas as pd
 import fancyimpute as fi
 from Class_Data_Exploration import DataExploration
-from scipy.special import boxcox1p, inv_boxcox
+from scipy.special import boxcox1p, inv_boxcox1p
 
 
 class DataPreprocessing(DataExploration):
@@ -12,11 +12,14 @@ class DataPreprocessing(DataExploration):
         self._train_X_int_float = 0  # all int and float attributes for train_X
         self._test_X_int_float = 0  # all int and float attributes for test_X
 
-    def boxcox(self, attribute, lamda):
+    def boxcox_attribute(self, attribute, lamda):#boxcox transformation of an attribute in train_x
         self._train_X[attribute] = boxcox1p(self._train_X[attribute], lamda)
 
-    def boxcox_inv(self, attribute, lamda):
-        self._train_X[attribute] = inv_boxcox(self._train_X[attribute], lamda)
+    def boxcox_target(self, lamda):
+        self._train_Y.iloc[:, 0] = boxcox1p(self._train_Y.iloc[:, 0], lamda)
+
+    def boxcox_target_inv(self, lamda):
+        self._train_Y.iloc[:, 0] = inv_boxcox1p(self._train_Y.iloc[:, 0], lamda)
 
     def split_attributes(self):  # method that updates the variables: _train_X_string, _test_X_string, _train_X_int_float, _test_X_int_float
         self._train_X_string = self._train_X.select_dtypes(include=['object']).copy()  # updates the dataset variable: _train_X_string that contains all the "object" datatypes in train

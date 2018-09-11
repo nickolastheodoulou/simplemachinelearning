@@ -8,7 +8,7 @@ class DataLoader:  # class that creates the data matrix by initializing test_X a
         self._train_X = train_X                         #train dataframe
         self._train_Y = 0                         #train_Y and test_Y given as arguments as in some instances the data will already be split
         self._test_Y = 0
-        self._pred_Y = 0                                #id column later used to add to Pred_Y if the index_column is dropped
+        self._test_Y_id = 0                                #id column later used to add to Pred_Y if the index_column is dropped
         self.train_X_and_test_X = 0
         # the underscore means that the members are protected
 
@@ -35,13 +35,11 @@ class DataLoader:  # class that creates the data matrix by initializing test_X a
 
     def index_column_drop_and_move_to_pred_Y(self, index_column_label):  # method that drops the first column of both train_X and test_X
         self._train_X = self._train_X.drop(self._train_X.columns[0], axis=1)  # drops the first column of the train set as the id so that it isnt included in the model
-        self._pred_Y = self._test_X[index_column_label]  # define id so that it can be added to pred_Y
+        self._test_Y_id = self._test_X[index_column_label]  # define id so that it can be added to pred_Y
         self._test_X = self._test_X.drop(self._test_X.columns[0], axis=1)  # drops the first column of the test set as the id so that it isnt included in the model
         return None
 
-    def combine_train_X_test_X(self):
-        train_X_and_test_X = pd.concat((self._train_X, self._test_X), sort=True).reset_index(drop=True)
-        train_X_and_test_X.drop(['SalePrice'], axis=1, inplace=True)
+
 
 
 
