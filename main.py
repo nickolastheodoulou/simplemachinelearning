@@ -1,7 +1,7 @@
 import pandas as pd
 from Class_Data_Model import DataModel
 from Class_Data_Exploration import DataExploration
-import sklearn
+from sklearn import datasets, linear_model
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
@@ -56,7 +56,7 @@ def main():
     model_df.normalise_data()  # normalises train_X_int_float, test_X_int_float, train_Y
 
     model_df.combine_string_int_float()  # combines the two objexts for both test_X and train_X
-    model_df.export_CSV_processed()  # exports the train_X, train_Y and test_X to a csv file
+    #model_df.export_CSV_processed()  # exports the train_X, train_Y and test_X to a csv file
 
 
     #model_df.lasso_compare_alpha([800, 900, 1000, 1100, 1200]).to_csv('Data_Out/Lasso_model_alpha_800_900_1000_1100_1200.csv', index=False)# Run the function called, Lasso
@@ -70,15 +70,17 @@ def main():
     #model_df._pred_Y[attribute] = inv_boxcox1p(model_df._pred_Y[attribute], lamda)
     #print(model_df.lasso(1000))
 
-    regr = sklearn.linear_model.LinearRegression()  # Create linear regression object
-    regr.fit(model_df._train_X, model_df._train_Y)  # Train the model using the training sets
-    pred_Y_model = regr.predict(model_df._test_X)  # Make predictions using the testing set
+    regr = linear_model.LinearRegression()  # Create linear regression object
+    regr.fit(model_df._train_X.iloc[:, 0:24], model_df._train_Y)  # Train the model using the training sets
+    pred_Y_model = regr.predict(model_df._test_X.iloc[:, 0:24])  # Make predictions using the testing set
     pred_Y_model = pd.DataFrame(data=pred_Y_model, columns={'Target'})  #
     pred_Y_model = pd.concat([model_df._test_Y_id, pred_Y_model], axis=1)
 
+
+
     print(pred_Y_model)
 
-    print(model_df.linear())
+    #print(model_df.linear())
     #model_df.linear().to_csv('Data_Out/linear_model.csv', index=False)  # run the linear model and save output to a CSV file
     #print(model_df.lasso(1000))
 
