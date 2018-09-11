@@ -5,8 +5,8 @@ from scipy.special import boxcox1p, inv_boxcox
 
 
 class DataPreprocessing(DataExploration):
-    def __init__(self, train_X, test_X,  train_Y, test_Y):
-        super().__init__(train_X, test_X, train_Y, test_Y)
+    def __init__(self, train_X, test_X):
+        super().__init__(train_X, test_X)
         self._train_X_string = 0  # all string attributes of train_X
         self._test_X_string = 0  # all string attributes for test_X
         self._train_X_int_float = 0  # all int and float attributes for train_X

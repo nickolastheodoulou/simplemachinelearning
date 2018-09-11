@@ -7,8 +7,8 @@ import pandas as pd
 
 
 class DataExploration(DataLoader):  # inherits the members test and train from data_matrix
-    def __init__(self, train_X, test_X,  train_Y, test_Y):
-        super().__init__(train_X, test_X, train_Y, test_Y)
+    def __init__(self, train_X, test_X):
+        super().__init__(train_X, test_X)
 
     def sale_price_against_attribute_scatter_plot(self, target, attribute):  # method that plots sales against an attribute
         x = self._train_X[attribute].values
@@ -86,4 +86,21 @@ class DataExploration(DataLoader):  # inherits the members test and train from d
         sns.set(font_scale=1.25)
         sns.heatmap(correlation_matrix_highest_correlated, cbar=True, annot=True, square=True, fmt='.2f', annot_kws={'size': 7}, yticklabels=cols.values, xticklabels=cols.values)
         #annot includes the number within the graph, fmt set to two decimal places, annot_kws is the size of font inside the plot
+        plt.show()
+
+    def missing_data_ratio_and_bar_graph(self, target):
+        train_X_na = self._train_X
+        train_X_na.drop([target], axis=1, inplace=True)
+        train_X_na = ((self._train_X.isnull().sum() / (len(self._train_X))) * 100)
+        train_X_na = train_X_na.drop(train_X_na[train_X_na == 0].index).sort_values(ascending=False)[:30]
+        missing_data = pd.DataFrame({'Missing Ratio': train_X_na})
+        missing_data = missing_data.rename(columns={missing_data.columns[0]: "your value"})
+        print(missing_data.head(20))
+
+        plt.subplots(figsize=(15, 12))
+        plt.xticks(rotation='90')
+        sns.barplot(x=train_X_na.index, y=train_X_na)
+        plt.xlabel('Features', fontsize=15)
+        plt.ylabel('Percent of missing values', fontsize=15)
+        plt.title('Percent missing data by feature', fontsize=15)
         plt.show()

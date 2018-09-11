@@ -4,9 +4,9 @@ import sklearn
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import RobustScaler
 
-class data_model(DataPreprocessing):
-    def __init__(self, train_X, test_X,  train_Y, test_Y):
-        super().__init__(train_X, test_X, train_Y, test_Y)
+class DataModel(DataPreprocessing):
+    def __init__(self, train_X, test_X):
+        super().__init__(train_X, test_X)
         self._Pred_Y = 0  # prediction object
 
     # Create a function called lasso,
