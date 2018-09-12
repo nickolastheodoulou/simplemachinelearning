@@ -4,11 +4,18 @@ from Class_Data_Loader import DataLoader
 from scipy import stats
 import seaborn as sns
 import pandas as pd
+from scipy.special import boxcox, inv_boxcox, boxcox1p, inv_boxcox1p
 
 
 class DataExploration(DataLoader):  # inherits the members test and train from data_matrix
     def __init__(self, train_X, test_X):
         super().__init__(train_X, test_X)
+
+    def boxcox_trans(self, attribute, lamda):  # boxcox transformation of an attribute in train_x
+        self._train_X[attribute] = boxcox(self._train_X[attribute], lamda)
+
+    def boxcox_trans_inv(self, attribute, lamda):  # boxcox transformation of an attribute in train_x
+        self._train_X[attribute] = inv_boxcox(self._train_X[attribute], lamda)
 
     def sale_price_against_attribute_scatter_plot(self, target, attribute):  # method that plots sales against an attribute
         x = self._train_X[attribute].values

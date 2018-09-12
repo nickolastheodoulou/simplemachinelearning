@@ -21,14 +21,6 @@ class DataModel(DataPreprocessing):
             df[column_name] = lasso.steps[1][1].coef_  # Create a column of coefficient values
         return df  # Return the dataframe
 
-    def lasso_int_float(self, alpha, attribute):
-        lasso = make_pipeline(RobustScaler(), sklearn.linear_model.Lasso(alpha=alpha, random_state=1))
-        lasso.fit(self._train_X_int_float, self._train_Y)
-        pred_Y_model = lasso.predict(self._test_X_int_float)  # Make predictions using the testing set
-        pred_Y_model = pd.DataFrame(data=pred_Y_model, columns={attribute})  #
-        pred_Y_model = pd.concat([self._test_Y_id, pred_Y_model], axis=1)
-        return pred_Y_model
-
     def linear(self):# simple linear model
         regr = sklearn.linear_model.LinearRegression()  # Create linear regression object
         regr.fit(self._train_X, self._train_Y)  # Train the model using the training sets

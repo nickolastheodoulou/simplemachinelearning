@@ -12,12 +12,6 @@ class DataPreprocessing(DataExploration):
         self._train_X_int_float = 0  # all int and float attributes for train_X
         self._test_X_int_float = 0  # all int and float attributes for test_X
 
-    def boxcox_trans(self, attribute, lamda):#boxcox transformation of an attribute in train_x
-        self._train_X[attribute] = boxcox(self._train_X[attribute], lamda)
-
-    def boxcox_trans_inv(self, attribute, lamda):#boxcox transformation of an attribute in train_x
-        self._train_X[attribute] = inv_boxcox(self._train_X[attribute], lamda)
-
     def split_attributes(self):  # method that updates the variables: _train_X_string, _test_X_string, _train_X_int_float, _test_X_int_float
         self._train_X_string = self._train_X.select_dtypes(include=['object']).copy()  # updates the dataset variable: _train_X_string that contains all the "object" datatypes in train
         self._test_X_string = self._test_X.select_dtypes(include=['object']).copy()  # updates the dataset variable: _test_X_string that contains all the "object" datatypes in test

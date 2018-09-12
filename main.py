@@ -15,40 +15,35 @@ def main():
     # load in the data to the exploration class so that the pre-processing isn't interfered with when
     #  the train and testset are modified such as when id is dropped or train_Y is moved
     exploration_df = DataExploration(pd.read_csv("Data_In/train.csv"), pd.read_csv("Data_In/test.csv"))
-    #exploration_df.dim_data()  # method that updates the dimension of the train and test data which is the 4th and 5th variable in object exploration_df
+    exploration_df.dim_data()  # method that updates the dimension of the train and test data which is the 4th and 5th variable in object exploration_df
 
-    #print(exploration_df._train_X.head(5))
+    print(exploration_df._train_X.head(5))
     exploration_df.index_column_drop_and_move_to_pred_Y('Id')  # drops the first column of both test_X and train_X
 
-    # creates the plot of sale price against house
-    #exploration_df.sale_price_against_attribute_scatter_plot('SalePrice', '1stFlrSF')
-    #exploration_df.describe_attribute('SalePrice')
-    #exploration_df.histogram_and_q_q('SalePrice')
 
-    #exploration_df.boxcox('SalePrice', -0.3)
-    #exploration_df.histogram_and_q_q('SalePrice')
-    #exploration_df.boxcox_inv('SalePrice', -0.3)
+    exploration_df.sale_price_against_attribute_scatter_plot('SalePrice', '1stFlrSF') # creates the plot of sale price against house
+    exploration_df.describe_attribute('SalePrice')  # gives a summary of mean standard deviation etc
+    exploration_df.histogram_and_q_q('SalePrice')  # histogram of the target
 
-    #exploration_df.boxplot('Exterior1st', 'SalePrice')
-    #exploration_df.heatmap()
-    #exploration_df.heatmap_correlated_attributes(10, 'SalePrice')
-    #exploration_df.missing_data_ratio_and_bar_graph('SalePrice')
+    exploration_df.boxcox_trans('SalePrice', -0.3) #  boxcox transformation
+    exploration_df.histogram_and_q_q('SalePrice') #  histogram and q_q plot after transformation
+    exploration_df.boxcox_trans_inv('SalePrice', -0.3) #  inverse transformation
+    exploration_df.boxplot('Exterior1st', 'SalePrice') #  histogram and q_q plot after inverse transformation
+
+    exploration_df.heatmap() #  heatmap of all attribtutes
+    exploration_df.heatmap_correlated_attributes(10, 'SalePrice') #  heatmap of 10 attributes that are the most correlated with the target
+
+    exploration_df.missing_data_ratio_and_bar_graph('SalePrice') #  print and show graph of the attributes with the largest amount of missing data
+
+
 
     #  at this point once the data has been explored, want train_Y to be in its own variable separate from train_X to
     #  pre-process the data train_X and test_X should not be combined at any point as the data should be preprocessed in
     #  one go for train_X but in a real world scenario, test_X may not come in as a large dataset
     model_df = DataModel(pd.read_csv("Data_In/train.csv"), pd.read_csv("Data_In/test.csv"))
 
-    #model_df.histogram_and_q_q('SalePrice')
-    #model_df.boxcox_trans('SalePrice', -1)
-    #model_df.histogram_and_q_q('SalePrice')
-    #model_df.boxcox_trans_inv('SalePrice', 0)
-    #model_df.histogram_and_q_q('SalePrice')
-    #print(model_df._train_X['SalePrice'])
-    model_df._train_X['SalePrice'] = np.log1p(model_df._train_X['SalePrice'])
-
-    model_df.move_target_to_train_y('SalePrice')
-    model_df.index_column_drop_and_move_to_pred_Y('Id')
+    model_df.move_target_to_train_y('SalePrice') #  moves saleprice to train_Y
+    model_df.index_column_drop_and_move_to_pred_Y('Id') #  drops id column from train_X and test_X to move it to _test_Y_id
     print(model_df._train_Y)
 
 
@@ -62,40 +57,25 @@ def main():
 
     # print(matrix._train_X_string.head())#print one_hot encoded to ensure it actually works
 
-    #model_df.normalise_data()  # normalises train_X_int_float, test_X_int_float, train_Y
+    model_df.normalise_data()  # normalises train_X_int_float, test_X_int_float, train_Y
     model_df.fill_missing_values()  # fills in the missing values of train_X_int_float
-    #model_df.normalise_data()  # normalises train_X_int_float, test_X_int_float, train_Y
+    model_df.normalise_data()  # normalises train_X_int_float, test_X_int_float, train_Y
 
     model_df._train_X_int_float.to_csv('Data_Out/data_filled_train_X_int_float.csv', index=False)
     model_df._test_X_int_float.to_csv('Data_Out/data_filled_test_X_int_float.csv', index=False)
 
-    model_df._train_X_int_float = model_df._train_X_int_float.apply(np.log1p)
-    model_df._test_X_int_float = model_df._train_X_int_float.apply(np.log1p)
-
     model_df._train_X_int_float.to_csv('Data_Out/train_X_int_float.csv', index=False)
     model_df._test_X_int_float.to_csv('Data_Out/test_X_int_float.csv', index=False)
 
-    #model_df.combine_string_int_float()  # combines the two objexts for both test_X and train_X
-    #model_df.export_CSV_processed()  # exports the train_X, train_Y and test_X to a csv file
+    model_df.combine_string_int_float()  # combines the two objexts for both test_X and train_X
+    model_df.export_CSV_processed()  # exports the train_X, train_Y and test_X to a csv file
 
 
-    #model_df.lasso_compare_alpha([800, 900, 1000, 1100, 1200]).to_csv('Data_Out/Lasso_model_alpha_800_900_1000_1100_1200.csv', index=False)# Run the function called, Lasso
+    model_df.lasso_compare_alpha([800, 900, 1000]).to_csv('Data_Out/Lasso_model_alpha_800_900_1000.csv', index=False)# Run the function called, Lasso
 
-    #model_df.lasso(1000).to_csv('Data_Out/Lasso_model_alpha_1000_pipeline.csv', index=False)
+    model_df.lasso(900, 'SalePrice').to_csv('Data_Out/Lasso_model_alpha_1000_pipeline.csv', index=False)
 
-
-
-    #model_df.lasso_int_float(1000, 'SalePrice')
-
-    a = model_df.lasso_int_float(1000, 'SalePrice')
-    a.to_csv('Data_Out/a_test.csv', index=False)
-    print(a)
-
-    attribute = 'SalePrice'
-
-    a[attribute] = np.expm1(a)
-    print(a)
-
+    #model_df.linear().to_csv('Data_Out/Linear_Model.csv', index=False) #  still gives terrible predictions
 
 
 if __name__ == "__main__":
