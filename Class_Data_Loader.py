@@ -11,6 +11,10 @@ class DataLoader:  # class that creates the data matrix by initializing test_X a
         self._test_Y_id = 0                                #id column later used to add to Pred_Y if the index_column is dropped
         self.train_X_and_test_X = 0
         # the underscore means that the members are protected
+        print(self, 'created')
+
+    def __del__(self):
+        print(self, 'destroyed')
 
     def dim_data(self):  # function that finds the dimensions of both the train and test set and stores them in the object
         print('The dimensions of train_X is', self._train_X.shape, 'and the dimension of test_X is ', self._test_X.shape)

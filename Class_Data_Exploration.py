@@ -11,12 +11,6 @@ class DataExploration(DataLoader):  # inherits the members test and train from d
     def __init__(self, train_X, test_X):
         super().__init__(train_X, test_X)
 
-    def boxcox_trans(self, attribute, lamda):  # boxcox transformation of an attribute in train_x
-        self._train_X[attribute] = boxcox(self._train_X[attribute], lamda)
-
-    def boxcox_trans_inv(self, attribute, lamda):  # boxcox transformation of an attribute in train_x
-        self._train_X[attribute] = inv_boxcox(self._train_X[attribute], lamda)
-
     def sale_price_against_attribute_scatter_plot(self, target, attribute):  # method that plots sales against an attribute
         x = self._train_X[attribute].values
         y = self._train_X[target].values  # defines the sold price so that it can be loaded into the function each time rather than loading the whole train matrix
