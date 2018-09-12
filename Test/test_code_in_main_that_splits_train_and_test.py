@@ -23,7 +23,7 @@ matrix = Data_Exploration(pd.read_csv("Data_In/test.csv"), pd.read_csv("Data_In/
     print(matrix._train_Y.head())
     print(matrix._train_X.head())
 
-    matrix.sale_price_against_attribute_scatter_plot('1stFlrSF')#creates the plot of sale price against house
+    matrix.scatter_plot('1stFlrSF')#creates the plot of sale price against house
 
     matrix.split_attributes()
 

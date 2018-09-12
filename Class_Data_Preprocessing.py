@@ -18,8 +18,27 @@ class DataPreprocessing(DataExploration):
     def boxcox_trans_inv(self, attribute, lamda):  # boxcox transformation of an attribute in train_x
         self._train_X[attribute] = inv_boxcox(self._train_X[attribute], lamda)
 
-    def drop_outliers_lower_right(self, target, y, attribute, x): # Deleting outliers lower and to the right of the trend
+        # need to come up with better way of doing this!!!
+    def drop_outliers_target_less_y_attribute_greater_x(self, target, y, attribute, x): # Deleting outliers lower and to the right of the trend
         self._train_X = self._train_X.drop(self._train_X[(self._train_X[attribute] > x) & (self._train_X[target] < y)].index)
+
+    def drop_outliers_target_less_y_attribute_less_x(self, target, y, attribute, x): # Deleting outliers lower and to the right of the trend
+        self._train_X = self._train_X.drop(self._train_X[(self._train_X[attribute] < x) & (self._train_X[target] < y)].index)
+
+    def drop_outliers_target_greater_y_attribute_greater_x(self, target, y, attribute, x): # Deleting outliers lower and to the right of the trend
+        self._train_X = self._train_X.drop(self._train_X[(self._train_X[attribute] > x) & (self._train_X[target] >  y)].index)
+
+    def drop_outliers_target_greater_y_attribute_less_x(self, target, y, attribute, x): # Deleting outliers lower and to the right of the trend
+        self._train_X = self._train_X.drop(self._train_X[(self._train_X[attribute] < x) & (self._train_X[target] >  y)].index)
+
+    def switch_na_to_none(self, attribute): #  some data has na when in reality it isnt missing it should just be none
+        self._train_X[attribute] = self._train_X[attribute].fillna("None")
+
+    def switch_na_to_zero(self, attribute): #  fill na with 0
+        self._train_X[attribute] = self._train_X[attribute].fillna(0)
+
+    def switch_na_to_mode(self, attribute): #  fill na with mode
+        self._train_X[attribute] = self._train_X[attribute].fillna(self._train_X[attribute].mode()[0])
 
     def split_attributes(self):  # method that updates the variables: _train_X_string, _test_X_string, _train_X_int_float, _test_X_int_float
         self._train_X_string = self._train_X.select_dtypes(include=['object']).copy()  # updates the dataset variable: _train_X_string that contains all the "object" datatypes in train

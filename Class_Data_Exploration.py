@@ -11,7 +11,7 @@ class DataExploration(DataLoader):  # inherits the members test and train from d
     def __init__(self, train_X, test_X):
         super().__init__(train_X, test_X)
 
-    def sale_price_against_attribute_scatter_plot(self, target, attribute):  # method that plots sales against an attribute
+    def scatter_plot(self, target, attribute):  # method that plots sales against an attribute
         x = self._train_X[attribute].values
         y = self._train_X[target].values  # defines the sold price so that it can be loaded into the function each time rather than loading the whole train matrix
         plt.subplots(figsize=(16, 8))  # changes the size of the fig
@@ -62,7 +62,7 @@ class DataExploration(DataLoader):  # inherits the members test and train from d
         plt.title('Quantile-Quantile plot of ' + attribute)
         plt.show()
 
-    def boxplot(self, attribute, target):# box plot overallqual/salepricedata = pd.concat([matrix._train_X[target], matrix._train_X[attribute]], axis=1)  # defines the data
+    def boxplot(self, target, attribute):# box plot overallqual/salepricedata = pd.concat([matrix._train_X[target], matrix._train_X[attribute]], axis=1)  # defines the data
         data = pd.concat([self._train_X[target], self._train_X[attribute]], axis=1)  # defines the data
         plt.subplots(figsize=(16, 8))#changes the size of the fig
         fig = sns.boxplot(x=attribute, y=target, data=data)
@@ -89,11 +89,9 @@ class DataExploration(DataLoader):  # inherits the members test and train from d
         #annot includes the number within the graph, fmt set to two decimal places, annot_kws is the size of font inside the plot
         plt.show()
 
-    def missing_data_ratio_and_bar_graph(self, target):
-        train_X_na = self._train_X
-        train_X_na.drop([target], axis=1, inplace=True)
+    def missing_data_ratio_and_bar_graph(self):
         train_X_na = ((self._train_X.isnull().sum() / (len(self._train_X))) * 100)
-        train_X_na = train_X_na.drop(train_X_na[train_X_na == 0].index).sort_values(ascending=False)[:30]
+        train_X_na = train_X_na.drop(train_X_na[train_X_na == 0].index).sort_values(ascending=False)[:self._train_X.shape[1]]
         missing_data = pd.DataFrame({'Missing Ratio': train_X_na})
         missing_data = missing_data.rename(columns={missing_data.columns[0]: "your value"})
         print(missing_data.head(20))
