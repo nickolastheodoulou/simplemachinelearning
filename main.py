@@ -140,7 +140,7 @@ def main():
     model_df.lasso_compare_alpha([1, 0.1, 0.01]).to_csv('Data_Out/Lasso_model_alpha_1_0point1_0point01.csv', index=False)# Run the function called, Lasso
 
 
-    model_df.linear().to_csv('Data_Out/Linear_Model.csv', index=False) #  fixed
+    model_df.linear('SalePrice').to_csv('Data_Out/Linear_Model.csv', index=False) #  fixed
 
 
 if __name__ == "__main__":

@@ -22,12 +22,12 @@ class DataModel(DataPreprocessing):
             df[column_name] = lasso.steps[1][1].coef_  # Create a column of coefficient values
         return df  # Return the dataframe
 
-    def linear(self):# simple linear model
+    def linear(self, attribute):# simple linear model
         regr = sklearn.linear_model.LinearRegression()  # Create linear regression object
         regr.fit(self._train_X, self._train_Y)  # Train the model using the training sets
         pred_Y_model = regr.predict(self._test_X)  # Make predictions using the testing set
         pred_Y_model = inv_boxcox(pred_Y_model, 0.1)  # inverse boxcox the prediction
-        pred_Y_model = pd.DataFrame(data=pred_Y_model, columns={'Target'})  #
+        pred_Y_model = pd.DataFrame(data=pred_Y_model, columns={attribute})  #
         pred_Y_model = pd.concat([self._test_Y_id, pred_Y_model], axis=1)
         return pred_Y_model
 
