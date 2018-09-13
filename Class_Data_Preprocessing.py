@@ -65,9 +65,13 @@ class DataPreprocessing(DataExploration):
     def split_attributes(self):  # method that updates the variables: _train_X_string, _test_X_string, _train_X_int_float, _test_X_int_float
         self._train_X_string = self._train_X.select_dtypes(include=['object']).copy()  # updates the dataset variable: _train_X_string that contains all the "object" datatypes in train
         self._test_X_string = self._test_X.select_dtypes(include=['object']).copy()  # updates the dataset variable: _test_X_string that contains all the "object" datatypes in test
-        self._train_X_int_float = self._train_X.select_dtypes(include=['int64', 'float64']).copy()  # updates the dataset variable: _train_X_string that contains all the "object" datatypes in train
-        self._test_X_int_float = self._test_X.select_dtypes(include=['int64', 'float64']).copy()  # updates the dataset variable: _test_X_string that contains all the "object" datatypes in test
+        self._train_X_int_float = self._train_X.select_dtypes(exclude=['object']).copy()  # updates the dataset variable: _train_X_string that contains all the "object" datatypes in train
+        self._test_X_int_float = self._test_X.select_dtypes(exclude=['object']).copy()# updates the dataset variable: _test_X_string that contains all the "object" datatypes in test
         return None
+
+    def boxcox_attributes(self, alpha):  # normalises the desired dataframes
+        self._train_X_int_float = boxcox(self._train_X_int_float, alpha)
+        self._test_X_int_float = boxcox(self._test_X_int_float, alpha)
 
     def normalise_data(self):  # normalises the desired dataframes
         self._train_X_int_float = (self._train_X_int_float - self._train_X_int_float.mean()) / self._train_X_int_float.std()  # normalise _train_X_int_float using standard score

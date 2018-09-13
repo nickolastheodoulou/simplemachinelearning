@@ -3,6 +3,7 @@ from Class_Data_Preprocessing import DataPreprocessing
 import sklearn
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import RobustScaler
+from scipy.special import boxcox, inv_boxcox, boxcox1p, inv_boxcox1p
 
 class DataModel(DataPreprocessing):
     def __init__(self, train_X, test_X):
@@ -25,6 +26,7 @@ class DataModel(DataPreprocessing):
         regr = sklearn.linear_model.LinearRegression()  # Create linear regression object
         regr.fit(self._train_X, self._train_Y)  # Train the model using the training sets
         pred_Y_model = regr.predict(self._test_X)  # Make predictions using the testing set
+        pred_Y_model = inv_boxcox(pred_Y_model, 0.1)  # inverse boxcox the prediction
         pred_Y_model = pd.DataFrame(data=pred_Y_model, columns={'Target'})  #
         pred_Y_model = pd.concat([self._test_Y_id, pred_Y_model], axis=1)
         return pred_Y_model
@@ -33,6 +35,7 @@ class DataModel(DataPreprocessing):
         lasso = make_pipeline(RobustScaler(), sklearn.linear_model.Lasso(alpha=alpha, random_state=1))
         lasso.fit(self._train_X, self._train_Y)
         pred_Y_model = lasso.predict(self._test_X)  # Make predictions using the testing set
+        pred_Y_model = inv_boxcox(pred_Y_model, 0.1)  # inverse boxcox the prediction
         pred_Y_model = pd.DataFrame(data=pred_Y_model, columns={attribute})  #
         pred_Y_model = pd.concat([self._test_Y_id, pred_Y_model], axis=1)
         return pred_Y_model
