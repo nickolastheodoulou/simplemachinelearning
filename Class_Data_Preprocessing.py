@@ -1,5 +1,4 @@
 import pandas as pd
-import fancyimpute as fi
 from Class_Data_Exploration import DataExploration
 from scipy.special import boxcox, inv_boxcox, boxcox1p, inv_boxcox1p
 
@@ -31,14 +30,37 @@ class DataPreprocessing(DataExploration):
     def drop_outliers_target_greater_y_attribute_less_x(self, target, y, attribute, x): # Deleting outliers lower and to the right of the trend
         self._train_X = self._train_X.drop(self._train_X[(self._train_X[attribute] < x) & (self._train_X[target] >  y)].index)
 
-    def switch_na_to_none(self, attribute): #  some data has na when in reality it isnt missing it should just be none
+    #  some data has na when in reality it isnt missing it should just be none
+    #  can also apply this to the test dataset without any data leakage!
+    def switch_na_to_none(self, attribute):
         self._train_X[attribute] = self._train_X[attribute].fillna("None")
+        self._test_X[attribute] = self._test_X[attribute].fillna("None")
 
+    #  can also apply this to the test dataset without any data leakage!
     def switch_na_to_zero(self, attribute): #  fill na with 0
         self._train_X[attribute] = self._train_X[attribute].fillna(0)
+        self._test_X[attribute] = self._test_X[attribute].fillna(0)
 
     def switch_na_to_mode(self, attribute): #  fill na with mode
         self._train_X[attribute] = self._train_X[attribute].fillna(self._train_X[attribute].mode()[0])
+        #  fill na with mode of train_X to prevent data leakage!
+        self._test_X[attribute] = self._test_X[attribute].fillna(self._train_X[attribute].mode()[0])
+
+
+        # Group by a second discrete attribute and fill in missing value by the median attributes of all the second discreteattribue
+    def switch_na_to_median_other_attribute(self, attribute, second_discrete_attribute):
+        #df = df (fill in the missing value by grouping by second_discrete_attribute and findin the mean of each group and assigning the missing value to this)
+        self._train_X[attribute] = self._train_X[attribute].fillna(self._train_X.groupby(second_discrete_attribute)[attribute].mean()[0])
+        #  apply to test_X by using the median of train_X to prevent data leakage
+        self._test_X[attribute] = self._test_X[attribute].fillna(self._train_X.groupby(second_discrete_attribute)[attribute].mean()[0])
+
+    def drop_attribute_train_and_test(self, attribute):
+        self._train_X = self._train_X.drop([attribute], axis=1)
+        self._test_X = self._test_X.drop([attribute], axis=1)
+
+    def convert_attribute_to_categorical(self, attribute):
+        self._train_X[attribute] = self._train_X[attribute].astype(str)
+        self._test_X[attribute] = self._test_X[attribute].astype(str)
 
     def split_attributes(self):  # method that updates the variables: _train_X_string, _test_X_string, _train_X_int_float, _test_X_int_float
         self._train_X_string = self._train_X.select_dtypes(include=['object']).copy()  # updates the dataset variable: _train_X_string that contains all the "object" datatypes in train
@@ -57,18 +79,6 @@ class DataPreprocessing(DataExploration):
         self._train_X_string = pd.get_dummies(self._train_X_string)  # method to convert all the string attributes into one hot encoded by updating the dataframe from pandas
         self._test_X_string = pd.get_dummies(self._test_X_string)  # method to convert all the string attributes into one hot encoded
         return None
-
-    def fill_missing_values(self): #  function that inputs the missing values into _train_X_int_float
-        X_filled_knn = fi.KNN(k=3).complete(self._train_X_int_float)  # completes the missing attributes using KNN from fancy impute using the 3 closes complete columns
-        self._train_X_int_float = pd.DataFrame(X_filled_knn, columns=self._train_X_int_float.columns.copy())  # updates _train_X_int_float with the missing data
-
-####################################################################################################################################################################################
-# using knn for test data to quickly fill in missing data to see if i can build a model(later will input with a mean from train or something else
-#
-        X_filled_knn_test = fi.KNN(k=3).complete(self._test_X_int_float)  # completes the missing attributes using KNN from fancy impute using the 3 closes complete columns
-        self._test_X_int_float = pd.DataFrame(X_filled_knn_test, columns=self._test_X_int_float.columns.copy())  # updates _train_X_int_float with the missing data
-#
-####################################################################################################################################################################################
 
     def combine_string_int_float(self): #  first finds the missing columns of test_X and fills them with zeros in the correct place
         # might run into error if test_X has more columns than train_X in other situations

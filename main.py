@@ -49,46 +49,70 @@ def main():
 
     model_df.switch_na_to_mode('Electrical')
 
-    # Group by neighborhood and fill in missing value by the median LotFrontage of all the neighborhood
-    model_df._train_X["LotFrontage"] = model_df._train_X.groupby("Neighborhood")["LotFrontage"].transform(lambda x: x.fillna(x.median()))
-
+    model_df.switch_na_to_median_other_attribute('LotFrontage', 'Neighborhood')
 
     model_df.scatter_plot('SalePrice', 'LotFrontage')
     model_df.drop_outliers_target_greater_y_attribute_greater_x('SalePrice', 200000, 'LotFrontage', 300)
     model_df.scatter_plot('SalePrice', 'LotFrontage')
 
-    #model_df.missing_data_ratio_and_bar_graph()  # print and show graph of the attributes with the largest amount of missing data
+    model_df.switch_na_to_mode('MSZoning')
+    model_df.drop_attribute_train_and_test('Utilities')#all features in train are all pub and 2 na, 'NoSewa' is in test set hence the attribute doesnt help in any way with the model so it is dropped
 
+    model_df.boxplot('SalePrice', 'BsmtFullBath')
+
+    model_df.switch_na_to_mode('MSZoning')
+    model_df.switch_na_to_mode('Functional')#  in description says na should be functional which happens to be the mode
+    model_df.switch_na_to_zero('BsmtHalfBath')#  assume na means no half bathroom
+    model_df.switch_na_to_zero('BsmtFullBath')  # assume na means no full bathroom
+
+    model_df.switch_na_to_mode('SaleType')
+
+    model_df.switch_na_to_zero('GarageArea')
+    model_df.switch_na_to_zero('GarageCars')
+    model_df.switch_na_to_zero('TotalBsmtSF')
+    model_df.switch_na_to_zero('BsmtUnfSF')
+    model_df.switch_na_to_zero('BsmtFinSF2')
+    model_df.switch_na_to_zero('BsmtFinSF1')
+    model_df.switch_na_to_mode('KitchenQual')
+
+    model_df.switch_na_to_mode('Exterior2nd')
+    model_df.switch_na_to_mode('Exterior1st')
+
+    #model_df.test_missing_data_ratio_and_bar_graph()  # print and show graph of the attributes with the largest amount of missing data
+    #model_df.train_missing_data_ratio_and_bar_graph()
 
     model_df.index_column_drop_and_move_to_pred_Y('Id')  # drops id column from train_X and test_X to move it to _test_Y_id
 
     model_df.move_target_to_train_y('SalePrice')  # moves saleprice to train_Y
-    model_df.export_CSV_processed()  # exports the train_X, train_Y and test_X to a csv file
-'''
+
+    model_df.convert_attribute_to_categorical('MSSubClass')
+    model_df.convert_attribute_to_categorical('OverallCond')
+    model_df.convert_attribute_to_categorical('YrSold')
+    model_df.convert_attribute_to_categorical('MoSold')
+
+    model_df.dim_data()
+
+
+    ###################################################################################################################################################
+    #now at a point where all the missing values are inputted!!!!
+    ###################################################################################################################################################
+
+
     model_df.split_attributes()  # splits the attributes into a string dataset and a float + int dataset so that one hot encoding can be used
     model_df.one_hot_encoding()  # method to convert all the string attributes into one hot encoded
-    model_df._train_X_string.to_csv('Data_Out/_train_X_string.csv', index=False)
-    model_df._test_X_string.to_csv('Data_Out/_test_X_string.csv', index=False)
-
-    # print(matrix._train_X_string.head())#print one_hot encoded to ensure it actually works
 
     model_df.normalise_data()  # normalises train_X_int_float, test_X_int_float, train_Y
-    model_df.fill_missing_values()  # fills in the missing values of train_X_int_float
-    model_df.normalise_data()  # normalises train_X_int_float, test_X_int_float, train_Y
-
-    model_df._train_X_int_float.to_csv('Data_Out/train_X_int_float.csv', index=False)
-    model_df._test_X_int_float.to_csv('Data_Out/test_X_int_float.csv', index=False)
 
     model_df.combine_string_int_float()  # combines the two objexts for both test_X and train_X
     model_df.export_CSV_processed()  # exports the train_X, train_Y and test_X to a csv file
+    model_df.dim_data()
 
+    model_df.lasso_compare_alpha([100, 200, 300]).to_csv('Data_Out/Lasso_model_alpha_100_200_300.csv', index=False)# Run the function called, Lasso
 
-    model_df.lasso_compare_alpha([800, 900, 1000]).to_csv('Data_Out/Lasso_model_alpha_800_900_1000.csv', index=False)# Run the function called, Lasso
-
-    model_df.lasso(900, 'SalePrice').to_csv('Data_Out/Lasso_model_alpha_900_pipeline.csv', index=False)
+    model_df.lasso(200, 'SalePrice').to_csv('Data_Out/Lasso_model_alpha_200_pipeline.csv', index=False)
 
     #model_df.linear().to_csv('Data_Out/Linear_Model.csv', index=False) #  still gives terrible predictions
-'''
+
 
 if __name__ == "__main__":
     main()

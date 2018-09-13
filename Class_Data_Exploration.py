@@ -89,16 +89,31 @@ class DataExploration(DataLoader):  # inherits the members test and train from d
         #annot includes the number within the graph, fmt set to two decimal places, annot_kws is the size of font inside the plot
         plt.show()
 
-    def missing_data_ratio_and_bar_graph(self):
-        train_X_na = ((self._train_X.isnull().sum() / (len(self._train_X))) * 100)
-        train_X_na = train_X_na.drop(train_X_na[train_X_na == 0].index).sort_values(ascending=False)[:self._train_X.shape[1]]
-        missing_data = pd.DataFrame({'Missing Ratio': train_X_na})
+    def train_missing_data_ratio_and_bar_graph(self):
+        train_X_missing = ((self._train_X.isnull().sum() / (len(self._train_X))) * 100)
+        train_X_missing = train_X_missing.drop(train_X_missing[train_X_missing == 0].index).sort_values(ascending=False)[:self._train_X.shape[1]]
+        missing_data = pd.DataFrame({'Missing Ratio': train_X_missing})
         missing_data = missing_data.rename(columns={missing_data.columns[0]: "your value"})
         print(missing_data.head(20))
 
         plt.subplots(figsize=(15, 12))
         plt.xticks(rotation='90')
-        sns.barplot(x=train_X_na.index, y=train_X_na)
+        sns.barplot(x=train_X_missing.index, y=train_X_missing)
+        plt.xlabel('Features', fontsize=15)
+        plt.ylabel('Percent of missing values', fontsize=15)
+        plt.title('Percent missing data by feature', fontsize=15)
+        plt.show()
+
+    def test_missing_data_ratio_and_bar_graph(self):
+        test_X_missing = ((self._test_X.isnull().sum() / (len(self._test_X))) * 100)
+        test_X_missing = test_X_missing.drop(test_X_missing[test_X_missing == 0].index).sort_values(ascending=False)[:self._test_X.shape[1]]
+        missing_data = pd.DataFrame({'Missing Ratio': test_X_missing})
+        missing_data = missing_data.rename(columns={missing_data.columns[0]: "your value"})
+        print(missing_data.head(20))
+
+        plt.subplots(figsize=(15, 12))
+        plt.xticks(rotation='90')
+        sns.barplot(x=test_X_missing.index, y=test_X_missing)
         plt.xlabel('Features', fontsize=15)
         plt.ylabel('Percent of missing values', fontsize=15)
         plt.title('Percent missing data by feature', fontsize=15)
