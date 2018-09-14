@@ -13,7 +13,8 @@ def main():
     model_df.drop_outliers_target_less_y_attribute_greater_x('SalePrice', 300000, 'GrLivArea', 4000)
     model_df.drop_outliers_target_greater_y_attribute_greater_x('SalePrice', 200000, 'LotFrontage', 300)
 
-    # model_df.test_missing_data_ratio_and_bar_graph() used to decide how to handle missing values
+    model_df.dim_data()
+    # model_df.missing_data_ratio_and_bar_graph() used to decide how to handle missing values
     #boxplot used to look at classified attributes
     model_df.switch_na_to_median_other_attribute('LotFrontage', 'Neighborhood')
     # all features in train are all pub and 2 na, 'NoSewa' is in test set hence the attribute doesnt help in any way
