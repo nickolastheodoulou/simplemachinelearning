@@ -1,8 +1,8 @@
-# Machine Learning Techniques: Predicting The Price Of Houses
-###Outline of Project
+# Machine Learning Techniques: Predicting The Price Of Houses #
+### Outline of Project ###
 This is a repository implementing some of the machine learning algorithms and techniques I have learnt to predict house prices using a data set from the Kaggle competition: 'House Prices: Advanced Regression Techniques' where details of the dataset can be found [here.](https://www.kaggle.com/c/house-prices-advanced-regression-techniques) Object Oriented Programming implementing inheritance was used to structure the code in a concise manner in which the sale price of 1459 houses were predicted using a data set of 1460 houses along with 79 attributes. The code using a Lasso model with alpha = 0.01 and box cox transformations for all the attributes where lambda = 0.1 scored 1973 out of 4056 submissions.
 
-####Description of the file structure
+#### Description of the file structure ####
 
 The Data_In folder contains 3 files: the train data in train.CSV, the test data in test.CSV and a description of the attributes in data_description.text. The final column in train.CSV contains the target attribute: 'SalePrice' which is what was predicted on the test data using a Lasso model. The Data_Out folder contains output CSV files of the models with various parameters and Plots contains examples of some of the plots produced. Main.py is where the other four classes 
  * DataLoader within Class_Data_Loader.py
@@ -18,7 +18,7 @@ This was done so that if one only wanted to only explore the data, only the func
 
 Full documentation of the methods within the classes will be added at a later date.
 
-##Packages Required:
+## Packages Required: ##
 Environment set up in python 3.5 and runs with following packages:
 * numpy        V:1.14.5
 * pandas       V:0.23.4
@@ -26,5 +26,5 @@ Environment set up in python 3.5 and runs with following packages:
 * scikit-learn V:0.19.2
 <p>
 
-##Examples
+## Examples ##
 Examples of how to run the code will be added at a later date.
