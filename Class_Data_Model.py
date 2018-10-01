@@ -5,6 +5,7 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import RobustScaler
 from scipy.special import boxcox, inv_boxcox, boxcox1p, inv_boxcox1p
 from sklearn.svm import SVC
+from sklearn.neural_network import MLPClassifier
 
 class DataModel(DataPreprocessing):
     def __init__(self, train_X, test_X):
@@ -41,7 +42,7 @@ class DataModel(DataPreprocessing):
         pred_Y_model = pd.concat([self._test_Y_id, pred_Y_model], axis=1)
         return pred_Y_model
 
-    def svm(self):
+    def SVM(self):
         clf = SVC(gamma='auto')
         clf.fit(self._train_X, y=self._train_Y)
         SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0, decision_function_shape='ovr', degree=3, gamma='auto',
@@ -49,4 +50,10 @@ class DataModel(DataPreprocessing):
             max_iter=-1, probability=False, random_state=None, shrinking=True, tol=0.001, verbose=False)
         pred_Y_model = clf.predict(self._test_X)
         pred_Y_model = pd.DataFrame(data=pred_Y_model, columns={'classification'})
+        return pred_Y_model
+
+    def neuralnetwork(self):  # implements a multi-layer perceptron (MLP) algorithm that trains using Backpropagation
+        clf = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(25, 12, 5), random_state=1)
+        clf.fit(self._train_X, self._train_Y)
+        pred_Y_model = clf.predict(self._test_X)
         return pred_Y_model

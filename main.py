@@ -22,7 +22,9 @@ def main():
     model_df.move_target_to_train_y('classification')
     model_df.move_target_to_test_y('classification')
 
-    print(confusion_matrix(model_df._test_Y, model_df.svm()))
+    print(confusion_matrix(model_df._test_Y, model_df.SVM()))
+    print(confusion_matrix(model_df._test_Y, model_df.neuralnetwork()))
+
 
 
 if __name__ == "__main__":
