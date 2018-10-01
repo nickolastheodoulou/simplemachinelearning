@@ -34,7 +34,7 @@ class DataLoader:  # class that creates the data matrix by initializing test_X a
         final_column = self._test_X.columns.get_loc(target)  # finds the target column by name
         d = {target: self._test_X.iloc[:, final_column]}  # updates the dataframe train_Y using the index column
         self._test_Y = pd.DataFrame(data=d)# updates the dataframe train_Y
-        self._test_X = self._test_X.drop(self._train_X.columns[final_column], axis=1)  # drops the first column of the train set as it has been moved
+        self._test_X = self._test_X.drop(self._test_X.columns[final_column], axis=1)  # drops the first column of the train set as it has been moved
         return None
 
     def index_column_drop_and_move_to_pred_Y(self, index_column_label):  # method that drops the first column of both train_X and test_X
