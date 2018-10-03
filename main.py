@@ -14,6 +14,7 @@ def main():
     test = data.iloc[70:, :]
     model_df = DataModel(train, test)
 
+    model_df.heatmap_correlated_attributes(5, 'classification')
     #print(model_df._train_X.head())
     #print(model_df._test_X.head())
     #model_df.describe_attribute('sepal_length')
