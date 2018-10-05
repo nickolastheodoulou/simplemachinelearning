@@ -77,19 +77,21 @@ def main():
 
     train = data.iloc[:70, :]
     test = data.iloc[70:, :]
-    model_df = DataModel(train, test)
+    model_df2 = DataModel(train, test)
 
-    model_df.heatmap_correlated_attributes(5, 'classification')
-    # print(model_df._train_X.head())
-    # print(model_df._test_X.head())
-    # model_df.describe_attribute('sepal_length')
-    # model_df.histogram_and_q_q('sepal_length')
 
-    model_df.move_target_to_train_y('classification')
-    model_df.move_target_to_test_y('classification')
+    model_df2.heatmap_correlated_attributes(5, 'classification')
+    # print(model_df2._train_X.head())
+    # print(model_df2._test_X.head())
+    # model_df2.describe_attribute('sepal_length')
+    # model_df2.histogram_and_q_q('sepal_length')
 
-    print(confusion_matrix(model_df._test_Y, model_df.SVM()))
-    print(confusion_matrix(model_df._test_Y, model_df.neuralnetwork()))
+
+    model_df2.move_target_to_train_y('classification')
+    model_df2.move_target_to_test_y('classification')
+
+    print(confusion_matrix(model_df2._test_Y, model_df2.SVM()))
+    print(confusion_matrix(model_df2._test_Y, model_df2.neuralnetwork()))
 
 #####################################################################################################################################################################
 
