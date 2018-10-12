@@ -41,7 +41,7 @@ class DataExploration(DataLoader):  # inherits the members test and train from d
         #  plt.title('Bar graph of ' + str(column_count.name) + ' Against ' + str(' Sample Size'), fontsize=20)
         plt.xlabel(column_count.name, fontsize=24)  # sets the xlabel to the name of the series object
         plt.ylabel('Percent', fontsize=24)
-        plt.xticks(rotation=30)  # rotates ticks by 90deg so larger font can be used
+        plt.xticks(x, rotation=30)  # rotates ticks by 90deg so larger font can be used
         plt.tick_params(labelsize=22)  # increases font of the ticks
         plt.show()
 

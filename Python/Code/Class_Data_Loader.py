@@ -1,3 +1,6 @@
+import pandas as pd
+
+
 class DataLoader:  # class that loads in the data
     def __init__(self, data_set):  # initialise the object with the test and train matrices from the CSV file
 
@@ -10,3 +13,6 @@ class DataLoader:  # class that loads in the data
 
     def __del__(self):  # destroy object with a print statement
         print(self, 'destroyed')
+
+    def year_new_column(self, date_column_label):  # function that creates a new column for the year
+        self._data_set['Year'] = pd.DatetimeIndex(self._data_set[date_column_label]).year
