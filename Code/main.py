@@ -1,8 +1,6 @@
 import pandas as pd
-from Class_Data_Model import DataModel
+from Code.Class_Data_Model import DataModel
 from scipy.special import boxcox
-import numpy as np
-from sklearn.svm import SVC
 from sklearn.metrics import confusion_matrix
 
 
