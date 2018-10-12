@@ -1,10 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from Class_Data_Loader import DataLoader
+from Code.Class_Data_Loader import DataLoader
 from scipy import stats
 import seaborn as sns
 import pandas as pd
-from scipy.special import boxcox, inv_boxcox, boxcox1p, inv_boxcox1p
 
 
 class DataExploration(DataLoader):  # inherits the members test and train from data_matrix
@@ -68,7 +67,7 @@ class DataExploration(DataLoader):  # inherits the members test and train from d
         fig = sns.boxplot(x=attribute, y=target, data=data)
         fig.axis(ymin=0, ymax=self._train_X[target].values.max())  # defines the y axis
         plt.xticks(rotation=90)  # rotates the x ticks so that they are easier to read when the strings are longer
-        #  plt.savefig('Plots/boxplot.png', index=False)
+        #  plt.savefig('Data_Out/boxplot.png', index=False)
         plt.show()
 
     def heatmap(self):
