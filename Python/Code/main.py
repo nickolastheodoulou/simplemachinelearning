@@ -1,6 +1,4 @@
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
 from Python.Code.Class_Data_Exploration import DataExploration
 
 
@@ -22,7 +20,6 @@ def main():
     model_df.box_plot("ConditionScore", "Manufacturer")  # box plot of the Condition score for each Manufacturer
 
     model_df.box_plot("ConditionScore", "ManufacturerAndVehicleType")  # box plot of the Condition score for each Year
-
 
     # function that prints the number of inspections each financial year.
     model_df.column_value_count("FinancialYear")

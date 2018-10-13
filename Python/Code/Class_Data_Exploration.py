@@ -1,5 +1,6 @@
 from Python.Code.Class_Data_Loader import DataLoader
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -45,16 +46,40 @@ class DataExploration(DataLoader):  # inherits the members test and train from d
         plt.tick_params(labelsize=22)  # increases font of the ticks
         plt.show()
 
+    def bar_graph_percentage_difference(self, attribute):
+        attribute_count = self._data_set[attribute].value_counts().sort_index()
+
+        percentage_change = np.zeros(attribute_count.count() - 1)
+
+        for i in range(0, attribute_count.count() - 1):  # for loop to calculate the percentage difference
+            percentage_change[i] = ((attribute_count.values[i + 1] - attribute_count.values[i]) /
+                                    attribute_count.values[i]) * 100
+
+        print(percentage_change)
+
+        x = attribute_count[:-1].index  # drops the final column in the series object and sets x to the index
+        plt.subplots(figsize=(16, 8))  # changes the size of the fig
+        plt.grid()
+        plt.plot(x, percentage_change, c="g", alpha=0.5, marker="s")
+        #  plt.title('Bar graph of ' + str(column_count.name) + ' Against ' + str(' Sample Size'), fontsize=20)
+        plt.xlabel(attribute_count.name, fontsize=24)  # sets the xlabel to the name of the series object
+        plt.ylabel('Percentage Change', fontsize=24)
+        plt.xticks(x, rotation=30)  # rotates ticks by 90deg so larger font can be used
+        plt.tick_params(labelsize=22)  # increases font of the ticks
+        plt.show()
+
     # function that creates a box plot
     def box_plot(self, target, attribute):
-        data = pd.concat([self._data_set[target], self._data_set[attribute]], axis=1)  # defines the data
+        #  sort the dataset into acending order of the attribute to be plotted
+        self._data_set = self._data_set.sort_values([attribute]).reset_index(drop=True)
+        data_in = pd.concat([self._data_set[target], self._data_set[attribute]], axis=1)  # defines the data
         plt.subplots(figsize=(16, 8))  # changes the size of the fig
 
-        fig = sns.boxplot(x=attribute, y=target, data=data)
+        fig = sns.boxplot(x=attribute, y=target, data=data_in)
         fig.set_xlabel(attribute, fontsize=24)
         fig.set_ylabel(target, fontsize=24)
         fig.axis(ymin=0, ymax=self._data_set[target].values.max())  # defines the y axis
-        plt.xticks(rotation=30)  # rotates the x ticks so that they are easier to read when the strings are longer
-        plt.tick_params(labelsize=22)
-        #  plt.savefig('Plots/boxplot.png', index=False)
+        plt.xticks(rotation=90)  # rotates the x ticks so that they are easier to read when the strings are longer
+        plt.tick_params(labelsize=12)
+        #  plt.savefig('Data_Out/boxplot.png', index=False)
         plt.show()
