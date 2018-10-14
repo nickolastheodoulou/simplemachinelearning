@@ -11,7 +11,7 @@ def main():
 
     model_df.year_new_column("FinancialYear")  # create a new column for the year named: "Year"
 
-    model_df._data_set["ManufacturerAndVehicleType"] = model_df._data_set["Manufacturer"].map(str) + " " + model_df._data_set["VehicleType"].map(str)
+    model_df._data_set["ManufacturerAndVehicleType"] = model_df._data_set["VehicleType"].map(str) + " " + model_df._data_set["Manufacturer"].map(str)
     print(model_df._data_set.head())
 
     model_df._data_set.to_csv("Data_Out/data_set_out.csv")  # saves the pandas data frame to a CSV file
