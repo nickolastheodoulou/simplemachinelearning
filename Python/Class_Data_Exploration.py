@@ -65,9 +65,6 @@ class DataExploration(DataLoader):  # inherits the members test and train from d
         plt.ylabel(y_label, fontsize=12)
         plt.xticks(x, rotation=30)  # rotates ticks by 90deg so larger font can be used
         plt.tick_params(labelsize=12)  # increases font of the ticks
-        #plt.figure(figsize=(16, 8))
-        #plt.subplots(figsize=(16, 8))  # changes the size of the fig
-        #plt.tight_layout()
         plt.savefig('Data_Out/bargraph.pdf', index=False, bbox_inches='tight')
         plt.show()
 
