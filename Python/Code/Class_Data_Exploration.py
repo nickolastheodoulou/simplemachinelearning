@@ -46,7 +46,7 @@ class DataExploration(DataLoader):  # inherits the members test and train from d
         plt.tick_params(labelsize=22)  # increases font of the ticks
         plt.show()
 
-    def bar_graph_percentage_difference(self, attribute):
+    def bar_graph_percentage_difference(self, attribute, x_label, y_label):
         attribute_count = self._data_set[attribute].value_counts().sort_index()
 
         percentage_change = np.zeros(attribute_count.count() - 1)
@@ -58,14 +58,17 @@ class DataExploration(DataLoader):  # inherits the members test and train from d
         print(percentage_change)
 
         x = attribute_count[:-1].index  # drops the final column in the series object and sets x to the index
-        plt.subplots(figsize=(16, 8))  # changes the size of the fig
         plt.grid()
         plt.plot(x, percentage_change, c="g", alpha=0.5, marker="s")
         #  plt.title('Bar graph of ' + str(column_count.name) + ' Against ' + str(' Sample Size'), fontsize=20)
-        plt.xlabel(attribute_count.name, fontsize=24)  # sets the xlabel to the name of the series object
-        plt.ylabel('Percentage Change', fontsize=24)
+        plt.xlabel(x_label, fontsize=12)  # sets the xlabel to the name of the series object
+        plt.ylabel(y_label, fontsize=12)
         plt.xticks(x, rotation=30)  # rotates ticks by 90deg so larger font can be used
-        plt.tick_params(labelsize=22)  # increases font of the ticks
+        plt.tick_params(labelsize=12)  # increases font of the ticks
+        #plt.figure(figsize=(16, 8))
+        #plt.subplots(figsize=(16, 8))  # changes the size of the fig
+        #plt.tight_layout()
+        plt.savefig('Data_Out/bargraph.pdf', index=False, bbox_inches='tight')
         plt.show()
 
     # function that creates a box plot
@@ -81,5 +84,5 @@ class DataExploration(DataLoader):  # inherits the members test and train from d
         fig.axis(ymin=0, ymax=self._data_set[target].values.max())  # defines the y axis
         plt.xticks(rotation=90)  # rotates the x ticks so that they are easier to read when the strings are longer
         plt.tick_params(labelsize=12)
-        #  plt.savefig('Data_Out/boxplot.png', index=False)
+        plt.savefig('Data_Out/boxplot.pdf', index=False, bbox_inches='tight')
         plt.show()

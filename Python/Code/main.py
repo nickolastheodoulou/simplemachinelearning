@@ -17,9 +17,9 @@ def main():
     model_df._data_set.to_csv("Data_Out/data_set_out.csv")  # saves the pandas data frame to a CSV file
 
     model_df.box_plot("ConditionScore", "Year")  # box plot of the Condition score for each Year
-    model_df.box_plot("ConditionScore", "Manufacturer")  # box plot of the Condition score for each Manufacturer
+    #model_df.box_plot("ConditionScore", "Manufacturer")  # box plot of the Condition score for each Manufacturer
 
-    model_df.box_plot("ConditionScore", "ManufacturerAndVehicleType")  # box plot of the Condition score for each Year
+    #model_df.box_plot("ConditionScore", "ManufacturerAndVehicleType")  # box plot of the Condition score for each Year
 
     # function that prints the number of inspections each financial year.
     model_df.column_value_count("FinancialYear")
@@ -28,7 +28,7 @@ def main():
     model_df.bar_graph_percentage("Year")
 
     #  function that plots the percentage difference of what year each inspection occurs.
-    model_df.bar_graph_percentage_difference("FinancialYear")
+    model_df.bar_graph_percentage_difference("FinancialYear", "Year", '% Change of the Number of Inspections')
 
 
 if __name__ == "__main__":
