@@ -1,5 +1,5 @@
 import pandas as pd
-from Python.Code.Class_Data_Exploration import DataExploration
+from Python.Class_Data_Exploration import DataExploration
 
 
 def main():

@@ -1,4 +1,4 @@
-from Python.Code.Class_Data_Loader import DataLoader
+from Python.Class_Data_Loader import DataLoader
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
