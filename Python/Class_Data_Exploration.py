@@ -44,28 +44,43 @@ class DataExploration(DataLoader):  # inherits the members test and train from d
         plt.ylabel('Percent', fontsize=24)
         plt.xticks(x, rotation=30)  # rotates ticks by 90deg so larger font can be used
         plt.tick_params(labelsize=22)  # increases font of the ticks
+
+        #  file name defined by attribute user input and type of graph
+        plt.savefig('Data_Out/' + attribute + '_bar_graph_percentage.pdf', index=False, bbox_inches='tight')
+
         plt.show()
 
-    def bar_graph_percentage_difference(self, attribute, x_label, y_label):
-        attribute_count = self._data_set[attribute].value_counts().sort_index()
+    def bar_graph_percentage_difference(self, attribute):
+        #  counts the number of attributes and store
+        attribute_list_count = self._data_set[attribute].value_counts().sort_index()
 
-        percentage_change = np.zeros(attribute_count.count() - 1)
+        #  define the list of attributes in ascending order
+        attribute_list = attribute_list_count.index
 
-        for i in range(0, attribute_count.count() - 1):  # for loop to calculate the percentage difference
-            percentage_change[i] = ((attribute_count.values[i + 1] - attribute_count.values[i]) /
-                                    attribute_count.values[i]) * 100
+        # define empty numpy array to store the y coordinates which will be the percentage difference
+        y = np.zeros(attribute_list_count.count() - 1)
+        #  define empty list to store the ticks which will be combined from attribute_list of size attribute_list - 1
+        my_x_ticks = [0] * (attribute_list_count.count() - 1)
 
-        print(percentage_change)
+        for i in range(0, attribute_list_count.count() - 1):  # for loop to calculate the percentage difference
+            y[i] = ((attribute_list_count.values[i + 1] - attribute_list_count.values[i]) /
+                                    attribute_list_count.values[i]) * 100
 
-        x = attribute_count[:-1].index  # drops the final column in the series object and sets x to the index
+            my_x_ticks[i] = str(attribute_list.values[i]) + " to " + str(attribute_list.values[i + 1])
+
+        #  print(str(attribute_list.values[0]) + " to " + str(attribute_list.values[0 + 1]))
+
+        x = attribute_list_count[:-1].index  # drops the final column in the series object and sets x to the index
         plt.grid()
-        plt.plot(x, percentage_change, c="g", alpha=0.5, marker="s")
+        plt.plot(x, y, c="g", alpha=0.5, marker="s")
         #  plt.title('Bar graph of ' + str(column_count.name) + ' Against ' + str(' Sample Size'), fontsize=20)
-        plt.xlabel(x_label, fontsize=12)  # sets the xlabel to the name of the series object
-        plt.ylabel(y_label, fontsize=12)
-        plt.xticks(x, rotation=30)  # rotates ticks by 90deg so larger font can be used
+        plt.xlabel(attribute, fontsize=12)  # sets the xlabel to the name of the series object
+        plt.ylabel('Percentage Change', fontsize=12)
+        plt.xticks(x, my_x_ticks, rotation=90)  # rotates ticks by 90deg so larger font can be used
         plt.tick_params(labelsize=12)  # increases font of the ticks
-        plt.savefig('Data_Out/bargraph.pdf', index=False, bbox_inches='tight')
+
+        #  file name defined by attribute user input and type of graph
+        plt.savefig('Data_Out/'+attribute + '_bar_graph_percentage_difference.pdf', index=False, bbox_inches='tight')
         plt.show()
 
     # function that creates a box plot
@@ -80,6 +95,8 @@ class DataExploration(DataLoader):  # inherits the members test and train from d
         fig.set_ylabel(target, fontsize=24)
         fig.axis(ymin=0, ymax=self._data_set[target].values.max())  # defines the y axis
         plt.xticks(rotation=90)  # rotates the x ticks so that they are easier to read when the strings are longer
-        plt.tick_params(labelsize=12)
-        plt.savefig('Data_Out/boxplot.pdf', index=False, bbox_inches='tight')
+        plt.tick_params(labelsize=24)
+
+        #  file name defined by attribute user input and type of graph
+        plt.savefig('Data_Out/' + attribute + '_boxplot.pdf', index=False, bbox_inches='tight')
         plt.show()
