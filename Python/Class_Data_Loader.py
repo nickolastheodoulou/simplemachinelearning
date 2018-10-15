@@ -14,5 +14,7 @@ class DataLoader:  # class that loads in the data
     def __del__(self):  # destroy object with a print statement
         print(self, 'destroyed')
 
-    def year_new_column(self, date_column_label):  # function that creates a new column for the year
-        self._data_set['Year'] = pd.DatetimeIndex(self._data_set[date_column_label]).year
+    #  function that creates a new string column by combining two other columns
+    def combine_columns(self, new_column_name, first_column_to_combine, second_column_to_combine):
+        self._data_set[new_column_name] = self._data_set[first_column_to_combine].map(str) + " " + \
+                                                           self._data_set[second_column_to_combine].map(str)
