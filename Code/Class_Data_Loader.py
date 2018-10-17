@@ -16,11 +16,6 @@ class DataLoader:  # class that creates the data matrix by initializing test_X a
     def __del__(self):
         print(self, 'destroyed')
 
-    # function that finds the dimensions of both the train and test set and stores them in the object
-    def dim_data(self):
-        print('The dimensions of train_X is', self._train_x.shape, 'and the dimension of test_X is ',
-              self._test_x.shape)
-
     # function to add train_Y to train_X if it is separate so that only 1 function is made to analyse the data in
     #  train_X,
     def add_train_Y_to_train_X(self):
@@ -57,7 +52,10 @@ class DataLoader:  # class that creates the data matrix by initializing test_X a
         self._test_x = self._test_x.drop(self._test_x.columns[0], axis=1)
         return None
 
-
+    #  function that creates a new string column by combining two other columns
+    def combine_columns(self, new_column_name, first_column_to_combine, second_column_to_combine):
+        self._train_x[new_column_name] = self._train_x[first_column_to_combine].map(str) + " " + \
+                                                           self._train_x[second_column_to_combine].map(str)
 
 
 
