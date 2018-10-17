@@ -14,7 +14,7 @@ matrix = Data_Exploration(pd.read_csv("Data_In/test.csv"), pd.read_csv("Data_In/
     #as can be seen, both test_X and train_X have the id within the first column, this will need to be dropped.
     #test_X has an extra column: SalePrice which needs to be moved over to train.Y
 
-    matrix.index_column_drop_and_move_to_pred_Y()#drops the first column of both test_X and train_X
+    matrix.index_column_drop_and_move_to_pred_y()#drops the first column of both test_X and train_X
     matrix.dim_data()#called again so that the dimension can be updated so the function that initialised train.Y with the correct values works properly
     matrix.move_target_to_train_y()#moves the final column of train_X to train_Y
     matrix.dim_data()  # called again to verify everything worked correctly with the following print statement
