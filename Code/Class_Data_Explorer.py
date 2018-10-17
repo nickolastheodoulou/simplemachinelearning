@@ -5,7 +5,7 @@ import pandas as pd
 from Code.Class_Data_Loader import DataLoader
 
 
-class DataExploration(DataLoader):
+class DataExplorer(DataLoader):
     def __init__(self, data_set):
         super().__init__(data_set)
 
