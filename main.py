@@ -28,6 +28,14 @@ def main():
 
     car_insurance_model.drop_all_na()
 
+    car_insurance_model.histogram_and_q_q('Credit_Score')
+    car_insurance_model._data_set['Credit_Score'] = car_insurance_model._data_set['Credit_Score'].replace(9999, 999)
+    # car_insurance_model._data_set.to_csv('Data_Out/missing_values_dropped.csv', index=False)
+    car_insurance_model.histogram_and_q_q('Credit_Score')
+
+    #car_insurance_model.boxcox_trans_attribute('Credit_Score', 0.1)
+    #car_insurance_model.histogram_and_q_q('Credit_Score')
+
     '''
     car_insurance_model.boxcox_trans_attribute('Veh_Value', 0.1)
     car_insurance_model.boxcox_trans_attribute('Tax', 0.1)
