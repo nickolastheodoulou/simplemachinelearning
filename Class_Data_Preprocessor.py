@@ -1,6 +1,6 @@
-import pandas as pd
+from scipy.special import boxcox
 
-from Code.Class_Data_Explorer import DataExplorer
+from Class_Data_Explorer import DataExplorer
 
 
 class DataPreprocessor(DataExplorer):
@@ -14,6 +14,9 @@ class DataPreprocessor(DataExplorer):
 
     def drop_attribute(self, attribute):
         self._data_set = self._data_set.drop(columns=[attribute])
+
+    def boxcox_trans_attribute(self, attribute, lamda):  # boxcox transformation of an attribute in train_x
+        self._data_set[attribute] = boxcox(self._data_set[attribute], lamda)
 
     def normalise_data(self, target):  # normalises all the data apart by excluding the target
         #  define attributes to normalise that exclude the target

@@ -1,6 +1,6 @@
 import pandas as pd
 
-from Code.Class_Data_Modeler import DataModeler
+from Class_Data_Modeler import DataModeler
 
 
 def main():
@@ -11,13 +11,13 @@ def main():
 
     car_insurance_model.column_value_count('Age')  # counts the number of different values in the 'Age' column
     # displays and saves a bar graph showing the percentage of each value for the column Age in the data set
-    car_insurance_model.bar_graph_distribution('Age')
+    # car_insurance_model.bar_graph_distribution('Age')
 
     car_insurance_model.describe_attribute('Age')  # prints a summary of the distribution of the column 'Age'
     car_insurance_model.missing_data_ratio_print()  # prints the number of missing values in each column
 
     # displays and saves a bargraph of the percentage of missing values
-    car_insurance_model.missing_data_ratio_bar_graph()
+    # car_insurance_model.missing_data_ratio_bar_graph()
 
     print(car_insurance_model._data_set.head())  # prints the first 5 columns of the data set
     car_insurance_model.shuffle_data_set()  # shuffle the data set
@@ -27,6 +27,14 @@ def main():
     car_insurance_model.drop_attribute('Marital_Status')
 
     car_insurance_model.drop_all_na()
+
+    '''
+    car_insurance_model.boxcox_trans_attribute('Veh_Value', 0.1)
+    car_insurance_model.boxcox_trans_attribute('Tax', 0.1)
+    car_insurance_model.boxcox_trans_attribute('Price', 0.1)
+    car_insurance_model.boxcox_trans_attribute('Credit_Score', 0.1)
+    #car_insurance_model.boxcox_trans_attribute('License_Length', 0.1)
+    '''
 
     car_insurance_model.normalise_data('Sale')
 

@@ -2,7 +2,7 @@ from sklearn.model_selection import train_test_split
 from sklearn import neighbors
 from sklearn.metrics import confusion_matrix
 
-from Code.Class_Data_Preprocessor import DataPreprocessor
+from Class_Data_Preprocessor import DataPreprocessor
 
 
 class DataModeler(DataPreprocessor):

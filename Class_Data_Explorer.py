@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 
-from Code.Class_Data_Loader import DataLoader
+from Class_Data_Loader import DataLoader
 
 
 class DataExplorer(DataLoader):
