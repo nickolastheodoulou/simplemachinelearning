@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 from Class_Data_Modeler import DataModeler
 
@@ -28,10 +29,19 @@ def main():
 
     car_insurance_model.drop_all_na()
 
-    car_insurance_model.histogram_and_q_q('Credit_Score')
-    car_insurance_model._data_set['Credit_Score'] = car_insurance_model._data_set['Credit_Score'].replace(9999, 999)
+    car_insurance_model.histogram_and_q_q('Price')
+
+    max_price = car_insurance_model._data_set['Price'].max()
+    car_insurance_model._data_set['Price'] = max_price + 1 - car_insurance_model._data_set['Price']
+    car_insurance_model.boxcox_trans_attribute('Price', 0.1)
+    car_insurance_model._data_set['Price'] = np.sqrt(car_insurance_model._data_set['Price'])
+
+    #
+    car_insurance_model.histogram_and_q_q('Price')
+
+    # car_insurance_model._data_set['Credit_Score'] = car_insurance_model._data_set['Credit_Score'].replace(9999, 999)
     # car_insurance_model._data_set.to_csv('Data_Out/missing_values_dropped.csv', index=False)
-    car_insurance_model.histogram_and_q_q('Credit_Score')
+
 
     #car_insurance_model.boxcox_trans_attribute('Credit_Score', 0.1)
     #car_insurance_model.histogram_and_q_q('Credit_Score')
@@ -46,12 +56,14 @@ def main():
 
     car_insurance_model.normalise_data('Sale')
 
+    car_insurance_model.histogram_and_q_q('Price')
+
     car_insurance_model.missing_data_ratio_print()  # prints the number of missing values in each column
     print("The dimension of the car insurance data is: ", car_insurance_model._data_set.shape)
 
     #  car_insurance_model._data_set.to_csv('Data_Out/missing_values_dropped.csv', index=False)
 
-    car_insurance_model.knn_model('Sale')
+    car_insurance_model.knn_model('Sale', 5)
 
 
 if __name__ == "__main__":
