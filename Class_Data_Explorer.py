@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
+import numpy as np
+from scipy import stats
 
 from Class_Data_Loader import DataLoader
 
@@ -78,4 +80,44 @@ class DataExplorer(DataLoader):
 
         #  file name defined by attribute user input and type of graph
         plt.savefig('Data_Out/' + attribute + '_bar_graph_percentage.pdf', index=False, bbox_inches='tight')
+        plt.show()
+
+    def histogram_and_q_q(self, attribute):
+        x_sigma = self._data_set[attribute].values.std()  # standard deviation
+        x_max = self._data_set[attribute].values.max()  # max value
+        x_min = self._data_set[attribute].values.min()  # min value
+        n = self._data_set[attribute].shape[0]  # number of data points
+
+        # formula to give the number of bins for any dataset
+        number_bins = (x_max - x_min) * n ** (1 / 3) / (3.49 * x_sigma)
+        number_bins = int(number_bins)  # floors the double to int
+        # values being plotted into the histogram
+        attribute_being_plotted = self._data_set[attribute].values
+
+        # defined y to find y max to place the text
+        plt.subplots(figsize=(16, 8))  # changes the size of the fig
+        y, i, _ = plt.hist(attribute_being_plotted, density=True, bins=number_bins, facecolor='paleturquoise',
+                           alpha=0.75, edgecolor='black', linewidth=1.2,
+                           label='Histogram: (Skewness: ' + "{0:.3f}".format(self._data_set[attribute].skew()) +
+                                 ' and Kurtosis: ' + "{0:.3f}".format(self._data_set[attribute].kurt()) + ')')
+
+        x = np.linspace(x_min, x_max, len(attribute_being_plotted))
+        param = stats.rayleigh.fit(attribute_being_plotted)  # distribution fitting
+        pdf_fitted = stats.rayleigh.pdf(x, loc=param[0], scale=param[1])  # fitted distribution
+        plt.plot(x, pdf_fitted, 'cornflowerblue', label='Rayleigh distribution')  # plots the fit
+
+        # Get the fitted parameters used by the function for the normal distribution
+        (mu, sigma) = stats.norm.fit(self._data_set[attribute])
+        normal_distribution = stats.norm.pdf(x, mu, sigma)  # define the norml distribution in terms of x, mu and sigma
+        plt.plot(x, normal_distribution, 'k', linewidth=2,
+                 label='Normal distribution: ($\mu=$ {:.2f} and $\sigma=$ {:.2f} )'.format(mu, sigma))
+
+        plt.legend(loc='best')  # adds the legend
+        plt.ylabel('Probability')
+        plt.xlabel(attribute)
+        plt.title('Histogram of ' + str(attribute))
+        plt.show()
+
+        stats.probplot(self._data_set[attribute], plot=plt)  # Q-Q plot
+        plt.title('Quantile-Quantile plot of ' + attribute)
         plt.show()
