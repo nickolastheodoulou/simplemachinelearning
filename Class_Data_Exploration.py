@@ -36,14 +36,14 @@ class DataExploration(DataLoader):  # inherits the members test and train from d
         y = column_count.values * 100 / column_count.sum()
         x = column_count.index  # set the x axis to the index of the series object
         width_of_bar = 1 / 1.5
-        plt.subplots(figsize=(16, 8))  # changes the size of the fig
+        #plt.subplots(figsize=(16, 8))  # changes the size of the fig
 
         plt.bar(x, y, width_of_bar, color="#2b8cbe", edgecolor='black', linewidth=2)  # plots the bar graph
         #  plt.title('Bar graph of ' + str(column_count.name) + ' Against ' + str(' Sample Size'), fontsize=20)
-        plt.xlabel(column_count.name, fontsize=24)  # sets the xlabel to the name of the series object
-        plt.ylabel('Percent', fontsize=24)
+        plt.xlabel(column_count.name, fontsize=12)  # sets the xlabel to the name of the series object
+        plt.ylabel('Percent', fontsize=12)
         plt.xticks(x, rotation=30)  # rotates ticks by 90deg so larger font can be used
-        plt.tick_params(labelsize=22)  # increases font of the ticks
+        plt.tick_params(labelsize=12)  # increases font of the ticks
 
         #  file name defined by attribute user input and type of graph
         plt.savefig('Data_Out/' + attribute + '_bar_graph_percentage.pdf', index=False, bbox_inches='tight')
@@ -90,11 +90,12 @@ class DataExploration(DataLoader):  # inherits the members test and train from d
 
         fig = sns.boxplot(x=attribute, y=target, data=data_in)
         fig.set_xlabel(attribute, fontsize=12)
-        fig.set_ylabel(target, fontsize=12)
+        my_y_label = plt.ylabel(target, fontsize=12)
+        # my_y_label.set_rotation(90)
         fig.axis(ymin=0, ymax=self._data_set[target].values.max())  # defines the y axis
         plt.xticks(rotation=90)  # rotates the x ticks so that they are easier to read when the strings are longer
         plt.tick_params(labelsize=12)
-
+        plt.yticks(rotation=0)
         #  file name defined by attribute user input and type of graph
         plt.savefig('Data_Out/' + attribute + '_boxplot.pdf', index=False, bbox_inches='tight')
         plt.show()
@@ -121,9 +122,9 @@ class DataExploration(DataLoader):  # inherits the members test and train from d
         sub_attribute_three_bar = plt.bar(x, sub_attribute_three_count, width,
                                           bottom=sub_attribute_two_count + sub_attribute_one_count, )
 
-        plt.grid()
-        plt.ylabel('Number Of Samples', fontsize=14)
-        plt.xlabel(attribute, fontsize=14)
+        # plt.grid()
+        plt.ylabel('Number Of Samples', fontsize=12)
+        plt.xlabel(attribute, fontsize=12)
         plt.xticks(x, rotation=30)  # rotates ticks by 30deg so larger font can be used
         #  create the legend of each bar by the corresponding sub_attribute which is the ith unique value in the
         #  column VehicleType within self._data_set
