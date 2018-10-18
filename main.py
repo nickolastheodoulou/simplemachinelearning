@@ -9,9 +9,14 @@ def main():
     print(model_df.dim_data())  # prints the dimension of the data set
     model_df.missing_data_ratio_print()  # prints the percentage of missing values in the data set (NONE FOUND!)
 
+
+
     #  calls a function to combine the column VehicleType and Manufacturer to a new column named
     #  ManufacturerAndVehicleType
     model_df.combine_columns("ManufacturerAndVehicleType", "VehicleType", "Manufacturer")
+
+    # no particular inconsistency with one manufacturer only being tested a few times
+    print(model_df.column_value_count('ManufacturerAndVehicleType'))
 
     print(model_df._data_set.head())  # print the data_set to check it worked correctly
 
