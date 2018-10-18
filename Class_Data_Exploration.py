@@ -1,4 +1,4 @@
-from Python.Class_Data_Loader import DataLoader
+from Class_Data_Loader import DataLoader
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -21,11 +21,11 @@ class DataExploration(DataLoader):  # inherits the members test and train from d
         missing_data = missing_data.rename(columns={missing_data.columns[0]: "your value"})
         print(missing_data.head(20))
 
-    # function that prints the number of different values in a given column
+    # function that returns the number of different values in a given column
     def column_value_count(self, attribute):
         #  first counts the number of different values in each column then sorts it in ascending order
         column_count = self._data_set[attribute].value_counts().sort_index()
-        print(column_count)
+        return column_count
 
     # function that creates a bar graph of each different value as a percentage for a given attribute
     def bar_graph_percentage(self, attribute):
@@ -60,15 +60,14 @@ class DataExploration(DataLoader):  # inherits the members test and train from d
         # define empty numpy array to store the y coordinates which will be the percentage difference
         y = np.zeros(attribute_list_count.count() - 1)
         #  define empty list to store the ticks which will be combined from attribute_list of size attribute_list - 1
-        my_x_ticks = [0] * (attribute_list_count.count() - 1)
+        my_x_ticks = ["Null"] * (attribute_list_count.count() - 1)
 
-        for i in range(0, attribute_list_count.count() - 1):  # for loop to calculate the percentage difference
+        # for loop to calculate the percentage difference and the value of the x ticks
+        for i in range(0, attribute_list_count.count() - 1):
             y[i] = ((attribute_list_count.values[i + 1] - attribute_list_count.values[i]) /
-                                    attribute_list_count.values[i]) * 100
+                    attribute_list_count.values[i]) * 100
 
             my_x_ticks[i] = str(attribute_list.values[i]) + " to " + str(attribute_list.values[i + 1])
-
-        #  print(str(attribute_list.values[0]) + " to " + str(attribute_list.values[0 + 1]))
 
         x = attribute_list_count[:-1].index  # drops the final column in the series object and sets x to the index
         plt.grid()
@@ -88,14 +87,13 @@ class DataExploration(DataLoader):  # inherits the members test and train from d
         #  sort the dataset into acending order of the attribute to be plotted
         self._data_set = self._data_set.sort_values([attribute]).reset_index(drop=True)
         data_in = pd.concat([self._data_set[target], self._data_set[attribute]], axis=1)  # defines the data
-        plt.subplots(figsize=(16, 8))  # changes the size of the fig
 
         fig = sns.boxplot(x=attribute, y=target, data=data_in)
-        fig.set_xlabel(attribute, fontsize=24)
-        fig.set_ylabel(target, fontsize=24)
+        fig.set_xlabel(attribute, fontsize=12)
+        fig.set_ylabel(target, fontsize=12)
         fig.axis(ymin=0, ymax=self._data_set[target].values.max())  # defines the y axis
         plt.xticks(rotation=90)  # rotates the x ticks so that they are easier to read when the strings are longer
-        plt.tick_params(labelsize=24)
+        plt.tick_params(labelsize=12)
 
         #  file name defined by attribute user input and type of graph
         plt.savefig('Data_Out/' + attribute + '_boxplot.pdf', index=False, bbox_inches='tight')
@@ -120,9 +118,10 @@ class DataExploration(DataLoader):  # inherits the members test and train from d
         #  creates the 3 bars, bottom indicates which bar goes below the current bar
         sub_attribute_one_bar = plt.bar(x, sub_attribute_one_count, width)
         sub_attribute_two_bar = plt.bar(x, sub_attribute_two_count, width, bottom=sub_attribute_one_count, )
-        sub_attribute_three_bar = plt.bar(x, sub_attribute_three_count, width, bottom=sub_attribute_two_count
-                                                                                      + sub_attribute_one_count, )
+        sub_attribute_three_bar = plt.bar(x, sub_attribute_three_count, width,
+                                          bottom=sub_attribute_two_count + sub_attribute_one_count, )
 
+        plt.grid()
         plt.ylabel('Number Of Samples', fontsize=14)
         plt.xlabel(attribute, fontsize=14)
         plt.xticks(x, rotation=30)  # rotates ticks by 30deg so larger font can be used

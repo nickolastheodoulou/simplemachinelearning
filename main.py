@@ -1,7 +1,5 @@
 import pandas as pd
-from Python.Class_Data_Exploration import DataExploration
-import numpy as np
-import matplotlib.pyplot as plt
+from Class_Data_Exploration import DataExploration
 
 
 def main():
@@ -24,10 +22,20 @@ def main():
 
     model_df.box_plot("ConditionScore", "ManufacturerAndVehicleType")  # box plot of the Condition score for each Year
 
-    # function that prints the number of inspections each financial year.
-    model_df.column_value_count("FinancialYear")
+    # define a variable as the return of returns the number of different values in the financial year.
+    financial_year_count = model_df.column_value_count("FinancialYear")
 
-    #  function that plots ans saves the percentage of what year each inspection occurs.
+    #  prints the number of inspections each year
+    print(financial_year_count)
+    #  prints some of the statistics for the number of inspections each year
+    print(financial_year_count.describe())
+
+    #  drops some of the years to inspect the statistics when certain values are dropped
+    financial_year_count = financial_year_count.drop(financial_year_count.index[[0, 9, 10, 11]])
+    print(financial_year_count)
+    print(financial_year_count.describe())
+
+    #  function that plots and saves the percentage of what year each inspection occurs.
     model_df.bar_graph_percentage("FinancialYear")
 
     #  function that plots the percentage difference of what year each inspection occurs.
