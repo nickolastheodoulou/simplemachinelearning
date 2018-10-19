@@ -9,6 +9,18 @@ from Class_Data_Preprocessor import DataPreprocessor
 class DataModeler(DataPreprocessor):
     def __init__(self, data_set):
         super().__init__(data_set)
+        self._x_train = 0
+        self._x_test = 0
+        self._y_train = 0
+        self._y_test = 0
+
+    def split_data_set_into_train_x_test_x_train_y_test_y(self, target, my_test_size, seed):
+        # set attributes to all other columns in the data_set
+        attribute_matrix = self._data_set.loc[:, self._data_set.columns != target]
+        self._x_train, self._x_test, self._y_train, self._y_test = train_test_split(attribute_matrix,
+                                                                                    self._data_set[target],
+                                                                                    test_size=my_test_size,
+                                                                                    random_state=seed)
 
     def knn_model(self, my_number_of_neighbours):
         # create a knn classifier with n = my_number_of_neighbours

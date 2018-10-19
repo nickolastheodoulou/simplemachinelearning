@@ -1,4 +1,5 @@
 import pandas as pd
+import matplotlib.pyplot as plt
 
 from Class_Data_Modeler import DataModeler
 
@@ -23,10 +24,24 @@ def main():
     car_insurance_model.shuffle_data_set()  # shuffle the data set
     print(car_insurance_model._data_set.head())  # print again to check the data is shuffled
 
-    car_insurance_model.drop_attribute('Date')  # drop classification attributes for now
-    car_insurance_model.drop_attribute('Marital_Status')
+    car_insurance_model._data_set.to_csv('Data_Out/pre_one_hot.csv', index=False)
+    car_insurance_model.one_hot_encode_attribute('Marital_Status')
+    # car_insurance_model.drop_attribute('Marital_Status')
+    car_insurance_model._data_set.to_csv('Data_Out/post_one_hot.csv', index=False)
+
+    car_insurance_model.add_day_of_week_attribute()
+    car_insurance_model.one_hot_encode_attribute('days_of_the_week')
+
+    car_insurance_model.drop_attribute('Date')
 
     car_insurance_model.drop_all_na()
+
+    car_insurance_model.scatter_plot('Age', 'Tax')
+
+    car_insurance_model.scatter_plot_classification_colour('Age', 'Tax')
+
+
+
 
     # car_insurance_model.histogram_and_q_q('Price')
 
@@ -60,7 +75,7 @@ def main():
 
     car_insurance_model.histogram_and_q_q('Price')
 
-    car_insurance_model.missing_data_ratio_print()  # prints the number of missing values in each column
+    # car_insurance_model.missing_data_ratio_print()  # prints the number of missing values in each column
     print("The dimension of the car insurance data is: ", car_insurance_model._data_set.shape)
 
     #  car_insurance_model._data_set.to_csv('Data_Out/missing_values_dropped.csv', index=False)
@@ -68,8 +83,8 @@ def main():
     #   must split data before fitting model
     car_insurance_model.split_data_set_into_train_x_test_x_train_y_test_y('Sale', 0.5, 0)
 
-    car_insurance_model.knn_model(5)
-    car_insurance_model.svm_model('auto')
+    # car_insurance_model.knn_model(5)
+    # car_insurance_model.svm_model('auto')
 
 
 if __name__ == "__main__":

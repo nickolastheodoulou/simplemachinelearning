@@ -60,6 +60,49 @@ class DataExplorer(DataLoader):
         plt.savefig('Data_Out/percentage_of_missing_data.pdf', index=False, bbox_inches='tight')  # save the plot
         plt.show()
 
+    def scatter_plot(self, my_y_attribute, my_x_attribute):
+        x = self._data_set[my_x_attribute].values
+        # defines the sold price so that it can be loaded into the function each time rather than loading the whole
+        # train matrix
+        y = self._data_set[my_y_attribute].values
+        plt.subplots(figsize=(16, 8))  # changes the size of the fig
+        plt.scatter(x, y, c="g", alpha=0.5, marker="s")  # scatter plot of the sold price and user chosen attribute
+        plt.title('Scatter graph of ' + str(my_y_attribute) + ' against ' + str(my_x_attribute))
+        plt.xlabel(my_x_attribute)
+        plt.ylabel(my_y_attribute)
+        plt.show()
+
+    def scatter_plot_classification_colour(self, my_y_attribute, my_x_attribute):
+        #  create empty list to store colour with sale being blue and no sale being red
+        list_colour_corresponding_to_sale = ['Null'] * len(self._data_set)
+
+        for i in range(0, len(self._data_set)):
+
+            # if a value in the attribute sale is 0 then set the colour to red
+            if self._data_set['Sale'].values[i] == 0:
+                list_colour_corresponding_to_sale[i] = "r"
+
+            # if a value in the attribute sale is 1 then set the colour to blue
+            elif self._data_set['Sale'].values[i] == 1:
+                list_colour_corresponding_to_sale[i] = "b"
+            else:
+                print("Error")
+                break
+
+        plt.scatter(self._data_set[my_x_attribute].values, self._data_set[my_y_attribute].values,
+                    color=list_colour_corresponding_to_sale)
+
+        plt.xlabel(my_x_attribute)
+        plt.ylabel(my_y_attribute)
+
+        # plot empty lists with the desired size and label to create the legend (not possible any other way)
+        plt.scatter([], [], c=['r'], alpha=1, label='Sale')
+        plt.scatter([], [], c=['b'], alpha=1, label='NoSale')
+
+        plt.legend(loc=0, scatterpoints=1, frameon=False, labelspacing=0, title='Sale or no Sale: ', prop={'size': 9})
+        plt.show()
+
+
     # method that creates a bar graph to show the distribution of an attribute
     def bar_graph_distribution(self, attribute):
         #  first counts the number of different values in each column then sorts it in ascending order
