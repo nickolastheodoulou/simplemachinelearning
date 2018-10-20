@@ -22,7 +22,7 @@ def main():
     # car_insurance_model.missing_data_ratio_bar_graph()
 
     print(car_insurance_model._data_set.head())  # prints the first 5 columns of the data set
-    car_insurance_model.shuffle_data_set()  # shuffle the data set
+    # car_insurance_model.shuffle_data_set()  # shuffle the data set
     print(car_insurance_model._data_set.head())  # print again to check the data is shuffled
 
     car_insurance_model._data_set.to_csv('Data_Out/pre_one_hot.csv', index=False)
@@ -40,23 +40,27 @@ def main():
 
 
 
-
+    print('fmissing indices are', car_insurance_model._data_set["Tax"].isna)
 
 
     car_insurance_model.missing_data_ratio_print()  # prints the number of missing values in each column
 
-
+    '''
     # fill in the missing value for tax by 10 percent of the price
-    car_insurance_model._data_set["Tax"] = car_insurance_model._data_set["Tax"].fillna(car_insurance_model._data_set['Price']*0.1)
-    # fill in the missing value for price by 10 times the tax
-    car_insurance_model._data_set["Price"] = car_insurance_model._data_set["Price"].fillna(car_insurance_model._data_set['Tax'] * 10)
+
+    if car_insurance_model._data_set["Tax"].values[0] > 33:
+        car_insurance_model._data_set["Tax"].values[0] = car_insurance_model._data_set["Tax"].fillna(car_insurance_model._data_set['Price'].values[0]*0.1)
+        car_insurance_model._data_set["Price"].values[0] = car_insurance_model._data_set["Price"][0].fillna(car_insurance_model._data_set['Tax'].values[0] * 10)
+    else:
+        car_insurance_model._data_set["Tax"].values[0] = car_insurance_model._data_set["Tax"].iloc[0].fillna(car_insurance_model._data_set['Price'].values[0] * 0.5)
+        car_insurance_model._data_set["Price"].values[0] = car_insurance_model._data_set["Price"].iloc[0].fillna(car_insurance_model._data_set['Tax'].values[0] * 5)
 
 
     car_insurance_model.missing_data_ratio_print()  # prints the number of missing values in each column
 
 
 
-
+    '''
 
     car_insurance_model.drop_all_na()
 
@@ -100,8 +104,8 @@ def main():
     #   must split data before fitting model
     car_insurance_model.split_data_set_into_train_x_test_x_train_y_test_y('Sale', 0.5, 0)
 
-    car_insurance_model.knn_model(5)
-    car_insurance_model.svm_model('auto')
+    # car_insurance_model.knn_model(5)
+    # car_insurance_model.svm_model('auto')
 
 
 if __name__ == "__main__":
