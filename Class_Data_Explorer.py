@@ -11,11 +11,63 @@ class DataExplorer(DataLoader):
     def __init__(self, data_set):
         super().__init__(data_set)
 
-    # method that returns the number of different values in a given column
-    def column_value_count(self, attribute):
+    # method that prints the number of different values in a given column
+    def attribute_value_count(self, attribute):
+        #  first counts the number of different values in each column then sorts it in ascending order
+        my_attribute_count = self._data_set[attribute].value_counts().sort_index()
+        print("The count of the different variables in the attribute: ", attribute, ' is\n', my_attribute_count)
+
+    # method that creates a bar graph to show the distribution of an attribute
+    def bar_graph_attribute(self, attribute):
         #  first counts the number of different values in each column then sorts it in ascending order
         column_count = self._data_set[attribute].value_counts().sort_index()
-        print("The count of the different variables in the attribute: ", attribute, ' is\n', column_count)
+        # set the y axis to the values within the series object as a percentage
+        y = column_count.values * 100 / column_count.sum()
+        x = column_count.index  # set the x axis to the index of the series object
+        width_of_bar = 1 / 1.5
+        plt.subplots(figsize=(16, 8))  # changes the size of the fig
+        plt.bar(x, y, width_of_bar, color="#2b8cbe", edgecolor='black', linewidth=2)  # plots the bar graph
+        #  plt.title('Bar graph of ' + str(column_count.name) + ' Against ' + str(' Sample Size'), fontsize=20)
+        plt.xlabel(column_count.name, fontsize=15)  # sets the xlabel to the name of the series object
+        plt.ylabel('Percent', fontsize=15)
+        plt.xticks(x, rotation=90)  # rotates ticks by 90deg so larger font can be used
+        plt.tick_params(labelsize=12)  # increases font of the ticks
+        #  file name defined by attribute user input and type of graph
+        plt.savefig('Data_Out/' + attribute + '_bar_graph_percentage.pdf', index=False, bbox_inches='tight')
+        plt.show()
+
+    # method that prints the number of different values in each column then sorts it in ascending order per
+    # classification
+    def attribute_value_count_by_classification(self, attribute):
+        my_attribute_classification_count = pd.crosstab(self._data_set[attribute], self._data_set.Sale)
+        print("The classification count of the different variables in the attribute: ", attribute, ' is\n',
+              my_attribute_classification_count)
+
+    def bar_graph_attribute_by_classification(self, attribute):
+        plt.subplots(figsize=(16, 8))  # changes the size of the fig
+        #  Computes a cross-tabulation of user inputted attribute to plot sale and no sale count
+        my_attribute_sale_no_sale_matrix = pd.crosstab(self._data_set[attribute], self._data_set['Sale'])
+
+        #  counts number of sales for inputted attribute
+        my_attribute_sales_count = my_attribute_sale_no_sale_matrix[self._data_set['Sale'].unique()[0]].values
+        #  counts number of no sales for inputted attribute
+        my_attribute_no_sales_count = my_attribute_sale_no_sale_matrix[self._data_set['Sale'].unique()[1]].values
+        x = my_attribute_sale_no_sale_matrix.index  # set the x axis to index of user inputted attribute
+
+        width = 0.5  # the width of the bars
+        #  creates the 2 bars, bottom indicates which bar goes below the current bar
+        attribute_sale_bars = plt.bar(x, my_attribute_sales_count, width, edgecolor='black')
+        attribute_no_sale_bars = plt.bar(x, my_attribute_no_sales_count, width, bottom=my_attribute_sales_count,
+                                         edgecolor='black', )
+
+        # plt.grid()
+        plt.ylabel('Count', fontsize=12)
+        plt.xlabel(attribute, fontsize=12)
+        plt.xticks(x, rotation=90, fontsize=10)  # rotates ticks by 30deg so larger font can be used
+        #  create the legend
+        plt.legend((attribute_sale_bars[0], attribute_no_sale_bars[0]), ('Sale', ' No Sale'))
+        plt.savefig('Data_Out/' + attribute + '_triple_stacked_bar_graph.pdf', index=False, bbox_inches='tight')
+        plt.show()
 
     # method that prints a summary of the distribution of the data
     def describe_attribute(self, attribute):
@@ -72,7 +124,7 @@ class DataExplorer(DataLoader):
         plt.ylabel(my_y_attribute)
         plt.show()
 
-    def scatter_plot_classification_colour(self, my_y_attribute, my_x_attribute):
+    def scatter_plot_by_classification(self, my_y_attribute, my_x_attribute):
         #  create empty list to store colour with sale being blue and no sale being red
         list_colour_corresponding_to_sale = ['Null'] * len(self._data_set)
 
@@ -100,29 +152,6 @@ class DataExplorer(DataLoader):
         plt.scatter([], [], c=['b'], alpha=1, label='NoSale')
 
         plt.legend(loc=0, scatterpoints=1, frameon=False, labelspacing=0, title='Sale or no Sale: ', prop={'size': 9})
-        plt.show()
-
-
-    # method that creates a bar graph to show the distribution of an attribute
-    def bar_graph_distribution(self, attribute):
-        #  first counts the number of different values in each column then sorts it in ascending order
-        column_count = self._data_set[attribute].value_counts().sort_index()
-
-        # set the y axis to the values within the series object as a percentage
-        y = column_count.values * 100 / column_count.sum()
-        x = column_count.index  # set the x axis to the index of the series object
-        width_of_bar = 1 / 1.5
-        plt.subplots(figsize=(16, 8))  # changes the size of the fig
-
-        plt.bar(x, y, width_of_bar, color="#2b8cbe", edgecolor='black', linewidth=2)  # plots the bar graph
-        #  plt.title('Bar graph of ' + str(column_count.name) + ' Against ' + str(' Sample Size'), fontsize=20)
-        plt.xlabel(column_count.name, fontsize=15)  # sets the xlabel to the name of the series object
-        plt.ylabel('Percent', fontsize=15)
-        plt.xticks(x, rotation=90)  # rotates ticks by 90deg so larger font can be used
-        plt.tick_params(labelsize=12)  # increases font of the ticks
-
-        #  file name defined by attribute user input and type of graph
-        plt.savefig('Data_Out/' + attribute + '_bar_graph_percentage.pdf', index=False, bbox_inches='tight')
         plt.show()
 
     def histogram_and_q_q(self, attribute):
