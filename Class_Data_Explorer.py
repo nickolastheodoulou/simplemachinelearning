@@ -26,7 +26,7 @@ class DataExplorer(DataLoader):
         x = column_count.index  # set the x axis to the index of the series object
         width_of_bar = 1 / 1.5
         plt.subplots(figsize=(16, 8))  # changes the size of the fig
-        plt.bar(x, y, width_of_bar, color="#2b8cbe", edgecolor='black', linewidth=2)  # plots the bar graph
+        plt.bar(x, y, width_of_bar, color="#2b8cbe", edgecolor='black')  # plots the bar graph
         #  plt.title('Bar graph of ' + str(column_count.name) + ' Against ' + str(' Sample Size'), fontsize=20)
         plt.xlabel(column_count.name, fontsize=15)  # sets the xlabel to the name of the series object
         plt.ylabel('Percent', fontsize=15)
@@ -174,9 +174,6 @@ class DataExplorer(DataLoader):
                                  ' and Kurtosis: ' + "{0:.3f}".format(self._data_set[attribute].kurt()) + ')')
 
         x = np.linspace(x_min, x_max, len(attribute_being_plotted))
-        param = stats.rayleigh.fit(attribute_being_plotted)  # distribution fitting
-        pdf_fitted = stats.rayleigh.pdf(x, loc=param[0], scale=param[1])  # fitted distribution
-        plt.plot(x, pdf_fitted, 'cornflowerblue', label='Rayleigh distribution')  # plots the fit
 
         # Get the fitted parameters used by the function for the normal distribution
         (mu, sigma) = stats.norm.fit(self._data_set[attribute])

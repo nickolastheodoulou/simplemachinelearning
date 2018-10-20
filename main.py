@@ -5,70 +5,62 @@ from Class_Data_Modeler import DataModeler
 
 def main():
     car_insurance_model = DataModeler(pd.read_csv("Data_In/DS_Assessment.csv"))  # first load in the data
-
-    # print the dimension of the data set
     print("The dimension of the car insurance data is: ", car_insurance_model._data_set.shape)
-
-    car_insurance_model.attribute_value_count('Age')  # counts the number of different values in the 'Age' column
-    car_insurance_model.attribute_value_count_by_classification('Age')
 
     # displays and saves a bar graph showing the percentage of each value for the column Age in the data set
     # car_insurance_model.bar_graph_distribution('Age')
 
     car_insurance_model.describe_attribute('Age')  # prints a summary of the distribution of the column 'Age'
 
-
     # displays and saves a bargraph of the percentage of missing values
-    # car_insurance_model.missing_data_ratio_bar_graph()
+    car_insurance_model.missing_data_ratio_bar_graph()
 
     print(car_insurance_model._data_set.head())  # prints the first 5 columns of the data set
-    # car_insurance_model.shuffle_data_set()  # shuffle the data set
-    print(car_insurance_model._data_set.head())  # print again to check the data is shuffled
 
-    car_insurance_model._data_set.to_csv('Data_Out/pre_one_hot.csv', index=False)
     car_insurance_model.one_hot_encode_attribute('Marital_Status')
-    # car_insurance_model.drop_attribute('Marital_Status')
-    car_insurance_model._data_set.to_csv('Data_Out/post_one_hot.csv', index=False)
 
     car_insurance_model.add_day_of_week_attribute()
     car_insurance_model.one_hot_encode_attribute('days_of_the_week')
-
     car_insurance_model.drop_attribute('Date')
 
-    car_insurance_model.scatter_plot("Tax", "Price")
-    car_insurance_model.scatter_plot_by_classification("Tax", "Price")
+    # car_insurance_model.scatter_plot_by_classification("Tax", "Price")
 
+    # found that tax and price follow two linear equations using car_insurance_model.scatter_plot("Tax", "Price")
+    # the cutoff between following either equation was when the tax was between a value of 32 to 35:
+    # typically when tax < 34, tax = 0.05 * price and when tax > 34, tax = 0.1 * price
+    # hence this can be used to impute missing values more accurately
 
+    print("The dimension of the car insurance data is: ", car_insurance_model._data_set.shape)
 
-    print('fmissing indices are', car_insurance_model._data_set["Tax"].isna)
+    car_insurance_model.impute_price()
+    # set the final few values to the mean
+    car_insurance_model.impute_mean('Price')
 
+    car_insurance_model.impute_tax()
+    # set the final few values to the mean
+    car_insurance_model.impute_mean('Tax')
 
-    car_insurance_model.missing_data_ratio_print()  # prints the number of missing values in each column
+    car_insurance_model.impute_mode('Veh_Mileage')
+    # car_insurance_model.new_column_infinite_credit_score()
+    car_insurance_model.impute_median('Credit_Score')
 
-    '''
-    # fill in the missing value for tax by 10 percent of the price
+    # should try to impute by first categorising by Maritial_Status
+    car_insurance_model.impute_median('License_Length')
 
-    if car_insurance_model._data_set["Tax"].values[0] > 33:
-        car_insurance_model._data_set["Tax"].values[0] = car_insurance_model._data_set["Tax"].fillna(car_insurance_model._data_set['Price'].values[0]*0.1)
-        car_insurance_model._data_set["Price"].values[0] = car_insurance_model._data_set["Price"][0].fillna(car_insurance_model._data_set['Tax'].values[0] * 10)
-    else:
-        car_insurance_model._data_set["Tax"].values[0] = car_insurance_model._data_set["Tax"].iloc[0].fillna(car_insurance_model._data_set['Price'].values[0] * 0.5)
-        car_insurance_model._data_set["Price"].values[0] = car_insurance_model._data_set["Price"].iloc[0].fillna(car_insurance_model._data_set['Tax'].values[0] * 5)
+    car_insurance_model.impute_mode('Veh_Value')  # should find a better way
 
+    car_insurance_model._data_set['Age'] = car_insurance_model._data_set['Age'].fillna(37)  # should find a better way
+    # car_insurance_model.missing_data_ratio_bar_graph()  # prints the number of missing values in each column
 
-    car_insurance_model.missing_data_ratio_print()  # prints the number of missing values in each column
-
-
-
-    '''
-
-    car_insurance_model.drop_all_na()
+    car_insurance_model.attribute_value_count('Age')  # counts the number of different values in the attribute
+    car_insurance_model.attribute_value_count_by_classification('Age')
+    car_insurance_model.bar_graph_attribute_by_classification('Age')
 
     # car_insurance_model.bar_graph_attribute('Veh_Value')
     # car_insurance_model.bar_graph_attribute_by_classification('Tax')
-    car_insurance_model.scatter_plot_by_classification('Price', 'Veh_Mileage')
+    # car_insurance_model.scatter_plot_by_classification('Price', 'Veh_Mileage')
 
-    car_insurance_model.scatter_plot('Age', 'Tax')
+    # car_insurance_model.scatter_plot('Age', 'Tax')
 
     # car_insurance_model.histogram_and_q_q('Price')
 
@@ -94,18 +86,19 @@ def main():
     car_insurance_model.normalise_attribute('Age')
     car_insurance_model.normalise_attribute('Tax')
 
-    car_insurance_model.histogram_and_q_q('Price')
+    # car_insurance_model.histogram_and_q_q('Price')
 
     # car_insurance_model.missing_data_ratio_print()  # prints the number of missing values in each column
+
+    # car_insurance_model.drop_all_na()
     print("The dimension of the car insurance data is: ", car_insurance_model._data_set.shape)
 
-    #  car_insurance_model._data_set.to_csv('Data_Out/missing_values_dropped.csv', index=False)
-
+    car_insurance_model.shuffle_data_set()  # shuffle the data set before splitting
     #   must split data before fitting model
-    car_insurance_model.split_data_set_into_train_x_test_x_train_y_test_y('Sale', 0.5, 0)
+    car_insurance_model.split_data_set_into_train_x_test_x_train_y_test_y('Sale', 0.5, 2)
 
-    # car_insurance_model.knn_model(5)
-    # car_insurance_model.svm_model('auto')
+    car_insurance_model.knn_model(5)
+    car_insurance_model.svm_model('auto')
 
 
 if __name__ == "__main__":

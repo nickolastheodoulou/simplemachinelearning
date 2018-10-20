@@ -47,3 +47,55 @@ class DataPreprocessor(DataExplorer):
         #                                                            prefix='days_of_the_week')], axis=1, sort=False)
         #  self._data_set = self._data_set.drop(columns=['days_of_the_week'])
 
+    def impute_price(self):
+        # create a list of the index of the missing values in the price attribute
+        price_missing_value_index = self._data_set[self._data_set['Price'].isnull()].index.tolist()
+
+        # loop through the missing value index for price
+        for i in price_missing_value_index:
+            # if the value for tax in the same column as price is greater than 34
+            if self._data_set['Tax'].values[i] > 33:
+                # set the value for price equal to ten times the value of tax in the same column
+                self._data_set['Price'].values[i] = self._data_set['Tax'].values[i] * 10
+            else:
+                # else set the price to 5 times the tax
+                self._data_set['Price'].values[i] = self._data_set['Tax'].values[i] * 5
+
+        print('The number of price values imputed is ', len(price_missing_value_index))
+
+    def impute_tax(self):
+        # create a list of the index of the missing values in the tax attribute
+        tax_missing_value_index = self._data_set[self._data_set['Tax'].isnull()].index.tolist()
+        # loop through the missing value index for price
+        for i in tax_missing_value_index:
+            # if the value for tax in the same column as price is greater than 34
+            if self._data_set['Price'].values[i] > 330:
+                # set the value for price equal to ten times the value of tax in the same column
+                self._data_set['Tax'].values[i] = self._data_set['Price'].values[i] * 0.1
+            else:
+                # else set the price to 5 times the tax
+                self._data_set['Tax'].values[i] = self._data_set['Price'].values[i] * 0.05
+
+        print('The number of tax values imputed is ', len(tax_missing_value_index))
+
+    def impute_mode(self, attribute):
+        self._data_set[attribute] = self._data_set[attribute].fillna(self._data_set[attribute].mode()[0])
+
+    def impute_median(self, attribute):
+        self._data_set[attribute] = self._data_set[attribute].fillna(self._data_set[attribute].median())
+
+    def impute_mean(self, attribute):
+        self._data_set[attribute] = self._data_set[attribute].fillna(self._data_set[attribute].mean())
+
+    def new_column_infinite_credit_score(self):
+        # create a list of the indices of the credit score with a score of 9999
+        credit_score_9999_index = self._data_set[self._data_set['Credit_Score'] == 9999].index.tolist()
+
+        # create a new column for the credit scores with 9999 so they can be put into a different attribute
+        self._data_set['Infinite_Credit_Score'] = 0
+
+        for i in credit_score_9999_index:
+            # set the new column values to 1 (one hot encoding)
+            self._data_set['Infinite_Credit_Score'].values[i] = 1
+            # drop the credit score of 9999 from the attribute Credit_Score
+            self._data_set['Credit_Score'].values[i] = 0
