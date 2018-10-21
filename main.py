@@ -150,7 +150,7 @@ def main():
     car_insurance_model.knn_model(5, 10)  # fit a knn with k=5 and print percentage accuracy for 10-fold cross
     # validation and confusion matrix against the test set
 
-    car_insurance_model.svm_model('auto', 10)  # fit a svm and print percentage accuracy for 10-fold cross and
+    car_insurance_model.svm_model()  # fit a svm and print percentage accuracy for 10-fold cross and
     # confusion matrix against the test set
 
 

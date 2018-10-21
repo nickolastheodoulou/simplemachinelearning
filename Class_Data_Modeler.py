@@ -4,6 +4,8 @@ from sklearn.model_selection import train_test_split
 from sklearn import neighbors
 from sklearn.svm import SVC
 from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import classification_report
 
 from Class_Data_Preprocessor import DataPreprocessor
 
@@ -51,8 +53,12 @@ class DataModeler(DataPreprocessor):
         print('For k-NN when k=', number_of_neighbours, ' the percentage accuracy of each ', number_of_folds,
               '-fold is:', percent_accuracies)
 
-    def svm_model(self, my_gamma, number_of_folds):
-        my_svm_model = SVC(gamma=my_gamma)   # creates a SVM classifier
+    def svm_model(self):
+        tuned_parameters = [{'kernel': ['rbf'], 'gamma': [1e-3, 1e-4],'C': [1, 10, 100, 1000]},
+                            {'kernel': ['linear'], 'C': [1, 10, 100, 1000]}]
+
+        my_svm_model = GridSearchCV(SVC(C=1), tuned_parameters, cv=5, scoring='f1_macro')
+
         my_svm_model.fit(self._x_train, self._y_train)  # fits the SVM model to sample data
 
         # C : Penalty parameter of the error term, default is 1.0
@@ -63,21 +69,28 @@ class DataModeler(DataPreprocessor):
         # degree : Degree of the polynomial kernel function
         # gamma : Kernel coefficient for ‘rbf’, ‘poly’ and ‘sigmoid’
         # kernel : specifies the kernel type used in the algorithm
-        SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0, decision_function_shape='ovo', degree=3,
-            gamma=my_gamma, kernel='rbf', max_iter=-1, probability=False, random_state=None, shrinking=True, tol=0.001,
-            verbose=False)
 
-        y_pred = my_svm_model.predict(self._x_test)  # set the predicted values to the prediction using x_test
+        # SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0, decision_function_shape='ovo', degree=3,
+        #    gamma=my_gamma, kernel='rbf', max_iter=-1, probability=False, random_state=None, shrinking=True, tol=0.001,
+        #    verbose=False)
 
-        # print percent of correct predictions
-        print('For SVM when gamma=auto, percentage accuracy is: ', my_svm_model.score(self._x_test, self._y_test))
-        # print confusion matrix
-        print('The confusion matrix for the SVM when gamma=auto is: ',
-              pd.crosstab(self._y_test, y_pred, rownames=['True'], colnames=['Predicted'], margins=True))
+        y_true, y_pred = self._y_test, my_svm_model.predict(self._x_test)
+        print(classification_report(y_true, y_pred))
 
+        print('The best parameters for the model is', my_svm_model.best_params_)
+
+        print('The results are:', my_svm_model.cv_results_)
+
+        for param, score in zip(my_svm_model.cv_results_['params'], my_svm_model.cv_results_['mean_test_score']):
+            print(param, score)
+
+        '''
         # can add n_jobs =-1 to set all cpus to work
         percent_accuracies = cross_val_score(estimator=my_svm_model, X=self._x_train, y=self._y_train,
                                              cv=number_of_folds, n_jobs=-1) * 100
 
         print('For SVM when gamma=auto', 'the percentage accuracy of each ', number_of_folds, '-fold is:',
               percent_accuracies)
+              
+        '''
+
