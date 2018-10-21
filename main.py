@@ -1,4 +1,5 @@
 import pandas as pd
+from sklearn.svm import SVC
 
 from Class_Data_Modeler import DataModeler
 
@@ -150,13 +151,16 @@ def main():
     car_insurance_model.shuffle_data_set()  # shuffle the data set before splitting
 
     # split data to 75% training, 25% test with a seed set to 2 (to get the same split when running the code
-    car_insurance_model.split_data_set_into_train_x_test_x_train_y_test_y('Sale', 0.25, 2)
+    car_insurance_model.split_data_set_to_validate('Sale', 0.25, 2)
 
     ####################################################################################################################
     # Knn model
     # gridsearch for knn
+
+    # uncomment to run grid search
     # tuned_parameters_knn = [{'n_neighbors': [5, 15, 19]}]
     # car_insurance_model.knn_model_grid_search(tuned_parameters_knn, 3)
+
     # fit a knn with k=5 and print percentage accuracy for 10-fold cross validation and confusion matrix against the
     # test set
     car_insurance_model.knn_model(15, 10)
@@ -164,6 +168,8 @@ def main():
     ####################################################################################################################
     # SMV model
     # found these set of parameters to be the most optimum when performing a grid search
+
+    # uncomment to run grid search
     # tuned_parameters_svm = [{'kernel': ['rbf'], 'gamma': [1/15, 1/16, 1/17], 'C': [11, 10, 12]}]
     # car_insurance_model.svm_model_grid_search(tuned_parameters_svm, 3)
 
@@ -174,7 +180,19 @@ def main():
     car_insurance_model.svm_model(1/16, 10, 10)
     ####################################################################################################################
 
-    # low variation between the 10 k-folds for both models indicates over-fitting hasn't occurred
+    ####################################################################################################################
+    # BEST MODEL
+    ####################################################################################################################
+
+    # split data into X matrix of attributes and y vector for target
+    car_insurance_model.split_data_data_set_X_data_set_y()
+
+    # Define model found to produce the best results
+    my_svm_model = SVC(C=10, decision_function_shape='ovo', degree=3, gamma=1/16, kernel='rbf')
+    # fits the SVM model to the entire data set to be tested on a new test set if needed
+    my_svm_model.fit(car_insurance_model._data_set_X, car_insurance_model._data_set_y.values.ravel())
+
+    ####################################################################################################################
 
 
 if __name__ == "__main__":
