@@ -148,13 +148,17 @@ def main():
     #   must split data to 75% training, 25% test with a seed of 2
     car_insurance_model.split_data_set_into_train_x_test_x_train_y_test_y('Sale', 0.25, 2)
 
+    print(car_insurance_model._x_train.shape)
+
     # car_insurance_model.knn_model(5, 10)  # fit a knn with k=5 and print percentage accuracy for 10-fold cross
     # validation and confusion matrix against the test set
 
-    car_insurance_model.svm_model_grid_search()  # fit a svm and print percentage accuracy for 10-fold cross and
+    # my_tuned_parameters = [{'kernel': ['rbf'], 'gamma': [1/15, 1/16, 1/17], 'C': [11, 10, 12]}]
+    # car_insurance_model.svm_model_grid_search(my_tuned_parameters, 3)
     # confusion matrix against the test set
 
-    # car_insurance_model.svm_model(0.076923, 10)
+    # fit a svm and print percentage accuracy for 10-fold cross and
+    car_insurance_model.svm_model(1/16, 10, 10)
 
 
 if __name__ == "__main__":

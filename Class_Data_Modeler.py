@@ -53,10 +53,10 @@ class DataModeler(DataPreprocessor):
         print('For k-NN when k=', number_of_neighbours, ' the percentage accuracy of each ', number_of_folds,
               '-fold is:', percent_accuracies)
 
-    def svm_model_grid_search(self):
-        tuned_parameters = [{'kernel': ['rbf'], 'gamma': [0.07142857143, 0.07692307692, 0.08333333333], 'C': [1, 10, 100]}]
+    def svm_model_grid_search(self, tuned_parameters, number_of_folds):
 
-        my_svm_model = GridSearchCV(SVC(C=1), tuned_parameters, cv=3, scoring='f1_macro', n_jobs=-1)
+        my_svm_model = GridSearchCV(SVC(decision_function_shape='ovo', degree=3), tuned_parameters, cv=number_of_folds,
+                                    scoring='f1_macro', n_jobs=-1)
 
         my_svm_model.fit(self._x_train, self._y_train)  # fits the SVM model to sample data
 
@@ -70,7 +70,7 @@ class DataModeler(DataPreprocessor):
         for param, score in zip(my_svm_model.cv_results_['params'], my_svm_model.cv_results_['mean_test_score']):
             print(param, score)
 
-    def svm_model(self, my_gamma, number_of_folds):
+    def svm_model(self, my_gamma, my_c, number_of_folds):
         my_svm_model = SVC(gamma=my_gamma)  # creates a SVM classifier
         my_svm_model.fit(self._x_train, self._y_train)  # fits the SVM model to sample data
 
@@ -82,7 +82,7 @@ class DataModeler(DataPreprocessor):
         # degree : Degree of the polynomial kernel function
         # gamma : Kernel coefficient for ‘rbf’, ‘poly’ and ‘sigmoid’
         # kernel : specifies the kernel type used in the algorithm
-        SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0, decision_function_shape='ovo', degree=3,
+        SVC(C=my_c, cache_size=200, class_weight=None, coef0=0.0, decision_function_shape='ovo', degree=3,
             gamma=my_gamma, kernel='rbf', max_iter=-1, probability=False, random_state=None, shrinking=True, tol=0.001,
             verbose=False)
 
