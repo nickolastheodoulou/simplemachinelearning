@@ -1,5 +1,7 @@
 import pandas as pd
-import numpy as np
+from sklearn.metrics import classification_report
+from sklearn.model_selection import GridSearchCV
+from sklearn import neighbors
 
 from Class_Data_Modeler import DataModeler
 
@@ -50,7 +52,10 @@ def main():
     ####################################################################################################################
     # PROCESSING
     ####################################################################################################################
-    # Transform the data: found boxcox and sqrt transformations to actually make the models worse
+    # Attempted to log and sqrt transform some skewed parameters however, I found the models to perform worse hence I
+    # decided to instead normalise the attributes to have a mean of 0 and standard deviation of 1. Code below
+    # demonstrates some of my attempts to better fit the data to a normal distribution
+
 
     '''
     car_insurance_model.histogram_and_q_q('Credit_Score')
@@ -145,20 +150,30 @@ def main():
 
     car_insurance_model.shuffle_data_set()  # shuffle the data set before splitting
 
-    #   must split data to 75% training, 25% test with a seed of 2
+    # split data to 75% training, 25% test with a seed set to 2 (to get the same split when running the code
     car_insurance_model.split_data_set_into_train_x_test_x_train_y_test_y('Sale', 0.25, 2)
 
-    print(car_insurance_model._x_train.shape)
+    ####################################################################################################################
+    # Knn
+    # gridsearch for knn
+    tuned_parameters_knn = [{'n_neighbors': [5, 7, 9]}]
+    car_insurance_model.knn_model_grid_search(tuned_parameters_knn, 3)
 
     # car_insurance_model.knn_model(5, 10)  # fit a knn with k=5 and print percentage accuracy for 10-fold cross
     # validation and confusion matrix against the test set
 
-    # my_tuned_parameters = [{'kernel': ['rbf'], 'gamma': [1/15, 1/16, 1/17], 'C': [11, 10, 12]}]
-    # car_insurance_model.svm_model_grid_search(my_tuned_parameters, 3)
-    # confusion matrix against the test set
+    ####################################################################################################################
+    #SMV
+    # found these set of parameters to be the most optimum when performing a grid search
+    # tuned_parameters_svm = [{'kernel': ['rbf'], 'gamma': [1/15, 1/16, 1/17], 'C': [11, 10, 12]}]
+    # car_insurance_model.svm_model_grid_search(tuned_parameters_svm, 3)
 
-    # fit a svm and print percentage accuracy for 10-fold cross and
-    car_insurance_model.svm_model(1/16, 10, 10)
+    # fit a svm and print percentage accuracy for 10-fold cross and shows the confusion matrix for the best
+    # hyperparameters found when performing the grid-search
+
+    #car_insurance_model.svm_model(1/16, 10, 10)  # k-fold cross validation for optimum hyperparameters to validate SVM
+    # model
+    ####################################################################################################################
 
 
 if __name__ == "__main__":
