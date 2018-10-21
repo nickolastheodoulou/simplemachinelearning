@@ -1,6 +1,7 @@
+import pandas as pd
+
 from sklearn.model_selection import train_test_split
 from sklearn import neighbors
-import pandas as pd
 from sklearn.svm import SVC
 from sklearn.model_selection import cross_val_score
 

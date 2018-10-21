@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 import numpy as np
+
 from scipy import stats
 
 from Class_Data_Loader import DataLoader
@@ -66,7 +67,8 @@ class DataExplorer(DataLoader):
         plt.xticks(x, rotation=90, fontsize=10)  # rotates ticks by 30deg so larger font can be used
         #  create the legend
         plt.legend((attribute_sale_bars[0], attribute_no_sale_bars[0]), ('Sale', ' No Sale'))
-        plt.savefig('Data_Out/' + attribute + '_triple_stacked_bar_graph.pdf', index=False, bbox_inches='tight')
+        plt.savefig('Data_Out/' + attribute + '_bar_graph_attribute_by_classification.pdf', index=False,
+                    bbox_inches='tight')
         plt.show()
 
     # method that prints a summary of the distribution of the data

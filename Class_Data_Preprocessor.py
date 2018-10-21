@@ -1,6 +1,7 @@
-from scipy.special import boxcox
 import pandas as pd
 # import fancyimpute as fi
+
+from scipy.special import boxcox
 
 from Class_Data_Explorer import DataExplorer
 
