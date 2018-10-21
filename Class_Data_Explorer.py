@@ -114,6 +114,14 @@ class DataExplorer(DataLoader):
         plt.savefig('Data_Out/percentage_of_missing_data.pdf', index=False, bbox_inches='tight')  # save the plot
         plt.show()
 
+    # method that produces a heatmap of the attributes
+    def heat_map(self):
+        correlation_matrix = self._data_set.corr()  # correlation matrix
+        plt.subplots(figsize=(12, 9))  # size of fig
+        z_text = np.around(correlation_matrix, decimals=1)  # Only show rounded value (full value on hover)
+        sns.heatmap(z_text, vmax=.8, square=True, annot=True, fmt='.1f', annot_kws={'size': 7})  # creates the heatmap
+        plt.show()
+
     def scatter_plot(self, my_y_attribute, my_x_attribute):
         x = self._data_set[my_x_attribute].values
         # defines the sold price so that it can be loaded into the function each time rather than loading the whole

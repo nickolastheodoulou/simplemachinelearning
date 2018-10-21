@@ -1,7 +1,4 @@
 import pandas as pd
-from sklearn.metrics import classification_report
-from sklearn.model_selection import GridSearchCV
-from sklearn import neighbors
 
 from Class_Data_Modeler import DataModeler
 
@@ -47,13 +44,14 @@ def main():
     # displays and saves a bar graph of the percentage of missing values
     car_insurance_model.missing_data_ratio_bar_graph()
 
+    car_insurance_model.heat_map()
+
     ####################################################################################################################
     # PROCESSING
     ####################################################################################################################
     # Attempted to log and sqrt transform some skewed parameters however, I found the models to perform worse hence I
     # decided to instead normalise the attributes to have a mean of 0 and standard deviation of 1. Code below
     # demonstrates some of my attempts to better fit the data to a normal distribution
-
 
     '''
     car_insurance_model.histogram_and_q_q('Credit_Score')
@@ -80,6 +78,9 @@ def main():
     # bar graph of new column to see if any new information can be obtained
     car_insurance_model.bar_graph_attribute_by_classification('days_of_the_week')
     # can see that on Friday typically there are less sales hence decided to create new column
+
+    # used similar method to extract month and year, found month would have added too many attributes when one hot
+    # encoding and year to not have any significant difference between 2015 and 2016
 
     # one hot encodes the column days_of_the_week by adding 7 new attributes
     car_insurance_model.one_hot_encode_attribute('days_of_the_week')

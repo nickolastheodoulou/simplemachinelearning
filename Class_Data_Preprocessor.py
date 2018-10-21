@@ -44,10 +44,6 @@ class DataPreprocessor(DataExplorer):
         # add new column named days_of_the_week that has the day of the week
         self._data_set = self._data_set.assign(days_of_the_week=self._data_set['Date'].dt.weekday_name)
 
-        # self._data_set = pd.concat([self._data_set, pd.get_dummies(self._data_set['days_of_the_week'],
-        #                                                            prefix='days_of_the_week')], axis=1, sort=False)
-        #  self._data_set = self._data_set.drop(columns=['days_of_the_week'])
-
     def impute_price(self):
         # create a list of the index of the missing values in the price attribute
         price_missing_value_index = self._data_set[self._data_set['Price'].isnull()].index.tolist()
