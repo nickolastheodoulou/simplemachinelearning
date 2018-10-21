@@ -53,26 +53,12 @@ class DataModeler(DataPreprocessor):
         print('For k-NN when k=', number_of_neighbours, ' the percentage accuracy of each ', number_of_folds,
               '-fold is:', percent_accuracies)
 
-    def svm_model(self):
-        tuned_parameters = [{'kernel': ['rbf'], 'gamma': [1e-3, 1e-4],'C': [1, 10, 100, 1000]},
-                            {'kernel': ['linear'], 'C': [1, 10, 100, 1000]}]
+    def svm_model_grid_search(self):
+        tuned_parameters = [{'kernel': ['rbf'], 'gamma': [0.07142857143, 0.07692307692, 0.08333333333], 'C': [1, 10, 100]}]
 
-        my_svm_model = GridSearchCV(SVC(C=1), tuned_parameters, cv=5, scoring='f1_macro')
+        my_svm_model = GridSearchCV(SVC(C=1), tuned_parameters, cv=3, scoring='f1_macro', n_jobs=-1)
 
         my_svm_model.fit(self._x_train, self._y_train)  # fits the SVM model to sample data
-
-        # C : Penalty parameter of the error term, default is 1.0
-        # cache_size : Specify the size of the kernel cache (in MB).
-        # class_weight : Set the parameter C of class i to class_weight[i]*C for SVC. default: all classes weight = 1.
-        # coef0 : Independent term in kernel function
-        # decision_function_shape : returns one-vs-one decision shape
-        # degree : Degree of the polynomial kernel function
-        # gamma : Kernel coefficient for ‘rbf’, ‘poly’ and ‘sigmoid’
-        # kernel : specifies the kernel type used in the algorithm
-
-        # SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0, decision_function_shape='ovo', degree=3,
-        #    gamma=my_gamma, kernel='rbf', max_iter=-1, probability=False, random_state=None, shrinking=True, tol=0.001,
-        #    verbose=False)
 
         y_true, y_pred = self._y_test, my_svm_model.predict(self._x_test)
         print(classification_report(y_true, y_pred))
@@ -84,13 +70,34 @@ class DataModeler(DataPreprocessor):
         for param, score in zip(my_svm_model.cv_results_['params'], my_svm_model.cv_results_['mean_test_score']):
             print(param, score)
 
-        '''
+    def svm_model(self, my_gamma, number_of_folds):
+        my_svm_model = SVC(gamma=my_gamma)  # creates a SVM classifier
+        my_svm_model.fit(self._x_train, self._y_train)  # fits the SVM model to sample data
+
+        # C : Penalty parameter of the error term, default is 1.0
+        # cache_size : Specify the size of the kernel cache (in MB).
+        # class_weight : Set the parameter C of class i to class_weight[i]*C for SVC. default: all classes weight = 1.
+        # coef0 : Independent term in kernel function
+        # decision_function_shape : returns one-vs-one decision shape
+        # degree : Degree of the polynomial kernel function
+        # gamma : Kernel coefficient for ‘rbf’, ‘poly’ and ‘sigmoid’
+        # kernel : specifies the kernel type used in the algorithm
+        SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0, decision_function_shape='ovo', degree=3,
+            gamma=my_gamma, kernel='rbf', max_iter=-1, probability=False, random_state=None, shrinking=True, tol=0.001,
+            verbose=False)
+
+        y_pred = my_svm_model.predict(self._x_test)  # set the predicted values to the prediction using x_test
+
+        # print percent of correct predictions
+        print('For SVM when gamma=auto, percentage accuracy is: ', my_svm_model.score(self._x_test, self._y_test))
+        # print confusion matrix
+        print('The confusion matrix for the SVM when gamma=auto is: ',
+              pd.crosstab(self._y_test, y_pred, rownames=['True'], colnames=['Predicted'], margins=True))
+
         # can add n_jobs =-1 to set all cpus to work
         percent_accuracies = cross_val_score(estimator=my_svm_model, X=self._x_train, y=self._y_train,
                                              cv=number_of_folds, n_jobs=-1) * 100
 
-        print('For SVM when gamma=auto', 'the percentage accuracy of each ', number_of_folds, '-fold is:',
+        print('For SVM when gamma=', my_gamma, ' the percentage accuracy of each ', number_of_folds, '-fold is:',
               percent_accuracies)
-              
-        '''
 

@@ -22,6 +22,7 @@ def main():
     # Example of some of the graphs used to explore the data for the attribute: Age
     # These methods can be used for any attribute
 
+    '''
     # counts number of each age
     car_insurance_model.attribute_value_count('Age')
     # counts Sale or NoSale for each number of age
@@ -38,7 +39,7 @@ def main():
     car_insurance_model.scatter_plot('Age', 'Price')
     # plots a scatter plot of Age and Price for Sale and NoSale
     car_insurance_model.scatter_plot_by_classification('Age', 'Price')
-
+    '''
 
     ####################################################################################################################
     # Observe how much data is missing for each attribute
@@ -147,11 +148,13 @@ def main():
     #   must split data to 75% training, 25% test with a seed of 2
     car_insurance_model.split_data_set_into_train_x_test_x_train_y_test_y('Sale', 0.25, 2)
 
-    car_insurance_model.knn_model(5, 10)  # fit a knn with k=5 and print percentage accuracy for 10-fold cross
+    # car_insurance_model.knn_model(5, 10)  # fit a knn with k=5 and print percentage accuracy for 10-fold cross
     # validation and confusion matrix against the test set
 
-    car_insurance_model.svm_model()  # fit a svm and print percentage accuracy for 10-fold cross and
+    car_insurance_model.svm_model_grid_search()  # fit a svm and print percentage accuracy for 10-fold cross and
     # confusion matrix against the test set
+
+    # car_insurance_model.svm_model(0.076923, 10)
 
 
 if __name__ == "__main__":
