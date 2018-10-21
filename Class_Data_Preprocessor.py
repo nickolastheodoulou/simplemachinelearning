@@ -1,6 +1,6 @@
 from scipy.special import boxcox
-from sklearn.model_selection import train_test_split
 import pandas as pd
+# import fancyimpute as fi
 
 from Class_Data_Explorer import DataExplorer
 
@@ -80,12 +80,21 @@ class DataPreprocessor(DataExplorer):
 
     def impute_mode(self, attribute):
         self._data_set[attribute] = self._data_set[attribute].fillna(self._data_set[attribute].mode()[0])
+        # print('The number of tax values imputed is ', len(tax_missing_value_index))
 
     def impute_median(self, attribute):
         self._data_set[attribute] = self._data_set[attribute].fillna(self._data_set[attribute].median())
 
     def impute_mean(self, attribute):
         self._data_set[attribute] = self._data_set[attribute].fillna(self._data_set[attribute].mean())
+
+    # imputes the missing attributes using KNN from fancy impute using the 3 closes complete columns
+    # found to be extremely ineffienct hence not used in final model
+    '''
+    def impute_knn(self, number_of_nearest_neighbours):
+        knn_impute = fi.KNN(k=number_of_nearest_neighbours).complete(self._data_set)
+        self._data_set = pd.DataFrame(knn_impute, columns=self._data_set.columns.copy())
+    '''
 
     def new_column_infinite_credit_score(self):
         # create a list of the indices of the credit score with a score of 9999

@@ -56,6 +56,14 @@ def main():
     car_insurance_model.attribute_value_count_by_classification('Age')
     car_insurance_model.bar_graph_attribute_by_classification('Age')
 
+    # car_insurance_model.impute_knn(3) # imputing using knn from fancyimpute package found to be to inefficient
+
+    car_insurance_model.drop_all_na()
+    print("The dimension of the car insurance data is: ", car_insurance_model._data_set.shape)
+
+
+
+
     # car_insurance_model.bar_graph_attribute('Veh_Value')
     # car_insurance_model.bar_graph_attribute_by_classification('Tax')
     # car_insurance_model.scatter_plot_by_classification('Price', 'Veh_Mileage')
