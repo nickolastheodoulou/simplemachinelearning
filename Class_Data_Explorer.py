@@ -155,28 +155,31 @@ class DataExplorer(DataLoader):
         plt.show()
 
     def histogram_and_q_q(self, attribute):
-        x_sigma = self._data_set[attribute].values.std()  # standard deviation
-        x_max = self._data_set[attribute].values.max()  # max value
-        x_min = self._data_set[attribute].values.min()  # min value
-        n = self._data_set[attribute].shape[0]  # number of data points
+        # define a new dataset with the attributes missing dropped so that the NaN values are ignored
+        my_data_set = self._data_set.dropna()
+
+        x_sigma = my_data_set[attribute].values.std()  # standard deviation
+        x_max = my_data_set[attribute].values.max()  # max value
+        x_min = my_data_set[attribute].values.min()  # min value
+        n = my_data_set[attribute].shape[0]  # number of data points
 
         # formula to give the number of bins for any dataset
         number_bins = (x_max - x_min) * n ** (1 / 3) / (3.49 * x_sigma)
         number_bins = int(number_bins)  # floors the double to int
         # values being plotted into the histogram
-        attribute_being_plotted = self._data_set[attribute].values
+        attribute_being_plotted = my_data_set[attribute].values
 
         # defined y to find y max to place the text
         plt.subplots(figsize=(16, 8))  # changes the size of the fig
         y, i, _ = plt.hist(attribute_being_plotted, density=True, bins=number_bins, facecolor='paleturquoise',
                            alpha=0.75, edgecolor='black', linewidth=1.2,
-                           label='Histogram: (Skewness: ' + "{0:.3f}".format(self._data_set[attribute].skew()) +
-                                 ' and Kurtosis: ' + "{0:.3f}".format(self._data_set[attribute].kurt()) + ')')
+                           label='Histogram: (Skewness: ' + "{0:.3f}".format(my_data_set[attribute].skew()) +
+                                 ' and Kurtosis: ' + "{0:.3f}".format(my_data_set[attribute].kurt()) + ')')
 
         x = np.linspace(x_min, x_max, len(attribute_being_plotted))
 
         # Get the fitted parameters used by the function for the normal distribution
-        (mu, sigma) = stats.norm.fit(self._data_set[attribute])
+        (mu, sigma) = stats.norm.fit(my_data_set[attribute])
         normal_distribution = stats.norm.pdf(x, mu, sigma)  # define the norml distribution in terms of x, mu and sigma
         plt.plot(x, normal_distribution, 'k', linewidth=2,
                  label='Normal distribution: ($\mu=$ {:.2f} and $\sigma=$ {:.2f} )'.format(mu, sigma))
@@ -187,6 +190,6 @@ class DataExplorer(DataLoader):
         plt.title('Histogram of ' + str(attribute))
         plt.show()
 
-        stats.probplot(self._data_set[attribute], plot=plt)  # Q-Q plot
+        stats.probplot(my_data_set[attribute], plot=plt)  # Q-Q plot
         plt.title('Quantile-Quantile plot of ' + attribute)
         plt.show()

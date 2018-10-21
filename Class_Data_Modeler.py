@@ -2,6 +2,7 @@ from sklearn.model_selection import train_test_split
 from sklearn import neighbors
 import pandas as pd
 from sklearn.svm import SVC
+from sklearn.model_selection import cross_val_score
 
 from Class_Data_Preprocessor import DataPreprocessor
 
@@ -13,6 +14,8 @@ class DataModeler(DataPreprocessor):
         self._x_test = 0
         self._y_train = 0
         self._y_test = 0
+        self._data_set_y = 0
+        self._data_set_X = 0
 
     def split_data_set_into_train_x_test_x_train_y_test_y(self, target, my_test_size, seed):
         # set attributes to all other columns in the data_set
@@ -22,20 +25,32 @@ class DataModeler(DataPreprocessor):
                                                                                     test_size=my_test_size,
                                                                                     random_state=seed)
 
-    def knn_model(self, my_number_of_neighbours):
+    def knn_model(self, number_of_neighbours, number_of_folds):
         # create a knn classifier with n = my_number_of_neighbours
-        my_knn_model = neighbors.KNeighborsClassifier(n_neighbors=my_number_of_neighbours)
+        my_knn_model = neighbors.KNeighborsClassifier(n_neighbors=number_of_neighbours)
+
         my_knn_model.fit(self._x_train, self._y_train)  # fit the knn classifier to the data
 
         # define the predicted value of y and true value of y to create a prediction matrix
         y_pred = my_knn_model.predict(self._x_test)
 
         # print percent of correct predictions
-        print('k-NN accuracy for test set: %f' % my_knn_model.score(self._x_test, self._y_test))
+        print('For k-NN when k=', number_of_neighbours, ' the percentage accuracy is', my_knn_model.score(self._x_test,
+                                                                                                          self._y_test))
         # print confusion matrix
-        print(pd.crosstab(self._y_test, y_pred, rownames=['True'], colnames=['Predicted'], margins=True))
+        print('The confusion matrix for k-NN when k=', number_of_neighbours, 'is: ',
+              pd.crosstab(self._y_test, y_pred, rownames=['True'], colnames=['Predicted'], margins=True))
 
-    def svm_model(self, my_gamma):
+        # Applying K-Fold cross validation
+
+        # can add n_jobs =-1 to set all cpus to work
+        percent_accuracies = cross_val_score(estimator=my_knn_model, X=self._x_train, y=self._y_train,
+                                             cv=number_of_folds) * 100
+
+        print('For k-NN when k=', number_of_neighbours, ' the percentage accuracy of each ', number_of_folds,
+              '-fold is:', percent_accuracies)
+
+    def svm_model(self, my_gamma, number_of_folds):
         my_svm_model = SVC(gamma=my_gamma)   # creates a SVM classifier
         my_svm_model.fit(self._x_train, self._y_train)  # fits the SVM model to sample data
 
@@ -54,6 +69,14 @@ class DataModeler(DataPreprocessor):
         y_pred = my_svm_model.predict(self._x_test)  # set the predicted values to the prediction using x_test
 
         # print percent of correct predictions
-        print('svm accuracy for test set: %f' % my_svm_model.score(self._x_test, self._y_test))
+        print('For SVM when gamma=auto, percentage accuracy is: ', my_svm_model.score(self._x_test, self._y_test))
         # print confusion matrix
-        print(pd.crosstab(self._y_test, y_pred, rownames=['True'], colnames=['Predicted'], margins=True))
+        print('The confusion matrix for the SVM when gamma=auto is: ',
+              pd.crosstab(self._y_test, y_pred, rownames=['True'], colnames=['Predicted'], margins=True))
+
+        # can add n_jobs =-1 to set all cpus to work
+        percent_accuracies = cross_val_score(estimator=my_svm_model, X=self._x_train, y=self._y_train,
+                                             cv=number_of_folds, n_jobs=-1) * 100
+
+        print('For SVM when gamma=auto', 'the percentage accuracy of each ', number_of_folds, '-fold is:',
+              percent_accuracies)
