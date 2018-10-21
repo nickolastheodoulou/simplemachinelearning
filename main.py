@@ -49,8 +49,20 @@ def main():
     ####################################################################################################################
     # PROCESSING
     ####################################################################################################################
+    # Transform the data: found boxcox and sqrt transformations to actually make the models worse
 
-    # Normalise attributes before imputing
+    '''
+    car_insurance_model.histogram_and_q_q('Credit_Score')
+    # max_price = car_insurance_model._data_set['Price'].max()
+    # car_insurance_model._data_set['Price'] = max_price + 1 - car_insurance_model._data_set['Price']
+    car_insurance_model.boxcox_trans_attribute('Credit_Score', 0.1)
+    # car_insurance_model._data_set['Price'] = np.sqrt(car_insurance_model._data_set['Price'])
+    car_insurance_model.histogram_and_q_q('Credit_Score')
+    '''
+
+    ####################################################################################################################
+
+    # Normalise attributes to a mean of zero and standard deviation of 1 before imputing
     attributes_to_normalise = ['Veh_Mileage', 'Credit_Score', 'License_Length', 'Veh_Value', 'Price', 'Age', 'Tax']
 
     for i in attributes_to_normalise:
@@ -127,16 +139,6 @@ def main():
     car_insurance_model.missing_data_ratio_print()
 
     ####################################################################################################################
-    # Transform the data
-
-    # car_insurance_model.histogram_and_q_q('Price')
-    # max_price = car_insurance_model._data_set['Price'].max()
-    # car_insurance_model._data_set['Price'] = max_price + 1 - car_insurance_model._data_set['Price']
-    # car_insurance_model.boxcox_trans_attribute('Price', 0.1)
-    # car_insurance_model._data_set['Price'] = np.sqrt(car_insurance_model._data_set['Price'])
-    # car_insurance_model.histogram_and_q_q('Price')
-
-    ####################################################################################################################
     # MODEL
     ####################################################################################################################
 
@@ -148,7 +150,7 @@ def main():
     car_insurance_model.knn_model(5, 10)  # fit a knn with k=5 and print percentage accuracy for 10-fold cross
     # validation and confusion matrix against the test set
 
-    # car_insurance_model.svm_model('auto', 10)  # fit a svm and print percentage accuracy for 10-fold cross and
+    car_insurance_model.svm_model('auto', 10)  # fit a svm and print percentage accuracy for 10-fold cross and
     # confusion matrix against the test set
 
 
