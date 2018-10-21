@@ -24,7 +24,6 @@ def main():
     # Example of some of the graphs used to explore the data for the attribute: Age
     # These methods can be used for any attribute
 
-    '''
     # counts number of each age
     car_insurance_model.attribute_value_count('Age')
     # counts Sale or NoSale for each number of age
@@ -41,7 +40,6 @@ def main():
     car_insurance_model.scatter_plot('Age', 'Price')
     # plots a scatter plot of Age and Price for Sale and NoSale
     car_insurance_model.scatter_plot_by_classification('Age', 'Price')
-    '''
 
     ####################################################################################################################
     # Observe how much data is missing for each attribute
@@ -145,7 +143,7 @@ def main():
     car_insurance_model.missing_data_ratio_print()
 
     ####################################################################################################################
-    # MODEL
+    # MODELS
     ####################################################################################################################
 
     car_insurance_model.shuffle_data_set()  # shuffle the data set before splitting
@@ -154,16 +152,16 @@ def main():
     car_insurance_model.split_data_set_into_train_x_test_x_train_y_test_y('Sale', 0.25, 2)
 
     ####################################################################################################################
-    # Knn
+    # Knn model
     # gridsearch for knn
-    tuned_parameters_knn = [{'n_neighbors': [5, 7, 9]}]
-    car_insurance_model.knn_model_grid_search(tuned_parameters_knn, 3)
-
-    # car_insurance_model.knn_model(5, 10)  # fit a knn with k=5 and print percentage accuracy for 10-fold cross
-    # validation and confusion matrix against the test set
+    # tuned_parameters_knn = [{'n_neighbors': [5, 15, 19]}]
+    # car_insurance_model.knn_model_grid_search(tuned_parameters_knn, 3)
+    # fit a knn with k=5 and print percentage accuracy for 10-fold cross validation and confusion matrix against the
+    # test set
+    car_insurance_model.knn_model(15, 10)
 
     ####################################################################################################################
-    #SMV
+    # SMV model
     # found these set of parameters to be the most optimum when performing a grid search
     # tuned_parameters_svm = [{'kernel': ['rbf'], 'gamma': [1/15, 1/16, 1/17], 'C': [11, 10, 12]}]
     # car_insurance_model.svm_model_grid_search(tuned_parameters_svm, 3)
@@ -171,9 +169,11 @@ def main():
     # fit a svm and print percentage accuracy for 10-fold cross and shows the confusion matrix for the best
     # hyperparameters found when performing the grid-search
 
-    #car_insurance_model.svm_model(1/16, 10, 10)  # k-fold cross validation for optimum hyperparameters to validate SVM
-    # model
+    # k-fold cross validation for optimum hyper-parameters to validate SVM model
+    car_insurance_model.svm_model(1/16, 10, 10)
     ####################################################################################################################
+
+    # low variation between the 10 k-folds for both models indicates over-fitting hasn't occurred
 
 
 if __name__ == "__main__":
