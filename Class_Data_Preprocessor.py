@@ -22,7 +22,8 @@ class DataPreprocessor(DataExplorer):
         self._data_set[attribute] = boxcox(self._data_set[attribute], lamda)
 
     def normalise_attribute(self, attribute):  # normalises all column of an attribute
-        self._data_set[attribute] = (self._data_set[attribute] - self._data_set[attribute].mean()) / self._data_set[attribute].std()
+        self._data_set[attribute] = (self._data_set[attribute] - self._data_set[attribute].mean()) /  \
+                                    self._data_set[attribute].std()
 
     #  method that one hot encodes a column
     def one_hot_encode_attribute(self, attribute):

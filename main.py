@@ -20,7 +20,7 @@ def main():
 
     ####################################################################################################################
     # Example of some of the graphs used to explore the data for the attribute: Age
-    # These methods can be used for any attribute
+    # These methods can and were used for all the attributes
 
     # counts number of each age
     car_insurance_model.attribute_value_count('Age')
@@ -135,7 +135,7 @@ def main():
     car_insurance_model.impute_median('Credit_Score')
     car_insurance_model.impute_mode('Veh_Mileage')
     car_insurance_model.impute_median('License_Length')  # should try to impute by first categorising by Maritial_Status
-    car_insurance_model.impute_mode('Veh_Value')  # should find a better way
+    car_insurance_model.impute_mode('Veh_Value')  # should use a better method
     car_insurance_model.impute_median('Age')
 
     ####################################################################################################################
@@ -174,7 +174,7 @@ def main():
     # car_insurance_model.svm_model_grid_search(tuned_parameters_svm, 3)
 
     # fit a svm and print percentage accuracy for 10-fold cross and shows the confusion matrix for the best
-    # hyperparameters found when performing the grid-search
+    # hyper-parameters found when performing the grid-search
 
     # k-fold cross validation for optimum hyper-parameters to validate SVM model
     car_insurance_model.svm_model(1/16, 10, 10)

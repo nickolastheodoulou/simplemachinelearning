@@ -73,7 +73,7 @@ class DataModeler(DataPreprocessor):
 
         # Applying K-Fold cross validation
 
-        # can add n_jobs =-1 to set all cpus to work
+        # can add n_jobs =-1 to set all CPU's to work
         percent_accuracies = cross_val_score(estimator=my_knn_model, X=self._x_train, y=self._y_train,
                                              cv=number_of_folds) * 100
 
@@ -100,7 +100,7 @@ class DataModeler(DataPreprocessor):
         for param, score in zip(my_svm_model.cv_results_['params'], my_svm_model.cv_results_['mean_test_score']):
             print(param, score)
 
-    # method that peforms k-fold cross validation on an SVM model with user inputted parameters
+    # method that performs k-fold cross validation on an SVM model with user inputted parameters
     def svm_model(self, my_gamma, my_c, number_of_folds):
         # creates a SVM classifier
         my_svm_model = SVC(C=my_c, decision_function_shape='ovo', degree=3, gamma=my_gamma, kernel='rbf')
@@ -127,4 +127,3 @@ class DataModeler(DataPreprocessor):
 
         print('For SVM when gamma=', my_gamma, ' the percentage accuracy of each ', number_of_folds, '-fold is:',
               percent_accuracies)
-
