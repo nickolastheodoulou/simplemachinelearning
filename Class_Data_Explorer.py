@@ -28,12 +28,12 @@ class DataExplorer(DataLoader):
         width_of_bar = 1 / 1.5
         plt.subplots(figsize=(16, 8))  # changes the size of the fig
         plt.bar(x, y, width_of_bar, color="#2b8cbe", edgecolor='black')  # plots the bar graph
-        #  plt.title('Bar graph of ' + str(column_count.name) + ' Against ' + str(' Sample Size'), fontsize=20)
         plt.xlabel(column_count.name, fontsize=15)  # sets the xlabel to the name of the series object
         plt.ylabel('Percent', fontsize=15)
         plt.xticks(x, rotation=90)  # rotates ticks by 90deg so larger font can be used
         plt.tick_params(labelsize=12)  # increases font of the ticks
         #  file name defined by attribute user input and type of graph
+        plt.title('Bar graph showing the count of ' + str(attribute))
         plt.savefig('Data_Out/' + attribute + '_bar_graph_percentage.pdf', index=False, bbox_inches='tight')
         plt.show()
 
@@ -45,7 +45,7 @@ class DataExplorer(DataLoader):
               my_attribute_classification_count)
 
     def bar_graph_attribute_by_classification(self, attribute):
-        # plt.subplots(figsize=(16, 8))  # changes the size of the fig
+        plt.subplots(figsize=(16, 8))  # changes the size of the fig
         #  Computes a cross-tabulation of user inputted attribute to plot sale and no sale count
         my_attribute_sale_no_sale_matrix = pd.crosstab(self._data_set[attribute], self._data_set['Sale'])
 
@@ -62,11 +62,13 @@ class DataExplorer(DataLoader):
                                          edgecolor='black', )
 
         # plt.grid()
-        plt.ylabel('Count', fontsize=12)
-        plt.xlabel(attribute, fontsize=12)
-        plt.xticks(x, rotation=90, fontsize=10)  # rotates ticks by 30deg so larger font can be used
+        plt.ylabel('Count', fontsize=18)
+        plt.xlabel(attribute, fontsize=18)
+        plt.yticks(fontsize=18)
+        plt.xticks(x, rotation=90, fontsize=18)  # rotates ticks by 30deg so larger font can be used
         #  create the legend
         plt.legend((attribute_no_sale_bars[0], attribute_sale_bars[0]), ('No Sale', ' Sale'))
+        plt.title('Bar graph showing the count of ' + str(attribute),fontsize=18)
         plt.savefig('Data_Out/' + attribute + '_bar_graph_attribute_by_classification.pdf', index=False,
                     bbox_inches='tight')
         plt.show()
@@ -129,7 +131,7 @@ class DataExplorer(DataLoader):
         y = self._data_set[my_y_attribute].values
         plt.subplots(figsize=(16, 8))  # changes the size of the fig
         plt.scatter(x, y, c="g", alpha=0.5, marker="s")  # scatter plot of the sold price and user chosen attribute
-        plt.title('Scatter graph of ' + str(my_y_attribute) + ' against ' + str(my_x_attribute))
+        plt.title('Scatter Graph of ' + str(my_y_attribute) + ' against ' + str(my_x_attribute))
         plt.xlabel(my_x_attribute)
         plt.ylabel(my_y_attribute)
         # save the plot
@@ -162,6 +164,7 @@ class DataExplorer(DataLoader):
         # plot empty lists with the desired size and label to create the legend (not possible any other way)
         plt.scatter([], [], c=['r'], alpha=1, label='NoSale')
         plt.scatter([], [], c=['b'], alpha=1, label='Sale')
+        plt.title('Scatter Graph of ' + str(my_y_attribute) + ' against ' + str(my_x_attribute))
 
         plt.legend(loc=0, scatterpoints=1, frameon=False, labelspacing=0, title='Sale or no Sale: ', prop={'size': 9})
         plt.savefig('Data_Out/' + my_y_attribute + '_' + my_x_attribute + 'scatter_plot_by_classification.pdf',
@@ -184,7 +187,7 @@ class DataExplorer(DataLoader):
         attribute_being_plotted = my_data_set[attribute].values
 
         # defined y to find y max to place the text
-        plt.subplots(figsize=(16, 8))  # changes the size of the fig
+        # plt.subplots(figsize=(16, 8))  # changes the size of the fig
         y, i, _ = plt.hist(attribute_being_plotted, density=True, bins=number_bins, facecolor='paleturquoise',
                            alpha=0.75, edgecolor='black', linewidth=1.2,
                            label='Histogram: (Skewness: ' + "{0:.3f}".format(my_data_set[attribute].skew()) +

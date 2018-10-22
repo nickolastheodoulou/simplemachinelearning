@@ -39,6 +39,8 @@ def main():
     # plots a scatter plot of Age and Price for Sale and NoSale
     car_insurance_model.scatter_plot_by_classification('Age', 'Price')
 
+    car_insurance_model.histogram_and_q_q('Credit_Score')
+
     ####################################################################################################################
     # Observe how much data is missing for each attribute
     car_insurance_model.missing_data_ratio_print()
@@ -92,7 +94,7 @@ def main():
     # Dealing with the attributes Tax and Price
 
     # scatter plot the two attributes as they appear very highly correlated and could be used to impute the data
-    car_insurance_model.scatter_plot_by_classification("Tax", "Price")
+    # car_insurance_model.scatter_plot_by_classification("Tax", "Price")
     # found that tax and price follow two linear equations using car_insurance_model.scatter_plot("Tax", "Price")
     # the cutoff between following either equation was when the tax was between a value of 32 to 35 which was found by
     # looking through the data set:
