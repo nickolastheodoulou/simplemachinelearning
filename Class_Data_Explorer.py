@@ -45,20 +45,20 @@ class DataExplorer(DataLoader):
               my_attribute_classification_count)
 
     def bar_graph_attribute_by_classification(self, attribute):
-        plt.subplots(figsize=(16, 8))  # changes the size of the fig
+        # plt.subplots(figsize=(16, 8))  # changes the size of the fig
         #  Computes a cross-tabulation of user inputted attribute to plot sale and no sale count
         my_attribute_sale_no_sale_matrix = pd.crosstab(self._data_set[attribute], self._data_set['Sale'])
 
         #  counts number of sales for inputted attribute
-        my_attribute_sales_count = my_attribute_sale_no_sale_matrix[self._data_set['Sale'].unique()[0]].values
+        my_attribute_no_sales_count = my_attribute_sale_no_sale_matrix[self._data_set['Sale'].unique()[0]].values
         #  counts number of no sales for inputted attribute
-        my_attribute_no_sales_count = my_attribute_sale_no_sale_matrix[self._data_set['Sale'].unique()[1]].values
+        my_attribute_sales_count = my_attribute_sale_no_sale_matrix[self._data_set['Sale'].unique()[1]].values
         x = my_attribute_sale_no_sale_matrix.index  # set the x axis to index of user inputted attribute
 
         width = 0.5  # the width of the bars
         #  creates the 2 bars, bottom indicates which bar goes below the current bar
-        attribute_sale_bars = plt.bar(x, my_attribute_sales_count, width, edgecolor='black')
-        attribute_no_sale_bars = plt.bar(x, my_attribute_no_sales_count, width, bottom=my_attribute_sales_count,
+        attribute_no_sale_bars = plt.bar(x, my_attribute_no_sales_count, width, edgecolor='black')
+        attribute_sale_bars = plt.bar(x, my_attribute_sales_count, width, bottom=my_attribute_no_sales_count,
                                          edgecolor='black', )
 
         # plt.grid()
@@ -66,7 +66,7 @@ class DataExplorer(DataLoader):
         plt.xlabel(attribute, fontsize=12)
         plt.xticks(x, rotation=90, fontsize=10)  # rotates ticks by 30deg so larger font can be used
         #  create the legend
-        plt.legend((attribute_sale_bars[0], attribute_no_sale_bars[0]), ('Sale', ' No Sale'))
+        plt.legend((attribute_no_sale_bars[0], attribute_sale_bars[0]), ('No Sale', ' Sale'))
         plt.savefig('Data_Out/' + attribute + '_bar_graph_attribute_by_classification.pdf', index=False,
                     bbox_inches='tight')
         plt.show()
@@ -132,6 +132,8 @@ class DataExplorer(DataLoader):
         plt.title('Scatter graph of ' + str(my_y_attribute) + ' against ' + str(my_x_attribute))
         plt.xlabel(my_x_attribute)
         plt.ylabel(my_y_attribute)
+        # save the plot
+        plt.savefig('Data_Out/'+my_y_attribute+'_'+my_x_attribute+'scatter_plot.pdf', index=False, bbox_inches='tight')
         plt.show()
 
     def scatter_plot_by_classification(self, my_y_attribute, my_x_attribute):
@@ -158,10 +160,12 @@ class DataExplorer(DataLoader):
         plt.ylabel(my_y_attribute)
 
         # plot empty lists with the desired size and label to create the legend (not possible any other way)
-        plt.scatter([], [], c=['r'], alpha=1, label='Sale')
-        plt.scatter([], [], c=['b'], alpha=1, label='NoSale')
+        plt.scatter([], [], c=['r'], alpha=1, label='NoSale')
+        plt.scatter([], [], c=['b'], alpha=1, label='Sale')
 
         plt.legend(loc=0, scatterpoints=1, frameon=False, labelspacing=0, title='Sale or no Sale: ', prop={'size': 9})
+        plt.savefig('Data_Out/' + my_y_attribute + '_' + my_x_attribute + 'scatter_plot_by_classification.pdf',
+                    index=False, bbox_inches='tight')
         plt.show()
 
     def histogram_and_q_q(self, attribute):
