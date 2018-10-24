@@ -1,4 +1,5 @@
 import pandas as pd
+from sklearn.model_selection import train_test_split
 # import fancyimpute as fi
 
 from scipy.special import boxcox
@@ -9,6 +10,27 @@ from Class_Data_Explorer import DataExplorer
 class DataPreprocessor(DataExplorer):
     def __init__(self, data_set):
         super().__init__(data_set)
+        self._x_train = 0
+        self._x_test = 0
+        self._y_train = 0
+        self._y_test = 0
+        self._data_set_y = 0
+        self._data_set_X = 0
+
+    def split_data_set_if_test_not_split(self, target, my_test_size, seed):
+        # set attributes to all other columns in the data_set
+        attribute_matrix = self._data_set.loc[:, self._data_set.columns != target]
+        self._x_train, self._x_test, self._y_train, self._y_test = train_test_split(attribute_matrix,
+                                                                                    self._data_set[target],
+                                                                                    test_size=my_test_size,
+                                                                                    random_state=seed)
+
+    def split_data_data_set_X_data_set_y(self, target):
+        target_column = self._data_set.columns.get_loc(target)  # finds the target column by name
+        # updates the data frame train_Y
+        self._data_set_y = pd.DataFrame(data={target: self._data_set.iloc[:, target_column]})
+        # drops the first column of the train set as it has been moved
+        self._data_set_X = self._data_set.drop(self._data_set.columns[target_column], axis=1)
 
     #  method that drops all the rows with missing data. This is not recommended to be used at all but is used to
     #  test how accurate a simple KNN algorithm is
