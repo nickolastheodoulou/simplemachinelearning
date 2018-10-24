@@ -65,6 +65,9 @@ class DataPreprocessor(DataExplorer):
         self._train_data_set[attribute] = boxcox(self._train_data_set[attribute], lamda)
         self._test_data_set[attribute] = boxcox(self._test_data_set[attribute], lamda)
 
+    def box_cox_target(self, lamda):
+        self._y_train = boxcox(self._y_train, lamda)
+
     def normalise_attribute(self, attribute):  # normalises all column of an attribute
         self._train_data_set[attribute] = (self._train_data_set[attribute] - self._train_data_set[attribute].mean()) / \
                                           self._train_data_set[attribute].std()

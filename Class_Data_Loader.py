@@ -44,7 +44,7 @@ class DataLoader:  # class that stores the data set as an object. The purpose of
         d = {target: self._train_data_set.iloc[:, target_column]}
         self._y_train = pd.DataFrame(data=d)
         # drops the first column of the train set as it has been moved
-        self._x_train = self._train_data_set.drop(self._train_data_set.columns[target_column], axis=1)
+        self._train_data_set = self._train_data_set.drop(self._train_data_set.columns[target_column], axis=1)
         return None
 
     def __del__(self):

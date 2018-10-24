@@ -1,4 +1,5 @@
 import pandas as pd
+from scipy.special import boxcox
 
 from Class_Data_Modeler import DataModeler
 
@@ -12,15 +13,15 @@ def main():
     #  one go for train_X but in a real world scenario, test_X may not come in as a large dataset
     model_house = DataModeler(pd.read_csv("Data_In/House_Prices/train.csv"), pd.read_csv("Data_In/House_Prices/test.csv"))
 
-    model_house.box_plot('SalePrice', 'YearBuilt')
-    model_house.bar_graph_attribute('YrSold')
-    model_house.line_graph_percentage_difference('YrSold')
+    # model_house.box_plot('SalePrice', 'YearBuilt')
+    # model_house.bar_graph_attribute('YrSold')
+    # model_house.line_graph_percentage_difference('YrSold')
 
     # dropped after looking at a scatter plot of the two attributes
-    model_house.scatter_plot('SalePrice', 'GrLivArea')
+    # model_house.scatter_plot('SalePrice', 'GrLivArea')
     model_house.drop_outliers_target_less_y_attribute_greater_x('SalePrice', 300000, 'GrLivArea', 4000)
     model_house.drop_outliers_target_greater_y_attribute_greater_x('SalePrice', 200000, 'LotFrontage', 300)
-    model_house.scatter_plot('SalePrice', 'GrLivArea')
+    # model_house.scatter_plot('SalePrice', 'GrLivArea')
 
     print(model_house._train_data_set.shape)
 
@@ -51,21 +52,29 @@ def main():
 
     # drops id column from train_X and test_X to move it to _test_y_id
     model_house.index_column_drop_and_move_to_pred_y('Id')
-
-
-
-
-        #cant box cox
-    ### model_house.box_cox_trans_target('SalePrice', '0.1')
-
-
-
-
+    model_house.box_cox_target(0.1)
     model_house.move_target_to_train_y('SalePrice')  # moves saleprice to train_Y
+    model_house.missing_data_ratio_print()
     ####################################################################################################################
     # all the missing values are inputted!!!!
     ####################################################################################################################
+    '''
+    print('The dimension of the train is', model_house._train_data_set.shape)
+    print('The dimension of the test is', model_house._test_data_set.shape)
+    model_house._train_data_set = pd.get_dummies(model_house._train_data_set.select_dtypes(include=['object']))
+    model_house._test_data_set = pd.get_dummies(model_house._test_data_set.select_dtypes(include=['object']))
+    print('The dimension of the train is', model_house._train_data_set.shape)
+    print('The dimension of the test is', model_house._test_data_set.shape)
 
+    missing_cols = set(model_house._train_data_set.columns) - set(model_house._test_data_set.columns)
+
+    model_house._train_data_set = model_house._train_data_set.drop(missing_cols, axis=1)
+    print('The dimension of the train is', model_house._train_data_set.shape)
+    print('The dimension of the test is', model_house._test_data_set.shape)
+
+    model_house._train_data_set.to_csv('Data_Out/train_X_up.csv', index=False)
+    model_house._test_data_set.to_csv('Data_Out/train_Y_up.csv', index=False)
+    '''
 
 if __name__ == "__main__":
     main()

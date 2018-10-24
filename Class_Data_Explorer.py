@@ -114,24 +114,40 @@ class DataExplorer(DataLoader):
         description_of_attribute = self._train_data_set[attribute].describe()
         print("A summary of the disribution for the attribute", attribute, ' is\n', description_of_attribute)
 
-    #  method that prints the percentage of missing data of each column
+    #  method that prints the percentage of missing data of train and test
     def missing_data_ratio_print(self):
         #  define the percentage as the number of missing values in each column/ number of entries * 100
-        percent_of_missing_data_in_each_column = ((self._train_data_set.isnull().sum() / (len(self._train_data_set))) * 100)
+        missing_data_train = ((self._train_data_set.isnull().sum() / (len(self._train_data_set))) * 100)
 
         #  sorts percent_of_missing_data_in_each_column into descending order to be printed
-        percent_of_missing_data_in_each_column = percent_of_missing_data_in_each_column.drop(
-            percent_of_missing_data_in_each_column[percent_of_missing_data_in_each_column == 0].index).sort_values(
+        missing_data_train = missing_data_train.drop(
+            missing_data_train[missing_data_train == 0].index).sort_values(
             ascending=False)[:self._train_data_set.shape[1]]
 
         #  redefines percent_of_missing_data_in_each_column as a DataFrame with the column head 'Missing Ratio'
-        percent_of_missing_data_in_each_column = pd.DataFrame({'Missing Ratio': percent_of_missing_data_in_each_column})
+        missing_data_train = pd.DataFrame({'Missing Ratio': missing_data_train})
         #  rename the column heading
-        percent_of_missing_data_in_each_column = percent_of_missing_data_in_each_column.rename(columns={
-            percent_of_missing_data_in_each_column.columns[0]: "Percentage of missing values"})
+        missing_data_train = missing_data_train.rename(columns={
+            missing_data_train.columns[0]: "Percentage of missing values in train"})
+        #  print the data fame
+        print(missing_data_train.head(20))
+
+        #  define the percentage as the number of missing values in test
+        missing_data_test = ((self._test_data_set.isnull().sum() / (len(self._test_data_set))) * 100)
+
+        #  sorts percent_of_missing_data_in_each_column into descending order to be printed
+        missing_data_test = missing_data_test.drop(
+            missing_data_test[missing_data_test == 0].index).sort_values(
+            ascending=False)[:self._test_data_set.shape[1]]
+
+        #  redefines percent_of_missing_data_in_each_column as a DataFrame with the column head 'Missing Ratio'
+        missing_data_test = pd.DataFrame({'Missing Ratio': missing_data_test})
+        #  rename the column heading
+        missing_data_test = missing_data_test.rename(columns={
+            missing_data_test.columns[0]: "Percentage of missing values in test"})
 
         #  print the data fame
-        print(percent_of_missing_data_in_each_column.head(20))
+        print(missing_data_train.head(20))
 
     #  method that p
     def missing_data_ratio_bar_graph(self):
