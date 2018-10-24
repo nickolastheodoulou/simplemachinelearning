@@ -28,10 +28,10 @@ class DataModeler(DataPreprocessor):
                                                                                                 test_size=my_test_size,
                                                                                                 random_state=seed)
 
-    def split_data_data_set_X_data_set_y(self):
-        target_column = self._data_set.columns.get_loc('Sale')  # finds the target column by name
+    def split_data_data_set_X_data_set_y(self, target):
+        target_column = self._data_set.columns.get_loc(target)  # finds the target column by name
         # updates the data frame train_Y
-        self._data_set_y = pd.DataFrame(data={'Sale': self._data_set.iloc[:, target_column]})
+        self._data_set_y = pd.DataFrame(data={target: self._data_set.iloc[:, target_column]})
         # drops the first column of the train set as it has been moved
         self._data_set_X = self._data_set.drop(self._data_set.columns[target_column], axis=1)
 

@@ -1,5 +1,4 @@
 import pandas as pd
-from sklearn.svm import SVC
 
 from Class_Data_Modeler import DataModeler
 
@@ -25,11 +24,11 @@ def main():
     # counts number of each age
     car_insurance_model.attribute_value_count('Age')
     # counts Sale or NoSale for each number of age
-    car_insurance_model.attribute_value_count_by_classification('Age')
+    car_insurance_model.attribute_value_count_by_classification('Age', 'Sale')
     # displays and saves a bar graph showing the percentage of each value for the attribute Age in the data set
     car_insurance_model.bar_graph_attribute('Age')
     # displays a stacked Sale and NoSale bar graph for each attribute in Age in the data set
-    car_insurance_model.bar_graph_attribute_by_classification('Age')
+    car_insurance_model.bar_graph_attribute_by_classification('Age', 'Sale')
     # prints a summary of the distribution of the column 'Age' such as mean, standard deviation etc
     car_insurance_model.describe_attribute('Age')
     # plots a histogram of the attribute Age and also a quantile quantile plot
@@ -37,7 +36,7 @@ def main():
     # plots a scatter plot of Age and Price
     car_insurance_model.scatter_plot('Age', 'Price')
     # plots a scatter plot of Age and Price for Sale and NoSale
-    car_insurance_model.scatter_plot_by_classification('Age', 'Price')
+    car_insurance_model.scatter_plot_by_classification('Age', 'Price', 'Sale')
 
     car_insurance_model.histogram_and_q_q('Credit_Score')
 
@@ -79,7 +78,7 @@ def main():
     # decided to add day_of_the_week column to see if any information can be extracted
     car_insurance_model.add_day_of_week_attribute()
     # bar graph of new column to see if any new information can be obtained
-    car_insurance_model.bar_graph_attribute_by_classification('days_of_the_week')
+    car_insurance_model.bar_graph_attribute_by_classification('days_of_the_week', 'Sale')
     # can see that on Friday typically there are less sales hence decided to create new column
 
     # used similar method to extract month and year, found month would have added too many attributes when one hot
@@ -180,20 +179,6 @@ def main():
 
     # k-fold cross validation for optimum hyper-parameters to validate SVM model
     car_insurance_model.svm_model(1/16, 10, 10)
-    ####################################################################################################################
-
-    ####################################################################################################################
-    # BEST MODEL
-    ####################################################################################################################
-
-    # split data into X matrix of attributes and y vector for target
-    car_insurance_model.split_data_data_set_X_data_set_y()
-
-    # Define model found to produce the best results
-    my_svm_model = SVC(C=10, decision_function_shape='ovo', degree=3, gamma=1/16, kernel='rbf')
-    # fits the SVM model to the entire data set to be tested on a new test set if needed
-    my_svm_model.fit(car_insurance_model._data_set_X, car_insurance_model._data_set_y.values.ravel())
-
     ####################################################################################################################
 
 

@@ -39,26 +39,26 @@ class DataExplorer(DataLoader):
 
     # method that prints the number of different values in each column then sorts it in ascending order per
     # classification
-    def attribute_value_count_by_classification(self, attribute):
-        my_attribute_classification_count = pd.crosstab(self._data_set[attribute], self._data_set.Sale)
+    def attribute_value_count_by_classification(self, attribute, target):
+        my_attribute_classification_count = pd.crosstab(self._data_set[attribute], self._data_set[target])
         print("The classification count of the different variables in the attribute: ", attribute, ' is\n',
               my_attribute_classification_count)
 
-    def bar_graph_attribute_by_classification(self, attribute):
+    def bar_graph_attribute_by_classification(self, attribute, target):
         plt.subplots(figsize=(16, 8))  # changes the size of the fig
-        #  Computes a cross-tabulation of user inputted attribute to plot sale and no sale count
-        my_attribute_sale_no_sale_matrix = pd.crosstab(self._data_set[attribute], self._data_set['Sale'])
+        #  Computes a cross-tabulation of user inputted attribute to plot target true and false count
+        my_attribute_true_false_matrix = pd.crosstab(self._data_set[attribute], self._data_set[target])
 
-        #  counts number of sales for inputted attribute
-        my_attribute_no_sales_count = my_attribute_sale_no_sale_matrix[self._data_set['Sale'].unique()[0]].values
-        #  counts number of no sales for inputted attribute
-        my_attribute_sales_count = my_attribute_sale_no_sale_matrix[self._data_set['Sale'].unique()[1]].values
-        x = my_attribute_sale_no_sale_matrix.index  # set the x axis to index of user inputted attribute
+        #  counts number of false for inputted attribute
+        my_attribute_0_count = my_attribute_true_false_matrix[self._data_set[target].unique()[0]].values
+        #  counts number of true for inputted attribute
+        my_attribute_1_count = my_attribute_true_false_matrix[self._data_set[target].unique()[1]].values
+        x = my_attribute_true_false_matrix.index  # set the x axis to index of user inputted attribute
 
         width = 0.5  # the width of the bars
         #  creates the 2 bars, bottom indicates which bar goes below the current bar
-        attribute_no_sale_bars = plt.bar(x, my_attribute_no_sales_count, width, edgecolor='black')
-        attribute_sale_bars = plt.bar(x, my_attribute_sales_count, width, bottom=my_attribute_no_sales_count,
+        attribute_0_bars = plt.bar(x, my_attribute_0_count, width, edgecolor='black')
+        attribute_1_bars = plt.bar(x, my_attribute_1_count, width, bottom=my_attribute_0_count,
                                          edgecolor='black', )
 
         # plt.grid()
@@ -67,7 +67,11 @@ class DataExplorer(DataLoader):
         plt.yticks(fontsize=18)
         plt.xticks(x, rotation=90, fontsize=18)  # rotates ticks by 30deg so larger font can be used
         #  create the legend
-        plt.legend((attribute_no_sale_bars[0], attribute_sale_bars[0]), ('No Sale', ' Sale'))
+
+        legend_label_true = target, ': True'
+        legend_label_false = target, ': False'
+
+        plt.legend((attribute_0_bars[0], attribute_1_bars[0]), (legend_label_false, legend_label_true))
         plt.title('Bar graph showing the count of ' + str(attribute),fontsize=18)
         plt.savefig('Data_Out/' + attribute + '_bar_graph_attribute_by_classification.pdf', index=False,
                     bbox_inches='tight')
@@ -138,41 +142,46 @@ class DataExplorer(DataLoader):
         plt.savefig('Data_Out/'+my_y_attribute+'_'+my_x_attribute+'scatter_plot.pdf', index=False, bbox_inches='tight')
         plt.show()
 
-    def scatter_plot_by_classification(self, my_y_attribute, my_x_attribute):
-        #  create empty list to store colour with sale being blue and no sale being red
-        list_colour_corresponding_to_sale = ['Null'] * len(self._data_set)
+    def scatter_plot_by_classification(self, my_y_attribute, my_x_attribute, target):
+        #  create empty list to store colour with target true being blue and target false being red
+        list_colour_corresponding_to_target = ['Null'] * len(self._data_set)
 
         for i in range(0, len(self._data_set)):
 
-            # if a value in the attribute sale is 0 then set the colour to red
-            if self._data_set['Sale'].values[i] == 0:
-                list_colour_corresponding_to_sale[i] = "r"
+            # if a value in the target is false then set the colour to red
+            if self._data_set[target].values[i] == 0:
+                list_colour_corresponding_to_target[i] = "r"
 
-            # if a value in the attribute sale is 1 then set the colour to blue
-            elif self._data_set['Sale'].values[i] == 1:
-                list_colour_corresponding_to_sale[i] = "b"
+            # if a value in the target is true then set the colour to blue
+            elif self._data_set[target].values[i] == 1:
+                list_colour_corresponding_to_target[i] = "b"
             else:
                 print("Error")
                 break
 
         plt.scatter(self._data_set[my_x_attribute].values, self._data_set[my_y_attribute].values,
-                    color=list_colour_corresponding_to_sale)
+                    color=list_colour_corresponding_to_target)
 
         plt.xlabel(my_x_attribute)
         plt.ylabel(my_y_attribute)
 
+        #  create the legend
+
+        legend_label_true = target, ': True'
+        legend_label_false = target, ': False'
+
         # plot empty lists with the desired size and label to create the legend (not possible any other way)
-        plt.scatter([], [], c=['r'], alpha=1, label='NoSale')
-        plt.scatter([], [], c=['b'], alpha=1, label='Sale')
+        plt.scatter([], [], c=['r'], alpha=1, label=legend_label_false)
+        plt.scatter([], [], c=['b'], alpha=1, label=legend_label_true)
         plt.title('Scatter Graph of ' + str(my_y_attribute) + ' against ' + str(my_x_attribute))
 
-        plt.legend(loc=0, scatterpoints=1, frameon=False, labelspacing=0, title='Sale or no Sale: ', prop={'size': 9})
+        plt.legend(loc=0, scatterpoints=1, frameon=False, labelspacing=0, prop={'size': 9})
         plt.savefig('Data_Out/' + my_y_attribute + '_' + my_x_attribute + 'scatter_plot_by_classification.pdf',
                     index=False, bbox_inches='tight')
         plt.show()
 
     def histogram_and_q_q(self, attribute):
-        # define a new dataset with the attributes missing dropped so that the NaN values are ignored
+        # define a new data set with the attributes missing dropped so that the NaN values are ignored
         my_data_set = self._data_set.dropna()
 
         x_sigma = my_data_set[attribute].values.std()  # standard deviation
