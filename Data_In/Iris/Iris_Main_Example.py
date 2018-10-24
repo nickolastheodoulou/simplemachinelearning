@@ -9,9 +9,8 @@ def main():
     iris_data = pd.read_csv('Data_In/Iris/iris.txt', header=None)
     iris_data.columns = ['sepal_length', 'sepal_width', 'petal_length', 'petal_width', 'classification']
 
-    model_iris = DataModeler(iris_data)
+    model_iris = DataModeler(iris_data, 0)
     model_iris.split_data_set_if_test_not_split('classification', 0.7, 0)
-    # model_iris = DataModeler(iris_data.iloc[:70, :], iris_data.iloc[70:, :])
 
     model_iris.heat_map()
     print(model_iris._x_train.head())

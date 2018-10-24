@@ -6,17 +6,17 @@ from Class_Data_Explorer import DataExplorer
 def main():
     # Main used for DfBL data set
 
-    model_DfBL = DataExplorer(pd.read_csv("Data_In/DfBL/VehicleData_csv.csv"))  # loads in the data
+    model_DfBL = DataExplorer(pd.read_csv("Data_In/DfBL/VehicleData_csv.csv"), 0)  # loads in the data
 
-    print(model_DfBL._data_set.head())  # prints the first 5 columns of the data-set
-    print(model_DfBL._data_set.shape)  # prints the dimension of the data set
+    print(model_DfBL._train_data_set.head())  # prints the first 5 columns of the data-set
+    print(model_DfBL._train_data_set.shape)  # prints the dimension of the data set
     model_DfBL.missing_data_ratio_print()  # prints the percentage of missing values in the data set (NONE FOUND!)
 
     #  calls a function to combine the column VehicleType and Manufacturer to a new column named
     #  ManufacturerAndVehicleType
     model_DfBL.combine_columns("ManufacturerAndVehicleType", "VehicleType", "Manufacturer")
 
-    print(model_DfBL._data_set.head())  # print the data_set to check it worked correctly
+    print(model_DfBL._train_data_set.head())  # print the data_set to check it worked correctly
 
     #  model_DfBL._data_set.to_csv("Data_Out/data_set_out.csv")  # saves the pandas data frame to a CSV file
 

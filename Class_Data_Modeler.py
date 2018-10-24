@@ -11,8 +11,8 @@ from Class_Data_Preprocessor import DataPreprocessor
 
 
 class DataModeler(DataPreprocessor):
-    def __init__(self, data_set):
-        super().__init__(data_set)
+    def __init__(self, train_data_set, test_data_set):
+        super().__init__(train_data_set, test_data_set)
 
     def knn_model_grid_search(self, tuned_parameters, number_of_folds):
         # calls teh function to perform the grid search for user inputted parameters

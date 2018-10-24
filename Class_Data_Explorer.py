@@ -9,19 +9,19 @@ from Class_Data_Loader import DataLoader
 
 
 class DataExplorer(DataLoader):
-    def __init__(self, data_set):
-        super().__init__(data_set)
+    def __init__(self, train_data_set, test_data_set):
+        super().__init__(train_data_set, test_data_set)
 
     # method that prints the number of different values in a given column
     def attribute_value_count(self, attribute):
         #  first counts the number of different values in each column then sorts it in ascending order
-        my_attribute_count = self._data_set[attribute].value_counts().sort_index()
+        my_attribute_count = self._train_data_set[attribute].value_counts().sort_index()
         print("The count of the different variables in the attribute: ", attribute, ' is\n', my_attribute_count)
 
     # method that creates a bar graph to show the distribution of an attribute
     def bar_graph_attribute(self, attribute):
         #  first counts the number of different values in each column then sorts it in ascending order
-        column_count = self._data_set[attribute].value_counts().sort_index()
+        column_count = self._train_data_set[attribute].value_counts().sort_index()
         # set the y axis to the values within the series object as a percentage
         y = column_count.values * 100 / column_count.sum()
         x = column_count.index  # set the x axis to the index of the series object
@@ -39,7 +39,7 @@ class DataExplorer(DataLoader):
 
     def line_graph_percentage_difference(self, attribute):
         #  counts the number of attributes and store
-        attribute_list_count = self._data_set[attribute].value_counts().sort_index()
+        attribute_list_count = self._train_data_set[attribute].value_counts().sort_index()
 
         #  define the list of attributes in ascending order
         attribute_list = attribute_list_count.index
@@ -72,19 +72,19 @@ class DataExplorer(DataLoader):
     # method that prints the number of different values in each column then sorts it in ascending order per
     # classification
     def attribute_value_count_by_classification(self, attribute, target):
-        my_attribute_classification_count = pd.crosstab(self._data_set[attribute], self._data_set[target])
+        my_attribute_classification_count = pd.crosstab(self._train_data_set[attribute], self._train_data_set[target])
         print("The classification count of the different variables in the attribute: ", attribute, ' is\n',
               my_attribute_classification_count)
 
     def bar_graph_attribute_by_classification(self, attribute, target):
         plt.subplots(figsize=(16, 8))  # changes the size of the fig
         #  Computes a cross-tabulation of user inputted attribute to plot target true and false count
-        my_attribute_true_false_matrix = pd.crosstab(self._data_set[attribute], self._data_set[target])
+        my_attribute_true_false_matrix = pd.crosstab(self._train_data_set[attribute], self._train_data_set[target])
 
         #  counts number of false for inputted attribute
-        my_attribute_0_count = my_attribute_true_false_matrix[self._data_set[target].unique()[0]].values
+        my_attribute_0_count = my_attribute_true_false_matrix[self._train_data_set[target].unique()[0]].values
         #  counts number of true for inputted attribute
-        my_attribute_1_count = my_attribute_true_false_matrix[self._data_set[target].unique()[1]].values
+        my_attribute_1_count = my_attribute_true_false_matrix[self._train_data_set[target].unique()[1]].values
         x = my_attribute_true_false_matrix.index  # set the x axis to index of user inputted attribute
 
         width = 0.5  # the width of the bars
@@ -111,18 +111,18 @@ class DataExplorer(DataLoader):
 
     # method that prints a summary of the distribution of the data
     def describe_attribute(self, attribute):
-        description_of_attribute = self._data_set[attribute].describe()
+        description_of_attribute = self._train_data_set[attribute].describe()
         print("A summary of the disribution for the attribute", attribute, ' is\n', description_of_attribute)
 
     #  method that prints the percentage of missing data of each column
     def missing_data_ratio_print(self):
         #  define the percentage as the number of missing values in each column/ number of entries * 100
-        percent_of_missing_data_in_each_column = ((self._data_set.isnull().sum() / (len(self._data_set))) * 100)
+        percent_of_missing_data_in_each_column = ((self._train_data_set.isnull().sum() / (len(self._train_data_set))) * 100)
 
         #  sorts percent_of_missing_data_in_each_column into descending order to be printed
         percent_of_missing_data_in_each_column = percent_of_missing_data_in_each_column.drop(
             percent_of_missing_data_in_each_column[percent_of_missing_data_in_each_column == 0].index).sort_values(
-            ascending=False)[:self._data_set.shape[1]]
+            ascending=False)[:self._train_data_set.shape[1]]
 
         #  redefines percent_of_missing_data_in_each_column as a DataFrame with the column head 'Missing Ratio'
         percent_of_missing_data_in_each_column = pd.DataFrame({'Missing Ratio': percent_of_missing_data_in_each_column})
@@ -136,12 +136,12 @@ class DataExplorer(DataLoader):
     #  method that p
     def missing_data_ratio_bar_graph(self):
         #  define the percentage as the number of missing values in each column/ number of entries * 100
-        percent_of_missing_data_in_each_column = ((self._data_set.isnull().sum() / (len(self._data_set))) * 100)
+        percent_of_missing_data_in_each_column = ((self._train_data_set.isnull().sum() / (len(self._train_data_set))) * 100)
 
         #  sorts percent_of_missing_data_in_each_column into descending order to be printed
         percent_of_missing_data_in_each_column = percent_of_missing_data_in_each_column.drop(
             percent_of_missing_data_in_each_column[percent_of_missing_data_in_each_column == 0].index).sort_values(
-                ascending=False)[:self._data_set.shape[1]]
+                ascending=False)[:self._train_data_set.shape[1]]
 
         plt.xticks(rotation='90', fontsize=14)
         # use seaborn package to plot the bar graph
@@ -154,7 +154,7 @@ class DataExplorer(DataLoader):
 
     # method that produces a heatmap of the attributes
     def heat_map(self):
-        correlation_matrix = self._data_set.corr()  # correlation matrix
+        correlation_matrix = self._train_data_set.corr()  # correlation matrix
         plt.subplots(figsize=(12, 9))  # size of fig
         z_text = np.around(correlation_matrix, decimals=1)  # Only show rounded value (full value on hover)
         sns.heatmap(z_text, vmax=.8, square=True, annot=True, fmt='.1f', annot_kws={'size': 7})  # creates the heatmap
@@ -162,14 +162,14 @@ class DataExplorer(DataLoader):
 
     def box_plot(self, target, attribute):
         #  sort the dataset into acending order of the attribute to be plotted
-        self._data_set = self._data_set.sort_values([attribute]).reset_index(drop=True)
-        data_in = pd.concat([self._data_set[target], self._data_set[attribute]], axis=1)  # defines the data
+        self._train_data_set = self._train_data_set.sort_values([attribute]).reset_index(drop=True)
+        data_in = pd.concat([self._train_data_set[target], self._train_data_set[attribute]], axis=1)  # defines the data
         plt.subplots(figsize=(16, 8))  # changes the size of the fig
 
         fig = sns.boxplot(x=attribute, y=target, data=data_in)
         fig.set_xlabel(attribute, fontsize=12)
         fig.set_ylabel(target, fontsize=12)
-        fig.axis(ymin=0, ymax=self._data_set[target].values.max())  # defines the y axis
+        fig.axis(ymin=0, ymax=self._train_data_set[target].values.max())  # defines the y axis
         plt.xticks(rotation=90)  # rotates the x ticks so that they are easier to read when the strings are longer
         plt.tick_params(labelsize=12)
 
@@ -178,10 +178,10 @@ class DataExplorer(DataLoader):
         plt.show()
 
     def scatter_plot(self, my_y_attribute, my_x_attribute):
-        x = self._data_set[my_x_attribute].values
+        x = self._train_data_set[my_x_attribute].values
         # defines the sold price so that it can be loaded into the function each time rather than loading the whole
         # train matrix
-        y = self._data_set[my_y_attribute].values
+        y = self._train_data_set[my_y_attribute].values
         plt.subplots(figsize=(16, 8))  # changes the size of the fig
         plt.scatter(x, y, c="g", alpha=0.5, marker="s")  # scatter plot of the sold price and user chosen attribute
         plt.title('Scatter Graph of ' + str(my_y_attribute) + ' against ' + str(my_x_attribute))
@@ -193,22 +193,22 @@ class DataExplorer(DataLoader):
 
     def scatter_plot_by_classification(self, my_y_attribute, my_x_attribute, target):
         #  create empty list to store colour with target true being blue and target false being red
-        list_colour_corresponding_to_target = ['Null'] * len(self._data_set)
+        list_colour_corresponding_to_target = ['Null'] * len(self._train_data_set)
 
-        for i in range(0, len(self._data_set)):
+        for i in range(0, len(self._train_data_set)):
 
             # if a value in the target is false then set the colour to red
-            if self._data_set[target].values[i] == 0:
+            if self._train_data_set[target].values[i] == 0:
                 list_colour_corresponding_to_target[i] = "r"
 
             # if a value in the target is true then set the colour to blue
-            elif self._data_set[target].values[i] == 1:
+            elif self._train_data_set[target].values[i] == 1:
                 list_colour_corresponding_to_target[i] = "b"
             else:
                 print("Error")
                 break
 
-        plt.scatter(self._data_set[my_x_attribute].values, self._data_set[my_y_attribute].values,
+        plt.scatter(self._train_data_set[my_x_attribute].values, self._train_data_set[my_y_attribute].values,
                     color=list_colour_corresponding_to_target)
 
         plt.xlabel(my_x_attribute)
@@ -231,7 +231,7 @@ class DataExplorer(DataLoader):
 
     def histogram_and_q_q(self, attribute):
         # define a new data set with the attributes missing dropped so that the NaN values are ignored
-        my_data_set = self._data_set.dropna()
+        my_data_set = self._train_data_set.dropna()
 
         x_sigma = my_data_set[attribute].values.std()  # standard deviation
         x_max = my_data_set[attribute].values.max()  # max value
@@ -273,12 +273,12 @@ class DataExplorer(DataLoader):
     # attribute to be stacked within the bar (Needs to be generalised!
     def triple_stacked_bar_graph(self, attribute, sub_attribute):
         #  Computes a cross-tabulation of two user inputted attributes
-        attribute_and_sub_attribute_matrix = pd.crosstab(self._data_set[attribute], self._data_set[sub_attribute])
+        attribute_and_sub_attribute_matrix = pd.crosstab(self._train_data_set[attribute], self._train_data_set[sub_attribute])
 
         #  defines the y values of the three sub attributes as the three columns in column_count matrix
-        sub_attribute_one_count = attribute_and_sub_attribute_matrix[self._data_set[sub_attribute].unique()[0]].values
-        sub_attribute_two_count = attribute_and_sub_attribute_matrix[self._data_set[sub_attribute].unique()[1]].values
-        sub_attribute_three_count = attribute_and_sub_attribute_matrix[self._data_set[sub_attribute].unique()[2]].values
+        sub_attribute_one_count = attribute_and_sub_attribute_matrix[self._train_data_set[sub_attribute].unique()[0]].values
+        sub_attribute_two_count = attribute_and_sub_attribute_matrix[self._train_data_set[sub_attribute].unique()[1]].values
+        sub_attribute_three_count = attribute_and_sub_attribute_matrix[self._train_data_set[sub_attribute].unique()[2]].values
 
         x = attribute_and_sub_attribute_matrix.index  # set the x axis to the year which is the intex of
         #  attribute_and_sub_attribute_matrix
@@ -298,8 +298,8 @@ class DataExplorer(DataLoader):
         #  create the legend of each bar by the corresponding sub_attribute which is the ith unique value in the
         #  column VehicleType within self._data_set
         plt.legend((sub_attribute_one_bar[0], sub_attribute_two_bar[0], sub_attribute_three_bar[0]),
-                   (self._data_set.VehicleType.unique()[0], self._data_set.VehicleType.unique()[1],
-                    self._data_set.VehicleType.unique()[2]))
+                   (self._train_data_set.VehicleType.unique()[0], self._train_data_set.VehicleType.unique()[1],
+                    self._train_data_set.VehicleType.unique()[2]))
 
         plt.savefig('Data_Out/' + attribute + '_triple_stacked_bar_graph.pdf', index=False, bbox_inches='tight')
         plt.show()

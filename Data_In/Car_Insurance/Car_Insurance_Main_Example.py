@@ -5,7 +5,7 @@ from Class_Data_Modeler import DataModeler
 
 def main():
     # constructs the object car_insurance_model by loading in the data to the class DataModeler
-    car_insurance_model = DataModeler(pd.read_csv("Data_In/Car_Insurance/DS_Assessment.csv"))
+    car_insurance_model = DataModeler(pd.read_csv("Data_In/Car_Insurance/DS_Assessment.csv"), 0)
 
     ####################################################################################################################
     # EXPLORATION
@@ -14,8 +14,8 @@ def main():
     # Get a very broad understanding of the data from the dimension and first 5 rows
 
     # Prints the dimension of the data after successfully storing the data set as a Pandas data frame
-    print("The dimension of the car insurance data is: ", car_insurance_model._data_set.shape)
-    print(car_insurance_model._data_set.head())  # prints the first 5 rows of the data set
+    print("The dimension of the car insurance data is: ", car_insurance_model._train_data_set.shape)
+    print(car_insurance_model._train_data_set.head())  # prints the first 5 rows of the data set
 
     ####################################################################################################################
     # Example of some of the graphs used to explore the data for the attribute: Age
