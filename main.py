@@ -96,6 +96,9 @@ def main():
     print('The dimension of the test is', model_house._test_data_set.shape)
 
     ####################################################################################################################
+    tuned_parameters_lasso = [{'alpha': [1, 0.1]}]
+
+    # model_house.lasso_model_grid_search()
 
     #  Run the function called, Lasso
     model_house.lasso_compare_alpha([1000, 100, 10]).to_csv('Data_Out/Lasso_model_alpha_1_0point1_0point01.csv',
