@@ -13,6 +13,7 @@ from sklearn.linear_model import Lasso
 from sklearn.linear_model import LinearRegression
 from scipy.special import inv_boxcox
 import matplotlib.pyplot as plt
+from sklearn.linear_model import Ridge
 
 from sklearn import datasets
 from sklearn.linear_model import LassoCV
@@ -159,67 +160,6 @@ class DataModeler(DataPreprocessor):
             df[column_name] = lasso.steps[1][1].coef_  # Create a column of coefficient values
         return df  # Return the data frame
 
-    '''
-    # method that performs a grid search for svm
-    def lasso_model_grid_search(self):
-        X = self._train_data_set
-        y = self._y_train
-        alphas = np.logspace(-4, -0.5, 30)
-        lasso = Lasso(random_state=1)
-
-        tuned_parameters = [{'alpha': alphas}]
-        n_folds = 5
-
-        clf = GridSearchCV(lasso, tuned_parameters, cv=n_folds, refit=False)
-        clf.fit(X, y)
-
-        scores = clf.cv_results_['mean_test_score']
-        scores_std = clf.cv_results_['std_test_score']
-        plt.figure().set_size_inches(8, 6)
-        plt.semilogx(alphas, scores)
-
-        # plot error lines showing +/- std. errors of the scores
-        std_error = scores_std / np.sqrt(n_folds)
-
-        plt.semilogx(alphas, scores + std_error, 'b--')
-        plt.semilogx(alphas, scores - std_error, 'b--')
-
-        # alpha=0.2 controls the translucency of the fill color
-        plt.fill_between(alphas, scores + std_error, scores - std_error, alpha=0.2)
-
-        plt.ylabel('CV score +/- std error')
-        plt.xlabel('alpha')
-        plt.axhline(np.max(scores), linestyle='--', color='.5')
-        plt.xlim([alphas[0], alphas[-1]])
-
-        # #############################################################################
-        # Bonus: how much can you trust the selection of alpha?
-
-        # To answer this question we use the LassoCV object that sets its alpha
-        # parameter automatically from the data by internal cross-validation (i.e. it
-        # performs cross-validation on the training data it receives).
-        # We use external cross-validation to see how much the automatically obtained
-        # alphas differ across different cross-validation folds.
-        lasso_cv = LassoCV(alphas=alphas, cv=5, random_state=0)
-        k_fold = KFold(3)
-
-        print("Answer to the bonus question:",
-              "how much can you trust the selection of alpha?")
-        print()
-        print("Alpha parameters maximising the generalization score on different")
-        print("subsets of the data:")
-        for k, (train, test) in enumerate(k_fold.split(X, y)):
-            lasso_cv.fit(X[train], y[train])
-            print("[fold {0}] alpha: {1:.5f}, score: {2:.5f}".
-                  format(k, lasso_cv.alpha_, lasso_cv.score(X[test], y[test])))
-        print()
-        print("Answer: Not very much since we obtained different alphas for different")
-        print("subsets of the data and moreover, the scores for these alphas differ")
-        print("quite substantially.")
-
-        plt.show()
-    '''
-
     def lasso_model(self, alpha, attribute):
         my_lasso_model = make_pipeline(RobustScaler(), Lasso(alpha=alpha, random_state=1))
         my_lasso_model.fit(self._train_data_set, self._y_train)
@@ -242,22 +182,55 @@ class DataModeler(DataPreprocessor):
         print('For LASSO, the neg_mean_squared_error scores are: ', scores['test_neg_mean_squared_error'])
         print('For LASSO, the R^2 scores are: ', scores['test_r2'])
 
-    def linear_model(self, attribute):  # simple linear model
-        my_linear_model = LinearRegression()  # Create linear regression object
-        my_linear_model.fit(self._train_data_set, self._y_train)  # Train the model using the training sets
-        pred_y_model = my_linear_model.predict(self._test_data_set)  # Make predictions using the testing set
-        # pred_y_model = inv_boxcox(pred_y_model, 0.1)  # inverse boxcox the prediction
-        pred_y_model = pd.DataFrame(data=pred_y_model, columns={attribute})  #
-        pred_y_model = pd.concat([self._test_y_id, pred_y_model], axis=1)
-        pred_y_model.to_csv('Data_Out/Linear_Model.csv', index=False)
+    def linear_model_grid_search(self, linear_model_parameters, n_folds):  # simple linear model
+        X = self._train_data_set
+        y = self._y_train
 
-        # print cross validation scores
-        scores = cross_validate(my_linear_model, self._train_data_set, self._y_train, cv=10,
-                                scoring=('explained_variance', 'neg_mean_absolute_error', 'r2',
-                                         'neg_mean_squared_error'))
+        my_linear_model = GridSearchCV(estimator=LinearRegression(), cv=n_folds, param_grid=linear_model_parameters)
+        my_linear_model.fit(X, y)
 
-        # print the scores for test
-        print('For linear model, the explained_variance scores are: ', scores['test_explained_variance'])
-        print('For linear model, the neg_mean_absolute_error scores are: ', scores['test_neg_mean_absolute_error'])
-        print('For linear model, the neg_mean_squared_error scores are: ', scores['test_neg_mean_squared_error'])
-        print('For linear model, the R^2 scores are: ', scores['test_r2'])
+        #  Mean cross-validated score of the best_estimator
+        print('linear model best score:', my_linear_model.best_score_)
+        print('linear model best parameters:', my_linear_model.best_params_)
+
+    def linear_model_submission(self, target, my_copy_X, my_normalize, my_fit_intercept):
+        X_train = self._train_data_set
+        y_train = self._y_train
+        x_test = self._test_data_set
+
+        optimised_model = LinearRegression(copy_X=my_copy_X, normalize=my_normalize, fit_intercept=my_fit_intercept)
+
+        my_linear_model = optimised_model
+        my_linear_model.fit(X_train, y_train)
+
+        y_pred = my_linear_model.predict(x_test)  # Make predictions using the testing set
+        y_pred = pd.DataFrame(data=y_pred, columns={target})
+        y_pred = pd.concat([self._test_y_id, y_pred], axis=1)
+        y_pred.to_csv('Data_Out/linear_model_optimised.csv', index=False) # export predictions as csv
+
+    # method that performs a grid search for ridge regression
+    def ridge_model_grid_search(self, ridge_model_parameters, n_folds):
+        X = self._train_data_set
+        y = self._y_train
+
+        my_ridge_model = GridSearchCV(estimator=Ridge(), param_grid=ridge_model_parameters, cv=n_folds)
+        my_ridge_model.fit(X, y)
+
+        #  Mean cross-validated score of the best_estimator
+        print('The best score for the model is', my_ridge_model.best_score_)
+        print('The best value for alpha is', my_ridge_model.best_estimator_.alpha)
+
+    def ridge_model_submission(self, target, my_alpha):
+        X_train = self._train_data_set
+        y_train = self._y_train
+        x_test = self._test_data_set
+
+        optimised_model = Ridge(alpha=my_alpha)
+
+        my_ridge_model = optimised_model
+        my_ridge_model.fit(X_train, y_train)
+
+        y_pred = my_ridge_model.predict(x_test)  # Make predictions using the testing set
+        y_pred = pd.DataFrame(data=y_pred, columns={target})
+        y_pred = pd.concat([self._test_y_id, y_pred], axis=1)
+        y_pred.to_csv('Data_Out/ridge_model_optimised.csv', index=False)  # export predictions as csv

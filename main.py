@@ -98,7 +98,7 @@ def main():
     ####################################################################################################################
     tuned_parameters_lasso = [{'alpha': [1, 0.1]}]
 
-    # model_house.lasso_model_grid_search()
+
 
     #  Run the function called, Lasso
     model_house.lasso_compare_alpha([1000, 100, 10]).to_csv('Data_Out/Lasso_model_alpha_1_0point1_0point01.csv',
@@ -107,7 +107,18 @@ def main():
     # model_house.box_cox_target(0.1)
     model_house.lasso_model(100, 'SalePrice')
 
-    model_house.linear_model('SalePrice')
+    ####################################################################################################################
+    # ridge regression optimised
+
+    ridge_model_parameters = [{'alpha': [1, 5, 7, 10]}]
+    model_house.ridge_model_grid_search(ridge_model_parameters, 10)
+    model_house.ridge_model_submission('SalePrice', 10)
+    ####################################################################################################################
+    # linear optimised
+
+    linear_model_parameters = {'fit_intercept': [True, False], 'normalize': [True, False], 'copy_X': [True, False]}
+    model_house.linear_model_grid_search(linear_model_parameters, 10)
+    model_house.linear_model_submission('SalePrice', True, True, False)
     ####################################################################################################################
 
     model_house._train_data_set.to_csv('Data_Out/train_dataset.csv', index=False)
