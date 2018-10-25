@@ -28,7 +28,6 @@ def main():
     model_house.switch_na_to_median_other_attribute('LotFrontage', 'Neighborhood')
     # all features in train are all pub and 2 na, 'NoSewa' is in test set hence the attribute doesnt help in any way
     # with the model so it is dropped
-    model_house.drop_attribute('Utilities')
     attributes_to_none = ["PoolQC", "MiscFeature", "Alley", "Fence", "FireplaceQu", "GarageCond", "GarageQual",
                           "GarageFinish", "GarageYrBlt", "GarageType", "BsmtFinType2", "BsmtExposure", "BsmtFinType1",
                           "BsmtCond", "BsmtQual", "MasVnrType"]
@@ -58,23 +57,48 @@ def main():
     ####################################################################################################################
     # all the missing values are inputted!!!!
     ####################################################################################################################
-    '''
-    print('The dimension of the train is', model_house._train_data_set.shape)
-    print('The dimension of the test is', model_house._test_data_set.shape)
-    model_house._train_data_set = pd.get_dummies(model_house._train_data_set.select_dtypes(include=['object']))
-    model_house._test_data_set = pd.get_dummies(model_house._test_data_set.select_dtypes(include=['object']))
+
     print('The dimension of the train is', model_house._train_data_set.shape)
     print('The dimension of the test is', model_house._test_data_set.shape)
 
-    missing_cols = set(model_house._train_data_set.columns) - set(model_house._test_data_set.columns)
+    ####################################################################################################################
+    #  need to add these in later
+    attributes_to_drop = ['Utilities', 'YearBuilt', 'MoSold', 'YrSold', 'GarageYrBlt']
+    for x in attributes_to_drop:
+        model_house.drop_attribute(x)
+    ####################################################################################################################
 
-    model_house._train_data_set = model_house._train_data_set.drop(missing_cols, axis=1)
+    attributes_to_normalise = ['LotFrontage', 'LotArea', 'MasVnrArea', 'BsmtFinSF1', 'BsmtFinSF2', 'BsmtUnfSF',
+                               'TotalBsmtSF', '1stFlrSF', '2ndFlrSF', 'LowQualFinSF', 'GrLivArea', 'GarageArea',
+                               'WoodDeckSF', 'OpenPorchSF', 'EnclosedPorch', '3SsnPorch', 'ScreenPorch', 'PoolArea',
+                               'MiscVal']
+
+    for x in attributes_to_normalise:
+        model_house.normalise_attribute(x)
+
+    attributes_to_one_hot_encode = ['MSSubClass', 'MSZoning', 'Street', 'Alley', 'LotShape', 'LandContour',
+                                    'LotConfig', 'LandSlope', 'Neighborhood', 'Condition1', 'Condition2', 'BldgType',
+                                    'HouseStyle', 'YearRemodAdd', 'RoofStyle', 'RoofMatl', 'Exterior1st',
+                                    'Exterior2nd', 'MasVnrType', 'ExterQual', 'ExterCond', 'Foundation', 'BsmtQual',
+                                    'BsmtCond', 'BsmtExposure', 'BsmtFinType1', 'BsmtFinType2', 'Heating', 'HeatingQC',
+                                    'CentralAir', 'Electrical', 'KitchenQual', 'Functional', 'GarageType',
+                                    'FireplaceQu', 'GarageFinish', 'GarageQual', 'GarageCond',
+                                    'PavedDrive', 'PoolQC', 'Fence', 'MiscFeature', 'SaleType', 'OverallCond',
+                                    'SaleCondition', 'OverallQual', 'FullBath', 'BedroomAbvGr', 'TotRmsAbvGrd',
+                                    'GarageCars', 'BsmtFullBath', 'KitchenAbvGr', 'BsmtHalfBath', 'HalfBath',
+                                    'Fireplaces']
+
+    for x in attributes_to_one_hot_encode:
+        model_house.one_hot_encode_attribute(x)
+
+    model_house.delete_unnecessary_one_hot_encoded_columns()
+
     print('The dimension of the train is', model_house._train_data_set.shape)
     print('The dimension of the test is', model_house._test_data_set.shape)
 
     model_house._train_data_set.to_csv('Data_Out/train_X_up.csv', index=False)
     model_house._test_data_set.to_csv('Data_Out/train_Y_up.csv', index=False)
-    '''
+
 
 if __name__ == "__main__":
     main()

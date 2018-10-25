@@ -91,6 +91,21 @@ class DataPreprocessor(DataExplorer):
             axis=1, sort=False)
         self._test_data_set = self._test_data_set.drop(columns=[attribute])
 
+    #  if a value within an attribute is only in test or train after one hot encoding, delete it
+    def delete_unnecessary_one_hot_encoded_columns(self):
+        #  list of the missing columns in train after one hot encoding
+        missing_cols_in_train = set(self._test_data_set.columns) - set(self._train_data_set.columns)
+        for x in missing_cols_in_train:
+            #  deletes the missing columns
+            self._test_data_set = self._test_data_set.drop(columns=[x])
+        #  print the name of the columns that werre deleted
+        print('The missing columns in train are:', missing_cols_in_train)
+
+        missing_cols_in_test = set(self._train_data_set.columns) - set(self._test_data_set.columns)
+        for x in missing_cols_in_test:
+            self._train_data_set = self._train_data_set.drop(columns=[x])
+        print('The missing columns in test are: ', missing_cols_in_test)
+
     def impute_mode(self, attribute):
         self._train_data_set[attribute] = self._train_data_set[attribute].fillna(
             self._train_data_set[attribute].mode()[0])
