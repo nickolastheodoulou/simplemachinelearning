@@ -3,9 +3,15 @@ import pandas as pd
 from sklearn import neighbors
 from sklearn.svm import SVC
 from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import cross_validate
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import classification_report
 from sklearn.neural_network import MLPClassifier
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import RobustScaler
+from sklearn.linear_model import Lasso
+from sklearn.linear_model import LinearRegression
+from scipy.special import inv_boxcox
 
 from Class_Data_Preprocessor import DataPreprocessor
 
@@ -130,3 +136,59 @@ class DataModeler(DataPreprocessor):
 
         print('For the neural_network_model when alpha=', my_alpha, ' and the hidden layers being set to: ',
               my_hidden_layers, ' the percentage accuracy of each ', number_of_folds, '-fold is:', percent_accuracies)
+
+    # Create a function called lasso
+    # Takes in a list of alphas. Outputs a dataframe containing the coefficients of lasso regressions from each alpha.
+    def lasso_compare_alpha(self, alphas):
+        df = pd.DataFrame()  # Create an empty data frame
+        df['Feature Name'] = self._train_data_set.columns  # Create a column of feature names
+        for alpha in alphas:  # For each alpha value in the list of alpha values,
+            #  Robustscaler() makes the lasso more robust on outliers
+            # Create a lasso regression with that alpha value,
+            lasso = make_pipeline(RobustScaler(), Lasso(alpha=alpha, random_state=1))
+            lasso.fit(self._train_data_set, self._y_train)  # Fit the lasso regression
+            column_name = 'Alpha = %f' % alpha  # Create a column name for that alpha value
+            df[column_name] = lasso.steps[1][1].coef_  # Create a column of coefficient values
+        return df  # Return the data frame
+
+    def lasso_model(self, alpha, attribute):
+        my_lasso_model = make_pipeline(RobustScaler(), Lasso(alpha=alpha, random_state=1))
+        my_lasso_model.fit(self._train_data_set, self._y_train)
+        y_pred = my_lasso_model.predict(self._test_data_set)  # Make predictions using the testing set
+        # pred_y_model = inv_boxcox(pred_y_model, 0.1)  # inverse boxcox the prediction
+
+        # export predictions as csv
+        y_pred = pd.DataFrame(data=y_pred, columns={attribute})  #
+        y_pred = pd.concat([self._test_y_id, y_pred], axis=1)
+        y_pred.to_csv('Data_Out/Lasso_Model_alpha_' + str(alpha) + ' _for_ ' + attribute + '.csv', index=False)
+
+        # print cross validation scores
+        scores = cross_validate(my_lasso_model, self._train_data_set, self._y_train, cv=10,
+                                scoring=('explained_variance', 'neg_mean_absolute_error', 'r2',
+                                         'neg_mean_squared_error'))
+
+        # print the scores for test
+        print('For LASSO, the explained_variance scores are: ', scores['test_explained_variance'])
+        print('For LASSO, the neg_mean_absolute_error scores are: ', scores['test_neg_mean_absolute_error'])
+        print('For LASSO, the neg_mean_squared_error scores are: ', scores['test_neg_mean_squared_error'])
+        print('For LASSO, the R^2 scores are: ', scores['test_r2'])
+
+    def linear_model(self, attribute):  # simple linear model
+        my_linear_model = LinearRegression()  # Create linear regression object
+        my_linear_model.fit(self._train_data_set, self._y_train)  # Train the model using the training sets
+        pred_y_model = my_linear_model.predict(self._test_data_set)  # Make predictions using the testing set
+        # pred_y_model = inv_boxcox(pred_y_model, 0.1)  # inverse boxcox the prediction
+        pred_y_model = pd.DataFrame(data=pred_y_model, columns={attribute})  #
+        pred_y_model = pd.concat([self._test_y_id, pred_y_model], axis=1)
+        pred_y_model.to_csv('Data_Out/Linear_Model.csv', index=False)
+
+        # print cross validation scores
+        scores = cross_validate(my_linear_model, self._train_data_set, self._y_train, cv=10,
+                                scoring=('explained_variance', 'neg_mean_absolute_error', 'r2',
+                                         'neg_mean_squared_error'))
+
+        # print the scores for test
+        print('For linear model, the explained_variance scores are: ', scores['test_explained_variance'])
+        print('For linear model, the neg_mean_absolute_error scores are: ', scores['test_neg_mean_absolute_error'])
+        print('For linear model, the neg_mean_squared_error scores are: ', scores['test_neg_mean_squared_error'])
+        print('For linear model, the R^2 scores are: ', scores['test_r2'])

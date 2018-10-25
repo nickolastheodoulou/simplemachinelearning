@@ -51,7 +51,6 @@ def main():
 
     # drops id column from train_X and test_X to move it to _test_y_id
     model_house.index_column_drop_and_move_to_pred_y('Id')
-    model_house.box_cox_target(0.1)
     model_house.move_target_to_train_y('SalePrice')  # moves saleprice to train_Y
     model_house.missing_data_ratio_print()
     ####################################################################################################################
@@ -63,7 +62,7 @@ def main():
 
     ####################################################################################################################
     #  need to add these in later
-    attributes_to_drop = ['Utilities', 'YearBuilt', 'MoSold', 'YrSold', 'GarageYrBlt']
+    attributes_to_drop = ['Utilities', 'YearBuilt', 'MoSold', 'YrSold', 'GarageYrBlt', 'YearRemodAdd']
     for x in attributes_to_drop:
         model_house.drop_attribute(x)
     ####################################################################################################################
@@ -78,7 +77,7 @@ def main():
 
     attributes_to_one_hot_encode = ['MSSubClass', 'MSZoning', 'Street', 'Alley', 'LotShape', 'LandContour',
                                     'LotConfig', 'LandSlope', 'Neighborhood', 'Condition1', 'Condition2', 'BldgType',
-                                    'HouseStyle', 'YearRemodAdd', 'RoofStyle', 'RoofMatl', 'Exterior1st',
+                                    'HouseStyle', 'RoofStyle', 'RoofMatl', 'Exterior1st',
                                     'Exterior2nd', 'MasVnrType', 'ExterQual', 'ExterCond', 'Foundation', 'BsmtQual',
                                     'BsmtCond', 'BsmtExposure', 'BsmtFinType1', 'BsmtFinType2', 'Heating', 'HeatingQC',
                                     'CentralAir', 'Electrical', 'KitchenQual', 'Functional', 'GarageType',
@@ -96,8 +95,20 @@ def main():
     print('The dimension of the train is', model_house._train_data_set.shape)
     print('The dimension of the test is', model_house._test_data_set.shape)
 
-    model_house._train_data_set.to_csv('Data_Out/train_X_up.csv', index=False)
-    model_house._test_data_set.to_csv('Data_Out/train_Y_up.csv', index=False)
+    ####################################################################################################################
+
+    #  Run the function called, Lasso
+    model_house.lasso_compare_alpha([1000, 100, 10]).to_csv('Data_Out/Lasso_model_alpha_1_0point1_0point01.csv',
+                                                            index=False)
+
+    # model_house.box_cox_target(0.1)
+    model_house.lasso_model(100, 'SalePrice')
+
+    model_house.linear_model('SalePrice')
+    ####################################################################################################################
+
+    model_house._train_data_set.to_csv('Data_Out/train_dataset.csv', index=False)
+    model_house._test_data_set.to_csv('Data_Out/test_dataset.csv', index=False)
 
 
 if __name__ == "__main__":

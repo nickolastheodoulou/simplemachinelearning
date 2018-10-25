@@ -69,10 +69,11 @@ class DataPreprocessor(DataExplorer):
         self._y_train = boxcox(self._y_train, lamda)
 
     def normalise_attribute(self, attribute):  # normalises all column of an attribute
-        self._train_data_set[attribute] = (self._train_data_set[attribute] - self._train_data_set[attribute].mean()) / \
-                                          self._train_data_set[attribute].std()
-        self._test_data_set[attribute] = (self._test_data_set[attribute] - self._train_data_set[attribute].mean()) / \
-                                          self._train_data_set[attribute].std()
+        mean = self._train_data_set[attribute].mean()
+        std = self._train_data_set[attribute].std()
+
+        self._train_data_set[attribute] = (self._train_data_set[attribute] - mean) / std
+        self._test_data_set[attribute] = (self._test_data_set[attribute] - mean) / std
 
     #  method that one hot encodes a column
     def one_hot_encode_attribute(self, attribute):
