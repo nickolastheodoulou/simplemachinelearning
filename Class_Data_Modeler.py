@@ -161,9 +161,9 @@ class DataModeler(DataPreprocessor):
         return df  # Return the data frame
 
     def lasso_model(self, alpha, attribute):
-        my_lasso_model = make_pipeline(RobustScaler(), Lasso(alpha=alpha, random_state=1))
-        my_lasso_model.fit(self._train_data_set, self._y_train)
-        y_pred = my_lasso_model.predict(self._test_data_set)  # Make predictions using the testing set
+        my_model = make_pipeline(RobustScaler(), Lasso(alpha=alpha, random_state=1))
+        my_model.fit(self._train_data_set, self._y_train)
+        y_pred = my_model.predict(self._test_data_set)  # Make predictions using the testing set
         # pred_y_model = inv_boxcox(pred_y_model, 0.1)  # inverse boxcox the prediction
 
         # export predictions as csv
@@ -172,7 +172,7 @@ class DataModeler(DataPreprocessor):
         y_pred.to_csv('Data_Out/Lasso_Model_alpha_' + str(alpha) + ' _for_ ' + attribute + '.csv', index=False)
 
         # print cross validation scores
-        scores = cross_validate(my_lasso_model, self._train_data_set, self._y_train, cv=10,
+        scores = cross_validate(my_model, self._train_data_set, self._y_train, cv=10,
                                 scoring=('explained_variance', 'neg_mean_absolute_error', 'r2',
                                          'neg_mean_squared_error'))
 
@@ -182,55 +182,56 @@ class DataModeler(DataPreprocessor):
         print('For LASSO, the neg_mean_squared_error scores are: ', scores['test_neg_mean_squared_error'])
         print('For LASSO, the R^2 scores are: ', scores['test_r2'])
 
-    def linear_model_grid_search(self, linear_model_parameters, n_folds):  # simple linear model
-        X = self._train_data_set
-        y = self._y_train
-
-        my_linear_model = GridSearchCV(estimator=LinearRegression(), cv=n_folds, param_grid=linear_model_parameters)
-        my_linear_model.fit(X, y)
-
-        #  Mean cross-validated score of the best_estimator
-        print('linear model best score:', my_linear_model.best_score_)
-        print('linear model best parameters:', my_linear_model.best_params_)
-
-    def linear_model_submission(self, target, my_copy_X, my_normalize, my_fit_intercept):
+    def linear_model_submission(self, target, fine_tuned_parameters):
         X_train = self._train_data_set
         y_train = self._y_train
         x_test = self._test_data_set
 
-        optimised_model = LinearRegression(copy_X=my_copy_X, normalize=my_normalize, fit_intercept=my_fit_intercept)
+        optimised_model = LinearRegression(fine_tuned_parameters)
 
-        my_linear_model = optimised_model
-        my_linear_model.fit(X_train, y_train)
+        my_model = optimised_model
+        my_model.fit(X_train, y_train)
 
-        y_pred = my_linear_model.predict(x_test)  # Make predictions using the testing set
+        y_pred = my_model.predict(x_test)  # Make predictions using the testing set
         y_pred = pd.DataFrame(data=y_pred, columns={target})
         y_pred = pd.concat([self._test_y_id, y_pred], axis=1)
         y_pred.to_csv('Data_Out/linear_model_optimised.csv', index=False) # export predictions as csv
+
+    def ridge_model_submission(self, target, fine_tuned_parameters):
+        X_train = self._train_data_set
+        y_train = self._y_train
+        x_test = self._test_data_set
+
+        optimised_model = Ridge(alpha=fine_tuned_parameters)
+
+        my_model = optimised_model
+        my_model.fit(X_train, y_train)
+
+        y_pred = my_model.predict(x_test)  # Make predictions using the testing set
+        y_pred = pd.DataFrame(data=y_pred, columns={target})
+        y_pred = pd.concat([self._test_y_id, y_pred], axis=1)
+        y_pred.to_csv('Data_Out/ridge_model_optimised.csv', index=False)  # export predictions as csv
+
+    def linear_model_grid_search(self, linear_model_parameters, n_folds):  # simple linear model
+        X = self._train_data_set
+        y = self._y_train
+
+        my_model = GridSearchCV(estimator=LinearRegression(), cv=n_folds, param_grid=linear_model_parameters)
+        my_model.fit(X, y)
+
+        #  Mean cross-validated score of the best_estimator
+        print('linear model best score:', my_model.best_score_)
+        print('linear model best parameters:', my_model.best_params_)
 
     # method that performs a grid search for ridge regression
     def ridge_model_grid_search(self, ridge_model_parameters, n_folds):
         X = self._train_data_set
         y = self._y_train
 
-        my_ridge_model = GridSearchCV(estimator=Ridge(), param_grid=ridge_model_parameters, cv=n_folds)
-        my_ridge_model.fit(X, y)
+        my_model = GridSearchCV(estimator=Ridge(), param_grid=ridge_model_parameters, cv=n_folds)
+        my_model.fit(X, y)
 
         #  Mean cross-validated score of the best_estimator
-        print('The best score for the model is', my_ridge_model.best_score_)
-        print('The best value for alpha is', my_ridge_model.best_estimator_.alpha)
+        print('ridge model best score:', my_model.best_score_)
+        print('ridge model best parameters:', my_model.best_params_)
 
-    def ridge_model_submission(self, target, my_alpha):
-        X_train = self._train_data_set
-        y_train = self._y_train
-        x_test = self._test_data_set
-
-        optimised_model = Ridge(alpha=my_alpha)
-
-        my_ridge_model = optimised_model
-        my_ridge_model.fit(X_train, y_train)
-
-        y_pred = my_ridge_model.predict(x_test)  # Make predictions using the testing set
-        y_pred = pd.DataFrame(data=y_pred, columns={target})
-        y_pred = pd.concat([self._test_y_id, y_pred], axis=1)
-        y_pred.to_csv('Data_Out/ridge_model_optimised.csv', index=False)  # export predictions as csv

@@ -110,15 +110,17 @@ def main():
     ####################################################################################################################
     # ridge regression optimised
 
-    ridge_model_parameters = [{'alpha': [1, 5, 7, 10]}]
-    model_house.ridge_model_grid_search(ridge_model_parameters, 10)
+    ridge_model_grid_parameters = [{'alpha': [1, 5, 7, 10]}]
+    model_house.ridge_model_grid_search(ridge_model_grid_parameters, 10)
+    ridge_model_fine_tuned_parameters = [{'alpha': [10.0]}]
     model_house.ridge_model_submission('SalePrice', 10)
     ####################################################################################################################
     # linear optimised
 
-    linear_model_parameters = {'fit_intercept': [True, False], 'normalize': [True, False], 'copy_X': [True, False]}
-    model_house.linear_model_grid_search(linear_model_parameters, 10)
-    model_house.linear_model_submission('SalePrice', True, True, False)
+    linear_model_grid_parameters = {'fit_intercept': [True, False], 'normalize': [True, False], 'copy_X': [True, False]}
+    model_house.linear_model_grid_search(linear_model_grid_parameters, 10)
+    linear_model_fine_tuned_parameters = {'fit_intercept': [True], 'normalize': [True], 'copy_X': [False]}
+    model_house.linear_model_submission('SalePrice', linear_model_fine_tuned_parameters)
     ####################################################################################################################
 
     model_house._train_data_set.to_csv('Data_Out/train_dataset.csv', index=False)
