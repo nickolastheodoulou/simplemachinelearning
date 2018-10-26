@@ -95,17 +95,17 @@ def main():
     print('The dimension of the train is', model_house._train_data_set.shape)
     print('The dimension of the test is', model_house._test_data_set.shape)
 
+    # could transform target before and after
+    # model_house.box_cox_target(0.1)
+
     ####################################################################################################################
-    tuned_parameters_lasso = [{'alpha': [1, 0.1]}]
-
-
-
-    #  Run the function called, Lasso
-    model_house.lasso_compare_alpha([1000, 100, 10]).to_csv('Data_Out/Lasso_model_alpha_1_0point1_0point01.csv',
+    #  Lasso
+    model_house.lasso_compare_alpha([75, 100, 200, 300]).to_csv('Data_Out/Lasso_model_alpha_1_0point1_0point01.csv',
                                                             index=False)
 
-    # model_house.box_cox_target(0.1)
-    model_house.lasso_model(100, 'SalePrice')
+    lasso_model_grid_parameters = [{'alpha': [75, 100, 200, 300]}]
+    model_house.lasso_model_grid_search(lasso_model_grid_parameters, 10)
+    model_house.lasso_model(1000, 'SalePrice')
 
     ####################################################################################################################
     # ridge regression optimised

@@ -235,3 +235,16 @@ class DataModeler(DataPreprocessor):
         print('ridge model best score:', my_model.best_score_)
         print('ridge model best parameters:', my_model.best_params_)
 
+        # method that performs a grid search for ridge regression
+
+    def lasso_model_grid_search(self, lasso_model_parameters, n_folds):
+        X = self._train_data_set
+        y = self._y_train
+
+        my_model = GridSearchCV(estimator=Lasso(), param_grid=lasso_model_parameters, cv=n_folds)
+        my_model.fit(X, y)
+
+        #  Mean cross-validated score of the best_estimator
+        print('Lasso model best score:', my_model.best_score_)
+        print('Lasso model best parameters:', my_model.best_params_)
+
