@@ -21,6 +21,7 @@ from sklearn.linear_model import Lasso
 from sklearn.model_selection import KFold
 from sklearn.model_selection import GridSearchCV
 import numpy as np
+from sklearn.kernel_ridge import KernelRidge
 
 from Class_Data_Preprocessor import DataPreprocessor
 
@@ -187,7 +188,7 @@ class DataModeler(DataPreprocessor):
         y_train = self._y_train
         x_test = self._test_data_set
 
-        optimised_model = LinearRegression(fine_tuned_parameters)
+        optimised_model = make_pipeline(RobustScaler(), LinearRegression(fine_tuned_parameters))
 
         my_model = optimised_model
         my_model.fit(X_train, y_train)
@@ -202,7 +203,7 @@ class DataModeler(DataPreprocessor):
         y_train = self._y_train
         x_test = self._test_data_set
 
-        optimised_model = Ridge(alpha=fine_tuned_parameters)
+        optimised_model = make_pipeline(RobustScaler(), Ridge(alpha=fine_tuned_parameters))
 
         my_model = optimised_model
         my_model.fit(X_train, y_train)
@@ -216,6 +217,8 @@ class DataModeler(DataPreprocessor):
         X = self._train_data_set
         y = self._y_train
 
+        #  optimised_model = make_pipeline(RobustScaler(), LinearRegression())
+
         my_model = GridSearchCV(estimator=LinearRegression(), cv=n_folds, param_grid=linear_model_parameters)
         my_model.fit(X, y)
 
@@ -228,6 +231,8 @@ class DataModeler(DataPreprocessor):
         X = self._train_data_set
         y = self._y_train
 
+        #  optimised_model = make_pipeline(RobustScaler(), Ridge())
+
         my_model = GridSearchCV(estimator=Ridge(), param_grid=ridge_model_parameters, cv=n_folds)
         my_model.fit(X, y)
 
@@ -237,9 +242,25 @@ class DataModeler(DataPreprocessor):
 
         # method that performs a grid search for ridge regression
 
+    # method that performs a grid search for ridge regression
+    def kernel_ridge_model_grid_search(self, kernel_ridge_model_parameters, n_folds):
+        X = self._train_data_set
+        y = self._y_train
+
+        #  optimised_model = make_pipeline(RobustScaler(), KernelRidge())
+
+        my_model = GridSearchCV(estimator=KernelRidge(), param_grid=kernel_ridge_model_parameters, cv=n_folds)
+        my_model.fit(X, y)
+        #  Mean cross-validated score of the best_estimator
+        print('kernel ridge model best score:', my_model.best_score_)
+        print('kernel ridge model best parameters:', my_model.best_params_)
+        # method that performs a grid search for ridge regression
+
     def lasso_model_grid_search(self, lasso_model_parameters, n_folds):
         X = self._train_data_set
         y = self._y_train
+
+        #  optimised_model = make_pipeline(RobustScaler(), Lasso())
 
         my_model = GridSearchCV(estimator=Lasso(), param_grid=lasso_model_parameters, cv=n_folds)
         my_model.fit(X, y)

@@ -114,6 +114,13 @@ def main():
     model_house.ridge_model_grid_search(ridge_model_grid_parameters, 10)
     ridge_model_fine_tuned_parameters = [{'alpha': [10.0]}]
     model_house.ridge_model_submission('SalePrice', 10)
+
+    ####################################################################################################################
+    # kernel ridge regression gridsearch
+
+    kernel_ridge_model_grid_parameters = [{'alpha': [5, 9, 10, 11], 'kernel': ['linear'], 'degree': [1, 2, 3]}]
+    model_house.kernel_ridge_model_grid_search(kernel_ridge_model_grid_parameters, 10)
+
     ####################################################################################################################
     # linear optimised
 
