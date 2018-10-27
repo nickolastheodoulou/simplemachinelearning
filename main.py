@@ -127,7 +127,9 @@ def main():
     # linear optimised
 
     linear_model_grid_parameters = {'fit_intercept': [True, False], 'normalize': [True, False], 'copy_X': [True, False]}
+
     model_house.linear_model_grid_search(linear_model_grid_parameters, 10)
+
     linear_model_fine_tuned_parameters = {'fit_intercept': [True], 'normalize': [True], 'copy_X': [False]}
     model_house.linear_model_submission('SalePrice', linear_model_fine_tuned_parameters)
     ####################################################################################################################
