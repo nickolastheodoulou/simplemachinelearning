@@ -178,10 +178,10 @@ class DataModeler(DataPreprocessor):
                                          'neg_mean_squared_error'))
 
         # print the scores for test
-        print('For LASSO, the explained_variance scores are: ', scores['test_explained_variance'])
-        print('For LASSO, the neg_mean_absolute_error scores are: ', scores['test_neg_mean_absolute_error'])
-        print('For LASSO, the neg_mean_squared_error scores are: ', scores['test_neg_mean_squared_error'])
-        print('For LASSO, the R^2 scores are: ', scores['test_r2'])
+        print('For LASSO, the mean of the explained_variance scores is: ', scores['test_explained_variance'].mean(), 'with standard deviation ', scores['test_explained_variance'].std())
+        print('For LASSO, the mean of the neg_mean_absolute_error scores is: ', scores['test_neg_mean_absolute_error'].mean(), 'with standard deviation ', scores['test_neg_mean_absolute_error'].std())
+        print('For LASSO, the mean of the neg_mean_squared_error scores is: ', scores['test_neg_mean_squared_error'].mean(), 'with standard deviation ', scores['test_neg_mean_squared_error'].std())
+        print('For LASSO, mean of the R^2 scores is: ', scores['test_r2'].mean(), 'with standard deviation ', scores['test_r2'].std())
 
     def linear_model_submission(self, target, fine_tuned_parameters):
         X_train = self._train_data_set
@@ -198,12 +198,29 @@ class DataModeler(DataPreprocessor):
         y_pred = pd.concat([self._test_y_id, y_pred], axis=1)
         y_pred.to_csv('Data_Out/linear_model_optimised.csv', index=False) # export predictions as csv
 
-    def ridge_model_submission(self, target, fine_tuned_parameters):
+        # print cross validation scores
+        scores = cross_validate(my_model, self._train_data_set, self._y_train, cv=10,
+                                scoring=('explained_variance', 'neg_mean_absolute_error', 'r2',
+                                         'neg_mean_squared_error'))
+
+        # print the scores for test
+        print('For linear, the mean of the explained_variance scores is: ', scores['test_explained_variance'].mean(),
+              'with standard deviation ', scores['test_explained_variance'].std())
+        print('For linear, the mean of the neg_mean_absolute_error scores is: ',
+              scores['test_neg_mean_absolute_error'].mean(), 'with standard deviation ',
+              scores['test_neg_mean_absolute_error'].std())
+        print('For linear, the mean of the neg_mean_squared_error scores is: ',
+              scores['test_neg_mean_squared_error'].mean(), 'with standard deviation ',
+              scores['test_neg_mean_squared_error'].std())
+        print('For linear, mean of the R^2 scores is: ', scores['test_r2'].mean(), 'with standard deviation ',
+              scores['test_r2'].std())
+
+    def ridge_model_submission(self, target, alpha):
         X_train = self._train_data_set
         y_train = self._y_train
         x_test = self._test_data_set
 
-        optimised_model = make_pipeline(RobustScaler(), Ridge(alpha=fine_tuned_parameters))
+        optimised_model = make_pipeline(RobustScaler(), Ridge(alpha=alpha))
 
         my_model = optimised_model
         my_model.fit(X_train, y_train)
@@ -213,6 +230,55 @@ class DataModeler(DataPreprocessor):
         y_pred = pd.concat([self._test_y_id, y_pred], axis=1)
         y_pred.to_csv('Data_Out/ridge_model_optimised.csv', index=False)  # export predictions as csv
 
+        # print cross validation scores
+        scores = cross_validate(my_model, self._train_data_set, self._y_train, cv=10,
+                                scoring=('explained_variance', 'neg_mean_absolute_error', 'r2',
+                                         'neg_mean_squared_error'))
+
+        # print the scores for test
+        print('For ridge, the mean of the explained_variance scores is: ', scores['test_explained_variance'].mean(),
+              'with standard deviation ', scores['test_explained_variance'].std())
+        print('For ridge, the mean of the neg_mean_absolute_error scores is: ',
+              scores['test_neg_mean_absolute_error'].mean(), 'with standard deviation ',
+              scores['test_neg_mean_absolute_error'].std())
+        print('For ridge, the mean of the neg_mean_squared_error scores is: ',
+              scores['test_neg_mean_squared_error'].mean(), 'with standard deviation ',
+              scores['test_neg_mean_squared_error'].std())
+        print('For ridge, mean of the R^2 scores is: ', scores['test_r2'].mean(), 'with standard deviation ',
+              scores['test_r2'].std())
+
+    def kernel_ridge_model_submission(self, target, fine_tuned_parameters):
+        X_train = self._train_data_set
+        y_train = self._y_train
+        x_test = self._test_data_set
+
+        optimised_model = make_pipeline(RobustScaler(), KernelRidge(kernel_params=fine_tuned_parameters))
+
+        my_model = optimised_model
+        my_model.fit(X_train, y_train)
+
+        y_pred = my_model.predict(x_test)  # Make predictions using the testing set
+        y_pred = pd.DataFrame(data=y_pred, columns={target})
+        y_pred = pd.concat([self._test_y_id, y_pred], axis=1)
+        y_pred.to_csv('Data_Out/ridge_model_optimised.csv', index=False)  # export predictions as csv
+
+        # print cross validation scores
+        scores = cross_validate(my_model, self._train_data_set, self._y_train, cv=10,
+                                scoring=('explained_variance', 'neg_mean_absolute_error', 'r2',
+                                         'neg_mean_squared_error'))
+
+        # print the scores for test
+        print('For kernel ridge, the mean of the explained_variance scores is: ', scores['test_explained_variance'].mean(),
+              'with standard deviation ', scores['test_explained_variance'].std())
+        print('For kernel ridge, the mean of the neg_mean_absolute_error scores is: ',
+              scores['test_neg_mean_absolute_error'].mean(), 'with standard deviation ',
+              scores['test_neg_mean_absolute_error'].std())
+        print('For kernel ridge, the mean of the neg_mean_squared_error scores is: ',
+              scores['test_neg_mean_squared_error'].mean(), 'with standard deviation ',
+              scores['test_neg_mean_squared_error'].std())
+        print('For kernel ridge, mean of the R^2 scores is: ', scores['test_r2'].mean(), 'with standard deviation ',
+              scores['test_r2'].std())
+
     def linear_model_grid_search(self, linear_model_parameters, n_folds):  # simple linear model
         X = self._train_data_set
         y = self._y_train
@@ -220,6 +286,7 @@ class DataModeler(DataPreprocessor):
         #  optimised_model = make_pipeline(RobustScaler(), LinearRegression())
 
         my_model = GridSearchCV(estimator=LinearRegression(), cv=n_folds, param_grid=linear_model_parameters)
+
         my_model.fit(X, y)
 
         #  Mean cross-validated score of the best_estimator
