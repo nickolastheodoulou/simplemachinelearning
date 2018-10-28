@@ -1,28 +1,40 @@
 import pandas as pd
 
-from Class_Data_Modeler import DataModeler
+from Class_Data_Explorer import DataExplorer
 
 
 def main():
-    ####################################################################################################################
-    # Main used for iris data set
-    iris_data = pd.read_csv('Data_In/Iris/iris.txt', header=None)
-    iris_data.columns = ['sepal_length', 'sepal_width', 'petal_length', 'petal_width', 'classification']
+    # Main used for DfBL data set
 
-    model_iris = DataModeler(iris_data, 0)
-    model_iris.split_data_set_if_test_not_split('classification', 0.7, 0)
+    model_DfBL = DataExplorer(pd.read_csv("Data_In/DfBL/VehicleData_csv.csv"), 0)  # loads in the data
 
-    model_iris.heat_map()
-    print(model_iris._x_train.head())
-    print(model_iris._x_test.head())
+    print(model_DfBL._train_data_set.head())  # prints the first 5 columns of the data-set
+    print(model_DfBL._train_data_set.shape)  # prints the dimension of the data set
+    model_DfBL.missing_data_ratio_print()  # prints the percentage of missing values in the data set (NONE FOUND!)
 
-    model_iris.describe_attribute('sepal_length')
-    model_iris.histogram_and_q_q('sepal_length')
+    #  calls a function to combine the column VehicleType and Manufacturer to a new column named
+    #  ManufacturerAndVehicleType
+    model_DfBL.combine_columns("ManufacturerAndVehicleType", "VehicleType", "Manufacturer")
 
-    model_iris.split_data_data_set_X_data_set_y('classification')
+    print(model_DfBL._train_data_set.head())  # print the data_set to check it worked correctly
 
-    model_iris.svm_model('auto', 1, 10)
-    model_iris.neural_network_model(1e-5, (25, 12, 5), 10)
+    #  model_DfBL._data_set.to_csv("Data_Out/data_set_out.csv")  # saves the pandas data frame to a CSV file
+
+    model_DfBL.box_plot("ConditionScore", "FinancialYear")  # box plot of the Condition score for each Year
+    model_DfBL.box_plot("ConditionScore", "Manufacturer")  # box plot of the Condition score for each Manufacturer
+
+    model_DfBL.box_plot("ConditionScore", "ManufacturerAndVehicleType")  # box plot of the Condition score for each Year
+
+    # function that prints the number of inspections each financial year.
+    model_DfBL.attribute_value_count("FinancialYear")
+
+    #  function that plots ans saves the percentage of what year each inspection occurs.
+    model_DfBL.bar_graph_attribute("FinancialYear")
+
+    #  function that plots the percentage difference of what year each inspection occurs.
+    model_DfBL.line_graph_percentage_difference("FinancialYear")
+
+    model_DfBL.triple_stacked_bar_graph('FinancialYear', 'VehicleType')
 
     ####################################################################################################################
 

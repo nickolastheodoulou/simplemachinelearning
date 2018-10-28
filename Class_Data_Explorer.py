@@ -132,22 +132,23 @@ class DataExplorer(DataLoader):
         #  print the data fame
         print(missing_data_train.head(20))
 
-        #  define the percentage as the number of missing values in test
-        missing_data_test = ((self._test_data_set.isnull().sum() / (len(self._test_data_set))) * 100)
+        if self._test_data_set != 0:
+            #  define the percentage as the number of missing values in test
+            missing_data_test = ((self._test_data_set.isnull().sum() / (len(self._test_data_set))) * 100)
 
-        #  sorts percent_of_missing_data_in_each_column into descending order to be printed
-        missing_data_test = missing_data_test.drop(
-            missing_data_test[missing_data_test == 0].index).sort_values(
-            ascending=False)[:self._test_data_set.shape[1]]
+            #  sorts percent_of_missing_data_in_each_column into descending order to be printed
+            missing_data_test = missing_data_test.drop(
+                missing_data_test[missing_data_test == 0].index).sort_values(
+                ascending=False)[:self._test_data_set.shape[1]]
 
-        #  redefines percent_of_missing_data_in_each_column as a DataFrame with the column head 'Missing Ratio'
-        missing_data_test = pd.DataFrame({'Missing Ratio': missing_data_test})
-        #  rename the column heading
-        missing_data_test = missing_data_test.rename(columns={
-            missing_data_test.columns[0]: "Percentage of missing values in test"})
+            #  redefines percent_of_missing_data_in_each_column as a DataFrame with the column head 'Missing Ratio'
+            missing_data_test = pd.DataFrame({'Missing Ratio': missing_data_test})
+            #  rename the column heading
+            missing_data_test = missing_data_test.rename(columns={
+                missing_data_test.columns[0]: "Percentage of missing values in test"})
 
-        #  print the data fame
-        print(missing_data_train.head(20))
+            #  print the data fame
+            print(missing_data_train.head(20))
 
     #  method that p
     def missing_data_ratio_bar_graph(self):
