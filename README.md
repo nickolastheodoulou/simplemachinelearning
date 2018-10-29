@@ -37,8 +37,8 @@ insurance. There are 10 attributes in the data set including: Veh_Mileage, Credi
 Price, Age, Marital_Status, Tax, Date. There are 50,000 entries. Car_Insurance_Main_Example.py within Car_Insurance 
 contains the example code to explore, pre-process and build a knn and SVM model for that particular data set.
 
-House_Prices within the Directory Data_In contains data to predict house prices from the Kaggle competition: 'House
- Prices: Advanced Regression Techniques' where details of the data set can be found [here.](https://www.kaggle.com/c/house-prices-advanced-regression-techniques)  
+House_Prices within the Directory Data_In contains data to predict house prices from the Kaggle competition: 'House 
+Prices: Advanced Regression Techniques' where details of the data set can be found [here.](https://www.kaggle.com/c/house-prices-advanced-regression-techniques) 
 The sale price of 1459 houses were predicted using a data set of 1460 houses along with 79 attributes. The model used a 
 Lasso model with alpha = 0.01 and box cox transformations for all the attributes where lambda = 0.1 
 House_Prices_Main_Example.py within House_Prices contains the example code for this data set.
