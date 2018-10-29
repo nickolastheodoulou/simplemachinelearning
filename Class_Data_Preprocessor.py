@@ -55,15 +55,27 @@ class DataPreprocessor(DataExplorer):
     #  test how accurate a simple KNN algorithm is
     def drop_all_na(self):
         self._train_data_set = self._train_data_set.dropna()
-        self._test_data_set = self._test_data_set.dropna()
+
+        if not self._test_data_set.empty:
+            self._test_data_set = self._test_data_set.dropna()
+        else:
+            print("no test data set")
 
     def drop_attribute(self, attribute):
         self._train_data_set = self._train_data_set.drop(columns=[attribute])
-        self._test_data_set = self._test_data_set.drop(columns=[attribute])
+
+        if not self._test_data_set.empty:
+            self._test_data_set = self._test_data_set.drop(columns=[attribute])
+        else:
+            print("no test data set")
 
     def box_cox_trans_attribute(self, attribute, lamda):  # boxcox transformation of an attribute in train_x
         self._train_data_set[attribute] = boxcox(self._train_data_set[attribute], lamda)
-        self._test_data_set[attribute] = boxcox(self._test_data_set[attribute], lamda)
+
+        if not self._test_data_set.empty:
+            self._test_data_set[attribute] = boxcox(self._test_data_set[attribute], lamda)
+        else:
+            print("no test data set")
 
     def box_cox_target(self, lamda):
         self._y_train = boxcox(self._y_train, lamda)
@@ -73,7 +85,12 @@ class DataPreprocessor(DataExplorer):
         std = self._train_data_set[attribute].std()
 
         self._train_data_set[attribute] = (self._train_data_set[attribute] - mean) / std
-        self._test_data_set[attribute] = (self._test_data_set[attribute] - mean) / std
+
+        if not self._test_data_set.empty:
+            self._test_data_set[attribute] = (self._test_data_set[attribute] - mean) / std
+        else:
+            print("no test data set")
+
 
     #  method that one hot encodes a column
     def one_hot_encode_attribute(self, attribute):
@@ -87,10 +104,13 @@ class DataPreprocessor(DataExplorer):
         #  drops the column that has the sting value of the attribute to be one hot encoded
         self._train_data_set = self._train_data_set.drop(columns=[attribute])
 
-        self._test_data_set = pd.concat(
-            [self._test_data_set, pd.get_dummies(self._test_data_set[attribute], prefix=attribute)],
-            axis=1, sort=False)
-        self._test_data_set = self._test_data_set.drop(columns=[attribute])
+        if not self._test_data_set.empty:
+            self._test_data_set = pd.concat(
+                [self._test_data_set, pd.get_dummies(self._test_data_set[attribute], prefix=attribute)],
+                axis=1, sort=False)
+            self._test_data_set = self._test_data_set.drop(columns=[attribute])
+        else:
+            print("no test data set")
 
     #  if a value within an attribute is only in test or train after one hot encoding, delete it
     def delete_unnecessary_one_hot_encoded_columns(self):
@@ -111,29 +131,48 @@ class DataPreprocessor(DataExplorer):
         self._train_data_set[attribute] = self._train_data_set[attribute].fillna(
             self._train_data_set[attribute].mode()[0])
 
-        self._test_data_set[attribute] = self._train_data_set[attribute].fillna(
-            self._test_data_set[attribute].mode()[0])
+        if not self._test_data_set.empty:
+            self._test_data_set[attribute] = self._train_data_set[attribute].fillna(
+                self._test_data_set[attribute].mode()[0])
+        else:
+            print("no test data set")
+
 
     def impute_median(self, attribute):
         self._train_data_set[attribute] = self._train_data_set[attribute].fillna(
             self._train_data_set[attribute].median())
 
-        self._test_data_set[attribute] = self._train_data_set[attribute].fillna(
-            self._test_data_set[attribute].median())
+        if not self._test_data_set.empty:
+            self._test_data_set[attribute] = self._train_data_set[attribute].fillna(
+                self._test_data_set[attribute].median())
+        else:
+            print("no test data set")
 
     def impute_mean(self, attribute):
         self._train_data_set[attribute] = self._train_data_set[attribute].fillna(self._train_data_set[attribute].mean())
 
-        self._test_data_set[attribute] = self._test_data_set[attribute].fillna(self._train_data_set[attribute].mean())
+        if not self._test_data_set.empty:
+            self._test_data_set[attribute] = self._test_data_set[attribute].fillna(
+                self._train_data_set[attribute].mean())
+        else:
+            print("no test data set")
 
     def impute_none(self, attribute):
         self._train_data_set[attribute] = self._train_data_set[attribute].fillna("None")
-        self._test_data_set[attribute] = self._test_data_set[attribute].fillna("None")
+
+        if not self._test_data_set.empty:
+            self._test_data_set[attribute] = self._test_data_set[attribute].fillna("None")
+        else:
+            print("no test data set")
 
     #  can also apply this to the test data set without any data leakage!
     def impute_zero(self, attribute):  # fill na with 0
         self._train_data_set[attribute] = self._train_data_set[attribute].fillna(0)
-        self._test_data_set[attribute] = self._test_data_set[attribute].fillna(0)
+
+        if not self._test_data_set.empty:
+            self._test_data_set[attribute] = self._test_data_set[attribute].fillna(0)
+        else:
+            print("no test data set")
 
     def switch_na_to_median_other_attribute(self, attribute, second_discrete_attribute):
         # fill in the missing value by grouping by second_discrete_attribute and findin the mean of each group and
@@ -141,13 +180,19 @@ class DataPreprocessor(DataExplorer):
         self._train_data_set[attribute] = self._train_data_set[attribute].fillna(self._train_data_set.groupby(
             second_discrete_attribute)[attribute].mean()[0])
 
-        #  apply to test_X by using the median of train_X to prevent data leakage
-        self._test_data_set[attribute] = self._test_data_set[attribute].fillna(
-            self._train_data_set.groupby(second_discrete_attribute)[attribute].mean()[0])
+        if not self._test_data_set.empty:
+            #  apply to test_X by using the median of train_X to prevent data leakage
+            self._test_data_set[attribute] = self._test_data_set[attribute].fillna(
+                self._train_data_set.groupby(second_discrete_attribute)[attribute].mean()[0])
+        else:
+            print("no test data set")
 
     def convert_attribute_to_categorical(self, attribute):
         self._train_data_set[attribute] = self._train_data_set[attribute].astype(str)
-        self._test_data_set[attribute] = self._test_data_set[attribute].astype(str)
+        if not self._test_data_set.empty:
+            self._test_data_set[attribute] = self._test_data_set[attribute].astype(str)
+        else:
+            print("no test data set")
 
     # imputes the missing attributes using KNN from fancy impute using the 3 closes complete columns
     # found to be extremely ineffienct hence not used in final model

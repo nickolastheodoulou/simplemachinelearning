@@ -10,7 +10,7 @@ def main():
 
     print(model_DfBL._train_data_set.head())  # prints the first 5 columns of the data-set
     print(model_DfBL._train_data_set.shape)  # prints the dimension of the data set
-    model_DfBL.missing_data_ratio_print()  # prints the percentage of missing values in the data set (NONE FOUND!)
+    model_DfBL.train_missing_data_ratio_print()  # prints the percentage of missing values in the data set (NONE FOUND!)
 
     #  calls a function to combine the column VehicleType and Manufacturer to a new column named
     #  ManufacturerAndVehicleType

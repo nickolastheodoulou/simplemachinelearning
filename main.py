@@ -52,7 +52,8 @@ def main():
     # drops id column from train_X and test_X to move it to _test_y_id
     model_house.index_column_drop_and_move_to_pred_y('Id')
     model_house.move_target_to_train_y('SalePrice')  # moves saleprice to train_Y
-    model_house.missing_data_ratio_print()
+    model_house.train_missing_data_ratio_print()
+    model_house.test_missing_data_ratio_print()
     ####################################################################################################################
     # all the missing values are inputted!!!!
     ####################################################################################################################
