@@ -1,4 +1,4 @@
-# Predicting Sales of a customer #
+# Machine Learning Supervised Learning Project #
 
 ## Outline of Project ##
 The objective of this project is to load in any data set within a CSV file, expore pre-process and then build a supervised
