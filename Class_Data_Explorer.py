@@ -1,3 +1,5 @@
+import matplotlib as mlp
+mlp.use('TkAgg')
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
@@ -174,21 +176,21 @@ class DataExplorer(DataLoader):
         sns.heatmap(z_text, vmax=.8, square=True, annot=True, fmt='.1f', annot_kws={'size': 7})  # creates the heatmap
         plt.show()
 
-    def box_plot(self, target, attribute):
+    def box_plot(self, continuous_attribute, categorical_attribute):
         #  sort the dataset into acending order of the attribute to be plotted
-        self._train_data_set = self._train_data_set.sort_values([attribute]).reset_index(drop=True)
-        data_in = pd.concat([self._train_data_set[target], self._train_data_set[attribute]], axis=1)  # defines the data
+        self._train_data_set = self._train_data_set.sort_values([categorical_attribute]).reset_index(drop=True)
+        data_in = pd.concat([self._train_data_set[continuous_attribute], self._train_data_set[categorical_attribute]], axis=1)  # defines the data
         plt.subplots(figsize=(16, 8))  # changes the size of the fig
 
-        fig = sns.boxplot(x=attribute, y=target, data=data_in)
-        fig.set_xlabel(attribute, fontsize=12)
-        fig.set_ylabel(target, fontsize=12)
-        fig.axis(ymin=0, ymax=self._train_data_set[target].values.max())  # defines the y axis
+        fig = sns.boxplot(x=categorical_attribute, y=continuous_attribute, data=data_in)
+        fig.set_xlabel(categorical_attribute, fontsize=12)
+        fig.set_ylabel(continuous_attribute, fontsize=12)
+        fig.axis(ymin=0, ymax=self._train_data_set[continuous_attribute].values.max())  # defines the y axis
         plt.xticks(rotation=90)  # rotates the x ticks so that they are easier to read when the strings are longer
         plt.tick_params(labelsize=12)
 
         #  file name defined by attribute user input and type of graph
-        plt.savefig('Data_Out/' + attribute + '_boxplot.pdf', index=False, bbox_inches='tight')
+        plt.savefig('Data_Out/' + categorical_attribute + '_' + continuous_attribute + '_boxplot.pdf', index=False, bbox_inches='tight')
         plt.show()
 
     def scatter_plot(self, my_y_attribute, my_x_attribute):
