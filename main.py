@@ -26,5 +26,6 @@ def main():
     # model_house.scatter_plot('SalePrice', 'GrLivArea')
     #HELLO NICKOLAS
 
+
 if __name__ == "__main__":
     main()
