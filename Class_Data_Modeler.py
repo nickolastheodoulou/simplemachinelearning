@@ -26,7 +26,7 @@ import numpy as np
 from sklearn.kernel_ridge import KernelRidge
 
 from Class_Data_Preprocessor import DataPreprocessor
-
+from sklearn.ensemble import RandomForestClassifier
 
 class DataModeler(DataPreprocessor):
     def __init__(self, train_data_set, test_data_set):
@@ -76,6 +76,16 @@ class DataModeler(DataPreprocessor):
 
         print('For k-NN when k=', number_of_neighbours, ' the percentage accuracy of each ', number_of_folds,
               '-fold is:', percent_accuracies)
+
+    def random_forest(self):
+        my_random_forest_model = RandomForestClassifier()
+        my_random_forest_model.fit(self._x_train, self._y_train)
+        y_pred = my_random_forest_model.predict(self._x_test)
+        print('For the Random Forest model the percentage accuracy is',
+              my_random_forest_model.score(self._x_test, self._y_test))
+        print('The confusion matrix for Random Fprest is: ',
+              pd.crosstab(self._y_test, y_pred, rownames=['True'], colnames=['Predicted'], margins=True))
+
 
     # method that performs a grid search for svm
     def svm_model_grid_search(self, tuned_parameters, number_of_folds):

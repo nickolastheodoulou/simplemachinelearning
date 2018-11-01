@@ -118,6 +118,8 @@ class DataExplorer(DataLoader):
 
     #  method that prints the percentage of missing data of train and test
     def train_missing_data_ratio_print(self):
+
+        self._train_data_set.replace('?',np.NaN)
         #  define the percentage as the number of missing values in each column/ number of entries * 100
         missing_data_train = ((self._train_data_set.isnull().sum() / (len(self._train_data_set))) * 100)
 
@@ -135,6 +137,7 @@ class DataExplorer(DataLoader):
         print(missing_data_train.head(20))
 
     def test_missing_data_ratio_print(self):
+
         #  define the percentage as the number of missing values in test
         missing_data_test = ((self._test_data_set.isnull().sum() / (len(self._test_data_set))) * 100)
         #  sorts percent_of_missing_data_in_each_column into descending order to be printed
@@ -245,7 +248,7 @@ class DataExplorer(DataLoader):
                     index=False, bbox_inches='tight')
         plt.show()
 
-    def histogram_and_q_q(self, attribute):
+    def histogram_and_q_q(self, attribute: object) -> object:
         # define a new data set with the attributes missing dropped so that the NaN values are ignored
         my_data_set = self._train_data_set.dropna()
 
