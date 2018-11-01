@@ -29,17 +29,20 @@ def main():
     # model_adult.histogram_and_q_q("hours-per-week")
     # model_adult.histogram_and_q_q("capital-gain")
     model_adult.histogram_and_q_q("capital-loss")
-    print(model_adult._train_data_set["capital-loss"])
+    model_adult.bar_graph_attribute("occupation")
+    model_adult.bar_graph_attribute("workclass")
 
-    model_adult.normalise_attribute("capital-loss")
-    model_adult.box_cox_trans_attribute("capital-loss", 5)
-    model_adult.normalise_attribute("capital-loss")
-    print(model_adult._train_data_set["capital-loss"])
-    model_adult.histogram_and_q_q("capital-loss")
-    model_adult.move_target_to_train_y("salary")
+    # print(model_adult._train_data_set["capital-loss"])
+    #
+    # model_adult.normalise_attribute("capital-loss")
+    # model_adult.box_cox_trans_attribute("capital-loss", 5)
+    # model_adult.normalise_attribute("capital-loss")
+    # print(model_adult._train_data_set["capital-loss"])
+    # model_adult.histogram_and_q_q("capital-loss")
+    # model_adult.move_target_to_train_y("salary")
     print(model_adult._y_train)
     #print(model_adult._x_train)
-    model_adult.random_forest()
+   # model_adult.random_forest()
 
     # model_house.box_plot('SalePrice', 'YearBuilt')
     # model_house.bar_graph_attribute('YrSold')
@@ -47,7 +50,7 @@ def main():
 
     # dropped after looking at a scatter plot of the two attributes
     # model_house.scatter_plot('SalePrice', 'GrLivArea')
-    # HELLO NICKOLAS
+
 
 
 if __name__ == "__main__":
