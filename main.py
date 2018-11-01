@@ -47,7 +47,7 @@ def main():
 
     # dropped after looking at a scatter plot of the two attributes
     # model_house.scatter_plot('SalePrice', 'GrLivArea')
-    #HELLO NICKOLAS
+    # HELLO NICKOLAS
 
 
 if __name__ == "__main__":

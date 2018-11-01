@@ -79,7 +79,7 @@ class DataModeler(DataPreprocessor):
 
     def random_forest(self):
         my_random_forest_model = RandomForestClassifier()
-        my_random_forest_model.fit(self._x_train, self._y_train)
+        my_random_forest_model.fit(self._train_data_set, self._y_train)
         y_pred = my_random_forest_model.predict(self._x_test)
         print('For the Random Forest model the percentage accuracy is',
               my_random_forest_model.score(self._x_test, self._y_test))
