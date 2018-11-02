@@ -78,15 +78,19 @@ class DataModeler(DataPreprocessor):
               '-fold is:', percent_accuracies)
 
     def random_forest(self):
-        my_random_forest_model = RandomForestClassifier()
-        my_random_forest_model.fit(self._train_data_set, self._y_train)
-        y_pred = my_random_forest_model.predict(self._x_test)
+        my_random_forest_model = RandomForestClassifier(oob_score=False, n_estimators=10)
+        my_random_forest_model.fit(self._train_data_set, self._y_train.values.ravel())
+        y_pred = my_random_forest_model.predict(self._test_data_set)
         print('For the Random Forest model the percentage accuracy is',
-              my_random_forest_model.score(self._x_test, self._y_test))
+              my_random_forest_model.score(self._test_data_set, self._y_test.values.ravel()))
         print('The confusion matrix for Random Fprest is: ',
               pd.crosstab(self._y_test, y_pred, rownames=['True'], colnames=['Predicted'], margins=True))
+        percent_accuracies = cross_val_score(estimator=my_random_forest_model, X=self._train_data_set,
+                                            y=self._y_train.values.ravel(),
+                                            cv=10) * 100
 
-
+        print(' the percentage accuracy of each ', 10,
+              '-fold is:', percent_accuracies)
     # method that performs a grid search for svm
     def svm_model_grid_search(self, tuned_parameters, number_of_folds):
 
