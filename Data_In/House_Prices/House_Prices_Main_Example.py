@@ -1,5 +1,8 @@
 import pandas as pd
-from scipy.special import boxcox
+from sklearn.linear_model import Lasso
+from sklearn.linear_model import LinearRegression
+from sklearn.kernel_ridge import KernelRidge
+from sklearn.linear_model import Ridge
 
 from Class_Data_Modeler import DataModeler
 
@@ -58,8 +61,8 @@ def main():
     # all the missing values are inputted!!!!
     ####################################################################################################################
 
-    print('The dimension of the train is', model_house._train_data_set.shape)
-    print('The dimension of the test is', model_house._test_data_set.shape)
+    # print('The dimension of the train is', model_house._train_data_set.shape)
+    # print('The dimension of the test is', model_house._test_data_set.shape)
 
     ####################################################################################################################
     #  need to add these in later
@@ -93,8 +96,8 @@ def main():
 
     model_house.delete_unnecessary_one_hot_encoded_columns()
 
-    print('The dimension of the train is', model_house._train_data_set.shape)
-    print('The dimension of the test is', model_house._test_data_set.shape)
+    # print('The dimension of the train is', model_house._train_data_set.shape)
+    # print('The dimension of the test is', model_house._test_data_set.shape)
 
     # could transform target before and after
     # model_house.box_cox_target(0.1)
@@ -105,14 +108,14 @@ def main():
                                                             index=False)
 
     lasso_model_grid_parameters = [{'alpha': [75, 100, 200, 300]}]
-    model_house.lasso_model_grid_search(lasso_model_grid_parameters, 10)
+    model_house.regression_model_grid_search(Lasso, lasso_model_grid_parameters, 10)
     model_house.lasso_model(1000, 'SalePrice')
 
     ####################################################################################################################
     # ridge regression optimised
 
     ridge_model_grid_parameters = [{'alpha': [1, 5, 7, 10]}]
-    model_house.ridge_model_grid_search(ridge_model_grid_parameters, 10)
+    model_house.regression_model_grid_search(Ridge, ridge_model_grid_parameters, 10)
     ridge_model_fine_tuned_parameters = [{'alpha': [10.0]}]
     model_house.ridge_model_submission('SalePrice', 10.0)
 
@@ -120,7 +123,7 @@ def main():
     # kernel ridge regression gridsearch
 
     kernel_ridge_model_grid_parameters = [{'alpha': [5, 9, 10, 11], 'kernel': ['linear'], 'degree': [1, 2, 3]}]
-    model_house.kernel_ridge_model_grid_search(kernel_ridge_model_grid_parameters, 10)
+    model_house.regression_model_grid_search(KernelRidge, kernel_ridge_model_grid_parameters, 10)
     kernel_ridge_model_fine_tuned_parameters = [{'alpha': [9], 'kernel': ['linear'], 'degree': [1]}]
     model_house.kernel_ridge_model_submission('SalePrice', kernel_ridge_model_fine_tuned_parameters)
 
@@ -128,15 +131,10 @@ def main():
     # linear optimised
 
     linear_model_grid_parameters = {'fit_intercept': [True, False], 'normalize': [True, False], 'copy_X': [True, False]}
-
-    model_house.linear_model_grid_search(linear_model_grid_parameters, 10)
-
+    model_house.regression_model_grid_search(LinearRegression, linear_model_grid_parameters, 10)
     linear_model_fine_tuned_parameters = {'fit_intercept': [True], 'normalize': [True], 'copy_X': [False]}
     model_house.linear_model_submission('SalePrice', linear_model_fine_tuned_parameters)
     ####################################################################################################################
-
-    model_house._train_data_set.to_csv('Data_Out/train_dataset.csv', index=False)
-    model_house._test_data_set.to_csv('Data_Out/test_dataset.csv', index=False)
 
 
 if __name__ == "__main__":
