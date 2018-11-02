@@ -11,26 +11,6 @@ class DataPreprocessor(DataExplorer):
     def __init__(self, train_data_set, test_data_set):
         super().__init__(train_data_set, test_data_set)
 
-    ####################################################################################################################
-    # Use only when train and test are in the same data set
-
-    def split_data_set_if_test_not_split(self, target, my_test_size, seed):
-        # set attributes to all other columns in the data_set
-        attribute_matrix = self._train_data_set.loc[:, self._train_data_set.columns != target]
-        self._x_train, self._x_test, self._y_train, self._y_test = train_test_split(attribute_matrix,
-                                                                                    self._train_data_set[target],
-                                                                                    test_size=my_test_size,
-                                                                                    random_state=seed)
-
-    ####################################################################################################################
-
-    def split_data_data_set_X_data_set_y(self, target):
-        target_column = self._train_data_set.columns.get_loc(target)  # finds the target column by name
-        # updates the data frame train_Y
-        self._data_set_y = pd.DataFrame(data={target: self._train_data_set.iloc[:, target_column]})
-        # drops the first column of the train set as it has been moved
-        self._data_set_X = self._train_data_set.drop(self._train_data_set.columns[target_column], axis=1)
-
     # Deleting outliers lower and to the right of the trend
     def drop_outliers_target_less_y_attribute_greater_x(self, target, y, attribute, x):
         self._train_data_set = self._train_data_set.drop(self._train_data_set[(self._train_data_set[attribute] > x) &

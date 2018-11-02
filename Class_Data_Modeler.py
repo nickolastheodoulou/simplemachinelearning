@@ -4,29 +4,18 @@ from sklearn import neighbors
 from sklearn.svm import SVC
 from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import cross_validate
-from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import classification_report
 from sklearn.neural_network import MLPClassifier
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import RobustScaler
-from sklearn.linear_model import Lasso
 from sklearn.linear_model import LinearRegression
-from scipy.special import inv_boxcox
-import matplotlib as mlp
-mlp.use('TkAgg')
-import matplotlib.pyplot as plt
 from sklearn.linear_model import Ridge
-
-from sklearn import datasets
-from sklearn.linear_model import LassoCV
 from sklearn.linear_model import Lasso
-from sklearn.model_selection import KFold
 from sklearn.model_selection import GridSearchCV
-import numpy as np
 from sklearn.kernel_ridge import KernelRidge
-
 from Class_Data_Preprocessor import DataPreprocessor
 from sklearn.ensemble import RandomForestClassifier
+
 
 class DataModeler(DataPreprocessor):
     def __init__(self, train_data_set, test_data_set):
@@ -38,9 +27,9 @@ class DataModeler(DataPreprocessor):
                                     scoring='f1_macro', n_jobs=-1)
 
         # fits the knn models to sample data
-        my_knn_model.fit(self._x_train, self._y_train)
+        my_knn_model.fit(self._train_data_set, self._y_train)
 
-        y_true, y_pred = self._y_test, my_knn_model.predict(self._x_test)
+        y_true, y_pred = self._y_test, my_knn_model.predict(self._test_data_set)
         print(classification_report(y_true, y_pred))  # prints a summary of the grid search
 
         print('The best parameters for the model is', my_knn_model.best_params_)  # prints the best parameters found
@@ -55,14 +44,14 @@ class DataModeler(DataPreprocessor):
         # create a knn classifier with n = my_number_of_neighbours
         my_knn_model = neighbors.KNeighborsClassifier(n_neighbors=number_of_neighbours)
 
-        my_knn_model.fit(self._x_train, self._y_train)  # fit the knn classifier to the data
+        my_knn_model.fit(self._train_data_set, self._y_train)  # fit the knn classifier to the data
 
         # define the predicted value of y and true value of y to create a prediction matrix
-        y_pred = my_knn_model.predict(self._x_test)
+        y_pred = my_knn_model.predict(self._test_data_set)
 
         # print percent of correct predictions
         print('For k-NN when k=', number_of_neighbours, ' the percentage accuracy is',
-              my_knn_model.score(self._x_test, self._y_test))
+              my_knn_model.score(self._test_data_set, self._y_test))
 
         # print confusion matrix
         print('The confusion matrix for k-NN when k=', number_of_neighbours, 'is: ',
@@ -71,7 +60,7 @@ class DataModeler(DataPreprocessor):
         # Applying K-Fold cross validation
 
         # can add n_jobs =-1 to set all CPU's to work
-        percent_accuracies = cross_val_score(estimator=my_knn_model, X=self._x_train, y=self._y_train,
+        percent_accuracies = cross_val_score(estimator=my_knn_model, X=self._train_data_set, y=self._y_train,
                                              cv=number_of_folds) * 100
 
         print('For k-NN when k=', number_of_neighbours, ' the percentage accuracy of each ', number_of_folds,
@@ -92,15 +81,16 @@ class DataModeler(DataPreprocessor):
         print(' the percentage accuracy of each ', 10,
               '-fold is:', percent_accuracies)
     # method that performs a grid search for svm
+
     def svm_model_grid_search(self, tuned_parameters, number_of_folds):
 
         # calls teh function to perform the grid search for user inputted parameters
         my_svm_model = GridSearchCV(SVC(decision_function_shape='ovo', degree=3), tuned_parameters, cv=number_of_folds,
                                     scoring='f1_macro', n_jobs=-1)
 
-        my_svm_model.fit(self._x_train, self._y_train)  # fits the SVM models to sample data
+        my_svm_model.fit(self._train_data_set, self._y_train)  # fits the SVM models to sample data
 
-        y_true, y_pred = self._y_test, my_svm_model.predict(self._x_test)
+        y_true, y_pred = self._y_test, my_svm_model.predict(self._test_data_set)
         print(classification_report(y_true, y_pred))  # prints a summary of the grid search
 
         print('The best parameters for the model is', my_svm_model.best_params_)  # prints the best parameters found
@@ -115,17 +105,17 @@ class DataModeler(DataPreprocessor):
     def svm_model(self, my_gamma, my_c, number_of_folds):
         # creates a SVM classifier
         my_svm_model = SVC(C=my_c, decision_function_shape='ovo', degree=3, gamma=my_gamma, kernel='rbf')
-        my_svm_model.fit(self._x_train, self._y_train)  # fits the SVM model to sample data
+        my_svm_model.fit(self._train_data_set, self._y_train)  # fits the SVM model to sample data
 
         # C : Penalty parameter of the error term, default is 1.0
         # degree : Degree of the polynomial kernel function
         # gamma : Kernel coefficient for ‘rbf’, ‘poly’ and ‘sigmoid’
         # kernel : specifies the kernel type used in the algorithm
 
-        y_pred = my_svm_model.predict(self._x_test)  # set the predicted values to the prediction using x_test
+        y_pred = my_svm_model.predict(self._test_data_set)  # set the predicted values to the prediction using x_test
 
         # print percent of correct predictions
-        print('For SVM when gamma=auto, percentage accuracy is: ', my_svm_model.score(self._x_test,
+        print('For SVM when gamma=auto, percentage accuracy is: ', my_svm_model.score(self._test_data_set,
                                                                                       self._y_test))
         # print confusion matrix
 
@@ -133,35 +123,11 @@ class DataModeler(DataPreprocessor):
               pd.crosstab(self._y_test, y_pred, rownames=['True'], colnames=['Predicted'], margins=True))
 
         # can add n_jobs =-1 to set all CPU's to work
-        percent_accuracies = cross_val_score(estimator=my_svm_model, X=self._x_train, y=self._y_train,
+        percent_accuracies = cross_val_score(estimator=my_svm_model, X=self._train_data_set, y=self._y_train,
                                              cv=number_of_folds, n_jobs=-1) * 100
 
         print('For SVM when gamma=', my_gamma, ' the percentage accuracy of each ', number_of_folds, '-fold is:',
               percent_accuracies)
-
-    # implements a multi-layer perceptron (MLP) algorithm that trains using Back-propagation
-    def neural_network_model(self, my_alpha, my_hidden_layers, number_of_folds):
-        my_neural_network_model = MLPClassifier(solver='lbfgs', alpha=my_alpha, hidden_layer_sizes=my_hidden_layers,
-                                                random_state=1)
-
-        my_neural_network_model.fit(self._x_train, self._y_train)
-        y_pred = my_neural_network_model.predict(self._x_test)
-
-        # print percent of correct predictions
-        print('For SVM when gamma=auto, percentage accuracy is: ', my_neural_network_model.score(self._x_test,
-                                                                                                 self._y_test))
-        # print confusion matrix
-
-        print('The confusion matrix for the neural_network_model when alpha=', my_alpha,
-              ' and the hidden layers being set to: ', my_hidden_layers,
-              pd.crosstab(self._y_test, y_pred, rownames=['True'], colnames=['Predicted'], margins=True))
-
-        # can add n_jobs =-1 to set all CPU's to work
-        percent_accuracies = cross_val_score(estimator=my_neural_network_model, X=self._x_train, y=self._y_train,
-                                             cv=number_of_folds, n_jobs=-1) * 100
-
-        print('For the neural_network_model when alpha=', my_alpha, ' and the hidden layers being set to: ',
-              my_hidden_layers, ' the percentage accuracy of each ', number_of_folds, '-fold is:', percent_accuracies)
 
     # Create a function called lasso
     # Takes in a list of alphas. Outputs a dataframe containing the coefficients of lasso regressions from each alpha.
