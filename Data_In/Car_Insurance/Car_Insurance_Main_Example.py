@@ -1,5 +1,4 @@
 import pandas as pd
-from sklearn.svm import SVC
 
 from Class_Data_Modeler import DataModeler
 
@@ -181,20 +180,6 @@ def main():
 
     # k-fold cross validation for optimum hyper-parameters to validate SVM model
     car_insurance_model.svm_model(1/16, 10, 10)
-    ####################################################################################################################
-
-    ####################################################################################################################
-    # BEST MODEL
-    ####################################################################################################################
-
-    # split data into X matrix of attributes and y vector for target
-    car_insurance_model.split_data_data_set_X_data_set_y('Sale')
-
-    # Define model found to produce the best results
-    my_svm_model = SVC(C=10, decision_function_shape='ovo', degree=3, gamma=1/16, kernel='rbf')
-    # fits the SVM model to the entire data set to be tested on a new test set if needed
-    my_svm_model.fit(car_insurance_model._data_set_X, car_insurance_model._data_set_y.values.ravel())
-
     ####################################################################################################################
 
 
