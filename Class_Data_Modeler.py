@@ -1,7 +1,5 @@
 import pandas as pd
 
-from sklearn import neighbors
-from sklearn.svm import SVC
 from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import cross_validate
 from sklearn.metrics import classification_report
@@ -11,40 +9,38 @@ from sklearn.model_selection import GridSearchCV
 from Class_Data_Preprocessor import DataPreprocessor
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import Lasso
-from sklearn.linear_model import LinearRegression
-from sklearn.kernel_ridge import KernelRidge
-from sklearn.linear_model import Ridge
 
 
 class DataModeler(DataPreprocessor):
     def __init__(self, train_data_set, test_data_set):
         super().__init__(train_data_set, test_data_set)
 
-    def knn_model(self, number_of_neighbours, number_of_folds):
-        # create a knn classifier with n = my_number_of_neighbours
-        my_knn_model = neighbors.KNeighborsClassifier(n_neighbors=number_of_neighbours)
+    def classification_model(self, model, parameters, number_of_folds):
+        my_model = model(**parameters)  # unpack the dictionary and pass it in as the argument for the model
 
-        my_knn_model.fit(self._train_data_set, self._y_train)  # fit the knn classifier to the data
+        my_model.fit(self._train_data_set, self._y_train)  # fit the knn classifier to the data
 
         # define the predicted value of y and true value of y to create a prediction matrix
-        y_pred = my_knn_model.predict(self._test_data_set)
+        y_pred = my_model.predict(self._test_data_set)
 
         # print percent of correct predictions
-        print('For k-NN when k=', number_of_neighbours, ' the percentage accuracy is',
-              my_knn_model.score(self._test_data_set, self._y_test))
+        print('For', model, 'with', parameters, ' the percentage accuracy is', my_model.score(self._test_data_set,
+                                                                                              self._y_test))
 
         # print confusion matrix
-        print('The confusion matrix for k-NN when k=', number_of_neighbours, 'is: ',
-              pd.crosstab(self._y_test, y_pred, rownames=['True'], colnames=['Predicted'], margins=True))
+        print('The confusion matrix for', model, 'with', parameters, 'is: \n', pd.crosstab(self._y_test, y_pred,
+                                                                                           rownames=['True'],
+                                                                                           colnames=['Predicted'],
+                                                                                           margins=True))
 
         # Applying K-Fold cross validation
 
         # can add n_jobs =-1 to set all CPU's to work
-        percent_accuracies = cross_val_score(estimator=my_knn_model, X=self._train_data_set, y=self._y_train,
+        percent_accuracies = cross_val_score(estimator=my_model, X=self._train_data_set, y=self._y_train,
                                              cv=number_of_folds) * 100
 
-        print('For k-NN when k=', number_of_neighbours, ' the percentage accuracy of each ', number_of_folds,
-              '-fold is:', percent_accuracies)
+        print('For', model, 'with', parameters, ' the percentage accuracy of each ', number_of_folds, '-fold is:',
+              percent_accuracies)
 
     def random_forest(self):
         my_random_forest_model = RandomForestClassifier(oob_score=False, n_estimators=10)
@@ -54,40 +50,11 @@ class DataModeler(DataPreprocessor):
               my_random_forest_model.score(self._test_data_set, self._y_test.values.ravel()))
         print('The confusion matrix for Random Fprest is: ',
               pd.crosstab(self._y_test, y_pred, rownames=['True'], colnames=['Predicted'], margins=True))
-        percent_accuracies = cross_val_score(estimator=my_random_forest_model, X=self._train_data_set,
-                                            y=self._y_train.values.ravel(),
-                                            cv=10) * 100
+        percent_accuracies = cross_val_score(estimator=my_random_forest_model, X=self._train_data_set, y=self._y_train.
+                                             values.ravel(), cv=10) * 100
 
         print(' the percentage accuracy of each ', 10,
               '-fold is:', percent_accuracies)
-
-    # method that performs k-fold cross validation on an SVM model with user inputted parameters
-    def svm_model(self, my_gamma, my_c, number_of_folds):
-        # creates a SVM classifier
-        my_svm_model = SVC(C=my_c, decision_function_shape='ovo', degree=3, gamma=my_gamma, kernel='rbf')
-        my_svm_model.fit(self._train_data_set, self._y_train)  # fits the SVM model to sample data
-
-        # C : Penalty parameter of the error term, default is 1.0
-        # degree : Degree of the polynomial kernel function
-        # gamma : Kernel coefficient for ‘rbf’, ‘poly’ and ‘sigmoid’
-        # kernel : specifies the kernel type used in the algorithm
-
-        y_pred = my_svm_model.predict(self._test_data_set)  # set the predicted values to the prediction using x_test
-
-        # print percent of correct predictions
-        print('For SVM when gamma=auto, percentage accuracy is: ', my_svm_model.score(self._test_data_set,
-                                                                                      self._y_test))
-        # print confusion matrix
-
-        print('The confusion matrix for the SVM when gamma=', my_gamma,
-              pd.crosstab(self._y_test, y_pred, rownames=['True'], colnames=['Predicted'], margins=True))
-
-        # can add n_jobs =-1 to set all CPU's to work
-        percent_accuracies = cross_val_score(estimator=my_svm_model, X=self._train_data_set, y=self._y_train,
-                                             cv=number_of_folds, n_jobs=-1) * 100
-
-        print('For SVM when gamma=', my_gamma, ' the percentage accuracy of each ', number_of_folds, '-fold is:',
-              percent_accuracies)
 
     # Create a function called lasso
     # Takes in a list of alphas. Outputs a dataframe containing the coefficients of lasso regressions from each alpha.
@@ -103,42 +70,20 @@ class DataModeler(DataPreprocessor):
             df[column_name] = lasso.steps[1][1].coef_  # Create a column of coefficient values
         return df  # Return the data frame
 
-    def lasso_model(self, alpha, attribute):
-        my_model = make_pipeline(RobustScaler(), Lasso(alpha=alpha, random_state=1))
-        my_model.fit(self._train_data_set, self._y_train)
-        y_pred = my_model.predict(self._test_data_set)  # Make predictions using the testing set
-        # pred_y_model = inv_boxcox(pred_y_model, 0.1)  # inverse boxcox the prediction
-
-        # export predictions as csv
-        y_pred = pd.DataFrame(data=y_pred, columns={attribute})  #
-        y_pred = pd.concat([self._test_y_id, y_pred], axis=1)
-        y_pred.to_csv('Data_Out/Lasso_Model_alpha_' + str(alpha) + ' _for_ ' + attribute + '.csv', index=False)
-
-        # print cross validation scores
-        scores = cross_validate(my_model, self._train_data_set, self._y_train, cv=10,
-                                scoring=('explained_variance', 'neg_mean_absolute_error', 'r2',
-                                         'neg_mean_squared_error'))
-
-        # print the scores for test
-        print('For LASSO, the mean of the explained_variance scores is: ', scores['test_explained_variance'].mean(), 'with standard deviation ', scores['test_explained_variance'].std())
-        print('For LASSO, the mean of the neg_mean_absolute_error scores is: ', scores['test_neg_mean_absolute_error'].mean(), 'with standard deviation ', scores['test_neg_mean_absolute_error'].std())
-        print('For LASSO, the mean of the neg_mean_squared_error scores is: ', scores['test_neg_mean_squared_error'].mean(), 'with standard deviation ', scores['test_neg_mean_squared_error'].std())
-        print('For LASSO, mean of the R^2 scores is: ', scores['test_r2'].mean(), 'with standard deviation ', scores['test_r2'].std())
-
-    def linear_model_submission(self, target, fine_tuned_parameters):
-        X_train = self._train_data_set
+    def regression_model_submission(self, model, target, tuned_parameters):
+        x_train = self._train_data_set
         y_train = self._y_train
         x_test = self._test_data_set
 
-        optimised_model = make_pipeline(RobustScaler(), LinearRegression(fine_tuned_parameters))
+        optimised_model = make_pipeline(RobustScaler(), model(**tuned_parameters))
 
         my_model = optimised_model
-        my_model.fit(X_train, y_train)
+        my_model.fit(x_train, y_train)
 
         y_pred = my_model.predict(x_test)  # Make predictions using the testing set
         y_pred = pd.DataFrame(data=y_pred, columns={target})
         y_pred = pd.concat([self._test_y_id, y_pred], axis=1)
-        y_pred.to_csv('Data_Out/linear_model_optimised.csv', index=False) # export predictions as csv
+        y_pred.to_csv('Data_Out/linear_model_optimised.csv', index=False)  # export predictions as csv
 
         # print cross validation scores
         scores = cross_validate(my_model, self._train_data_set, self._y_train, cv=10,
@@ -146,120 +91,47 @@ class DataModeler(DataPreprocessor):
                                          'neg_mean_squared_error'))
 
         # print the scores for test
-        print('For linear, the mean of the explained_variance scores is: ', scores['test_explained_variance'].mean(),
+        print('For', model, 'the mean of the explained_variance scores is: ', scores['test_explained_variance'].mean(),
               'with standard deviation ', scores['test_explained_variance'].std())
-        print('For linear, the mean of the neg_mean_absolute_error scores is: ',
+
+        print('For', model, 'the mean of the neg_mean_absolute_error scores is: ',
               scores['test_neg_mean_absolute_error'].mean(), 'with standard deviation ',
               scores['test_neg_mean_absolute_error'].std())
-        print('For linear, the mean of the neg_mean_squared_error scores is: ',
+
+        print('For', model, 'the mean of the neg_mean_squared_error scores is: ',
               scores['test_neg_mean_squared_error'].mean(), 'with standard deviation ',
               scores['test_neg_mean_squared_error'].std())
-        print('For linear, mean of the R^2 scores is: ', scores['test_r2'].mean(), 'with standard deviation ',
-              scores['test_r2'].std())
 
-    def ridge_model_submission(self, target, alpha):
-        X_train = self._train_data_set
-        y_train = self._y_train
-        x_test = self._test_data_set
-
-        optimised_model = make_pipeline(RobustScaler(), Ridge(alpha=alpha))
-
-        my_model = optimised_model
-        my_model.fit(X_train, y_train)
-
-        y_pred = my_model.predict(x_test)  # Make predictions using the testing set
-        y_pred = pd.DataFrame(data=y_pred, columns={target})
-        y_pred = pd.concat([self._test_y_id, y_pred], axis=1)
-        y_pred.to_csv('Data_Out/ridge_model_optimised.csv', index=False)  # export predictions as csv
-
-        # print cross validation scores
-        scores = cross_validate(my_model, self._train_data_set, self._y_train, cv=10,
-                                scoring=('explained_variance', 'neg_mean_absolute_error', 'r2',
-                                         'neg_mean_squared_error'))
-
-        # print the scores for test
-        print('For ridge, the mean of the explained_variance scores is: ', scores['test_explained_variance'].mean(),
-              'with standard deviation ', scores['test_explained_variance'].std())
-        print('For ridge, the mean of the neg_mean_absolute_error scores is: ',
-              scores['test_neg_mean_absolute_error'].mean(), 'with standard deviation ',
-              scores['test_neg_mean_absolute_error'].std())
-        print('For ridge, the mean of the neg_mean_squared_error scores is: ',
-              scores['test_neg_mean_squared_error'].mean(), 'with standard deviation ',
-              scores['test_neg_mean_squared_error'].std())
-        print('For ridge, mean of the R^2 scores is: ', scores['test_r2'].mean(), 'with standard deviation ',
-              scores['test_r2'].std())
-
-    def kernel_ridge_model_submission(self, target, fine_tuned_parameters):
-        X_train = self._train_data_set
-        y_train = self._y_train
-        x_test = self._test_data_set
-
-        optimised_model = make_pipeline(RobustScaler(), KernelRidge(kernel_params=fine_tuned_parameters))
-
-        my_model = optimised_model
-        my_model.fit(X_train, y_train)
-
-        y_pred = my_model.predict(x_test)  # Make predictions using the testing set
-        y_pred = pd.DataFrame(data=y_pred, columns={target})
-        y_pred = pd.concat([self._test_y_id, y_pred], axis=1)
-        y_pred.to_csv('Data_Out/ridge_model_optimised.csv', index=False)  # export predictions as csv
-
-        # print cross validation scores
-        scores = cross_validate(my_model, self._train_data_set, self._y_train, cv=10,
-                                scoring=('explained_variance', 'neg_mean_absolute_error', 'r2',
-                                         'neg_mean_squared_error'))
-
-        # print the scores for test
-        print('For kernel ridge, the mean of the explained_variance scores is: ', scores['test_explained_variance'].mean(),
-              'with standard deviation ', scores['test_explained_variance'].std())
-        print('For kernel ridge, the mean of the neg_mean_absolute_error scores is: ',
-              scores['test_neg_mean_absolute_error'].mean(), 'with standard deviation ',
-              scores['test_neg_mean_absolute_error'].std())
-        print('For kernel ridge, the mean of the neg_mean_squared_error scores is: ',
-              scores['test_neg_mean_squared_error'].mean(), 'with standard deviation ',
-              scores['test_neg_mean_squared_error'].std())
-        print('For kernel ridge, mean of the R^2 scores is: ', scores['test_r2'].mean(), 'with standard deviation ',
+        print('For', model, 'mean of the R^2 scores is: ', scores['test_r2'].mean(), 'with standard deviation ',
               scores['test_r2'].std())
 
     def regression_model_grid_search(self, model, model_parameters, n_folds):
-        X = self._train_data_set
+        x = self._train_data_set
         y = self._y_train
 
         my_model = GridSearchCV(estimator=model(), param_grid=model_parameters, cv=n_folds)
-        my_model.fit(X, y)
+        my_model.fit(x, y)
 
         #  Mean cross-validated score of the best_estimator
-        print('Lasso model best score:', my_model.best_score_)
-        print('Lasso model best parameters:', my_model.best_params_)
+        print('For', model, ' the best score is best score:', my_model.best_score_)
+        print(model, 'best parameters:', my_model.best_params_)
 
-    def knn_model_grid_search(self, tuned_parameters, number_of_folds):
-        # calls teh function to perform the grid search for user inputted parameters
-        my_knn_model = GridSearchCV(neighbors.KNeighborsClassifier(), tuned_parameters, cv=number_of_folds,
-                                    scoring='f1_macro', n_jobs=-1)
+    def classification_model_grid_search(self, model, grid_parameters, number_of_folds):
+
+        # calls the function to perform the grid search for user inputted parameters
+        my_model = GridSearchCV(model(), grid_parameters, cv=number_of_folds,
+                                scoring='f1_macro', n_jobs=-1)
 
         # fits the knn models to sample data
-        my_knn_model.fit(self._train_data_set, self._y_train)
+        my_model.fit(self._train_data_set, self._y_train)
 
-        y_true, y_pred = self._y_test, my_knn_model.predict(self._test_data_set)
+        y_true, y_pred = self._y_test, my_model.predict(self._test_data_set)
         print(classification_report(y_true, y_pred))  # prints a summary of the grid search
 
-        print('The best parameters for the model is', my_knn_model.best_params_)  # prints the best parameters found
+        print('The best parameters for the model is', my_model.best_params_)  # prints the best parameters found
 
-        print('The results are:', my_knn_model.cv_results_)  # prints all the results
+        print('The results are:', my_model.cv_results_)  # prints all the results
 
-    # method that performs a grid search for svm
-
-    def svm_model_grid_search(self, tuned_parameters, number_of_folds):
-
-        # calls teh function to perform the grid search for user inputted parameters
-        my_svm_model = GridSearchCV(SVC(decision_function_shape='ovo', degree=3), tuned_parameters, cv=number_of_folds,
-                                    scoring='f1_macro', n_jobs=-1)
-
-        my_svm_model.fit(self._train_data_set, self._y_train)  # fits the SVM models to sample data
-
-        y_true, y_pred = self._y_test, my_svm_model.predict(self._test_data_set)
-        print(classification_report(y_true, y_pred))  # prints a summary of the grid search
-
-        print('The best parameters for the model is', my_svm_model.best_params_)  # prints the best parameters found
-
-        print('The results are:', my_svm_model.cv_results_)  # prints all the results
+        # prints the scoring for each model in the grid
+        for param, score in zip(my_model.cv_results_['params'], my_model.cv_results_['mean_test_score']):
+            print(param, score)

@@ -1,5 +1,7 @@
 import pandas as pd
 
+from sklearn.svm import SVC
+
 from Class_Data_Modeler import DataModeler
 
 
@@ -19,7 +21,8 @@ def main():
     model_iris.describe_attribute('sepal_length')
     model_iris.histogram_and_q_q('sepal_length')
 
-    model_iris.svm_model('auto', 1, 10)
+    tuned_parameters_svm = {'kernel': 'rbf', 'gamma': 1, 'C': 10, 'decision_function_shape': 'ovo'}
+    model_iris.classification_model(SVC, tuned_parameters_svm, 10)
 
     ####################################################################################################################
 

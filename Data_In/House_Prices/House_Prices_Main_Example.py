@@ -109,31 +109,32 @@ def main():
 
     lasso_model_grid_parameters = [{'alpha': [75, 100, 200, 300]}]
     model_house.regression_model_grid_search(Lasso, lasso_model_grid_parameters, 10)
-    model_house.lasso_model(1000, 'SalePrice')
+    lasso_model_tuned_parameters = {'alpha': 1000, 'random_state': 1}
+    model_house.regression_model_submission(Lasso, 'SalePrice', lasso_model_tuned_parameters)
 
     ####################################################################################################################
     # ridge regression optimised
 
     ridge_model_grid_parameters = [{'alpha': [1, 5, 7, 10]}]
     model_house.regression_model_grid_search(Ridge, ridge_model_grid_parameters, 10)
-    ridge_model_fine_tuned_parameters = [{'alpha': [10.0]}]
-    model_house.ridge_model_submission('SalePrice', 10.0)
+    ridge_model_tuned_parameters = {'alpha': 10.0}
+    model_house.regression_model_submission(Ridge, 'SalePrice', ridge_model_tuned_parameters)
 
     ####################################################################################################################
     # kernel ridge regression gridsearch
 
-    kernel_ridge_model_grid_parameters = [{'alpha': [5, 9, 10, 11], 'kernel': ['linear'], 'degree': [1, 2, 3]}]
+    kernel_ridge_model_grid_parameters = {'alpha': [5, 9, 10, 11], 'kernel': ['linear'], 'degree': [1, 2, 3]}
     model_house.regression_model_grid_search(KernelRidge, kernel_ridge_model_grid_parameters, 10)
-    kernel_ridge_model_fine_tuned_parameters = [{'alpha': [9], 'kernel': ['linear'], 'degree': [1]}]
-    model_house.kernel_ridge_model_submission('SalePrice', kernel_ridge_model_fine_tuned_parameters)
+    kernel_ridge_model_fine_tuned_parameters = {'alpha': 9, 'kernel': 'linear', 'degree': 1}
+    model_house.regression_model_submission(KernelRidge, 'SalePrice', kernel_ridge_model_fine_tuned_parameters)
 
     ####################################################################################################################
     # linear optimised
 
     linear_model_grid_parameters = {'fit_intercept': [True, False], 'normalize': [True, False], 'copy_X': [True, False]}
     model_house.regression_model_grid_search(LinearRegression, linear_model_grid_parameters, 10)
-    linear_model_fine_tuned_parameters = {'fit_intercept': [True], 'normalize': [True], 'copy_X': [False]}
-    model_house.linear_model_submission('SalePrice', linear_model_fine_tuned_parameters)
+    linear_model_fine_tuned_parameters = {'fit_intercept': True, 'normalize': True, 'copy_X': False}
+    model_house.regression_model_submission(LinearRegression, 'SalePrice', linear_model_fine_tuned_parameters)
     ####################################################################################################################
 
 

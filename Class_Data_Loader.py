@@ -1,5 +1,4 @@
 from sklearn.utils import shuffle
-import pandas as pd
 from sklearn.model_selection import train_test_split
 
 
@@ -52,10 +51,8 @@ class DataLoader:  # class that stores the data set as an object. The purpose of
     def split_data_set_if_test_not_split(self, target, my_test_size, seed):
         # set attributes to all other columns in the data_set
         attribute_matrix = self._train_data_set.loc[:, self._train_data_set.columns != target]
-        self._train_data_set, self._test_data_set, self._y_train, self._y_test = train_test_split(attribute_matrix,
-                                                                                    self._train_data_set[target],
-                                                                                    test_size=my_test_size,
-                                                                                    random_state=seed)
+        self._train_data_set, self._test_data_set, self._y_train, self._y_test = \
+            train_test_split(attribute_matrix, self._train_data_set[target], test_size=my_test_size, random_state=seed)
 
     def __del__(self):
         print(self, 'destroyed')  # print statement when the destructor is called

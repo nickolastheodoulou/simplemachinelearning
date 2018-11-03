@@ -1,5 +1,4 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
 # import fancyimpute as fi
 
 from scipy.special import boxcox
@@ -71,7 +70,6 @@ class DataPreprocessor(DataExplorer):
         else:
             print("no test data set")
 
-
     #  method that one hot encodes a column
     def one_hot_encode_attribute(self, attribute):
         #  define the data set as the original data set combined with the one hot encoded column of the inputted
@@ -79,8 +77,8 @@ class DataPreprocessor(DataExplorer):
 
         # concat adds the new columns to the data set
         # prefix adds the string attribute to the column head
-        self._train_data_set = pd.concat([self._train_data_set, pd.get_dummies(self._train_data_set[attribute], prefix=attribute)],
-                                         axis=1, sort=False)
+        self._train_data_set = pd.concat([self._train_data_set, pd.get_dummies(self._train_data_set[attribute],
+                                                                               prefix=attribute)], axis=1, sort=False)
         #  drops the column that has the sting value of the attribute to be one hot encoded
         self._train_data_set = self._train_data_set.drop(columns=[attribute])
 
@@ -116,7 +114,6 @@ class DataPreprocessor(DataExplorer):
                 self._test_data_set[attribute].mode()[0])
         else:
             print("no test data set")
-
 
     def impute_median(self, attribute):
         self._train_data_set[attribute] = self._train_data_set[attribute].fillna(

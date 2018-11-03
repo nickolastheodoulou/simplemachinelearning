@@ -1,5 +1,3 @@
-import matplotlib as mlp
-mlp.use('TkAgg')
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
@@ -92,8 +90,7 @@ class DataExplorer(DataLoader):
         width = 0.5  # the width of the bars
         #  creates the 2 bars, bottom indicates which bar goes below the current bar
         attribute_0_bars = plt.bar(x, my_attribute_0_count, width, edgecolor='black')
-        attribute_1_bars = plt.bar(x, my_attribute_1_count, width, bottom=my_attribute_0_count,
-                                         edgecolor='black', )
+        attribute_1_bars = plt.bar(x, my_attribute_1_count, width, bottom=my_attribute_0_count, edgecolor='black', )
 
         # plt.grid()
         plt.ylabel('Count', fontsize=18)
@@ -106,7 +103,7 @@ class DataExplorer(DataLoader):
         legend_label_false = target, ': False'
 
         plt.legend((attribute_0_bars[0], attribute_1_bars[0]), (legend_label_false, legend_label_true))
-        plt.title('Bar graph showing the count of ' + str(attribute),fontsize=18)
+        plt.title('Bar graph showing the count of ' + str(attribute), fontsize=18)
         plt.savefig('Data_Out/' + attribute + '_bar_graph_attribute_by_classification.pdf', index=False,
                     bbox_inches='tight')
         plt.show()
@@ -114,12 +111,12 @@ class DataExplorer(DataLoader):
     # method that prints a summary of the distribution of the data
     def describe_attribute(self, attribute):
         description_of_attribute = self._train_data_set[attribute].describe()
-        print("A summary of the disribution for the attribute", attribute, ' is\n', description_of_attribute)
+        print("A summary of the distribution for the attribute", attribute, ' is\n', description_of_attribute)
 
     #  method that prints the percentage of missing data of train and test
     def train_missing_data_ratio_print(self):
 
-        self._train_data_set.replace('?',np.NaN)
+        self._train_data_set.replace('?', np.NaN)
         #  define the percentage as the number of missing values in each column/ number of entries * 100
         missing_data_train = ((self._train_data_set.isnull().sum() / (len(self._train_data_set))) * 100)
 
@@ -155,7 +152,8 @@ class DataExplorer(DataLoader):
     #  method that p
     def missing_data_ratio_bar_graph(self):
         #  define the percentage as the number of missing values in each column/ number of entries * 100
-        percent_of_missing_data_in_each_column = ((self._train_data_set.isnull().sum() / (len(self._train_data_set))) * 100)
+        percent_of_missing_data_in_each_column = ((self._train_data_set.isnull().sum() /
+                                                   (len(self._train_data_set))) * 100)
 
         #  sorts percent_of_missing_data_in_each_column into descending order to be printed
         percent_of_missing_data_in_each_column = percent_of_missing_data_in_each_column.drop(
@@ -182,7 +180,8 @@ class DataExplorer(DataLoader):
     def box_plot(self, continuous_attribute, categorical_attribute):
         #  sort the dataset into acending order of the attribute to be plotted
         self._train_data_set = self._train_data_set.sort_values([categorical_attribute]).reset_index(drop=True)
-        data_in = pd.concat([self._train_data_set[continuous_attribute], self._train_data_set[categorical_attribute]], axis=1)  # defines the data
+        data_in = pd.concat([self._train_data_set[continuous_attribute], self._train_data_set[categorical_attribute]],
+                            axis=1)  # defines the data
         plt.subplots(figsize=(16, 8))  # changes the size of the fig
 
         fig = sns.boxplot(x=categorical_attribute, y=continuous_attribute, data=data_in)
@@ -193,7 +192,8 @@ class DataExplorer(DataLoader):
         plt.tick_params(labelsize=12)
 
         #  file name defined by attribute user input and type of graph
-        plt.savefig('Data_Out/' + categorical_attribute + '_' + continuous_attribute + '_boxplot.pdf', index=False, bbox_inches='tight')
+        plt.savefig('Data_Out/' + categorical_attribute + '_' + continuous_attribute + '_boxplot.pdf', index=False,
+                    bbox_inches='tight')
         plt.show()
 
     def scatter_plot(self, my_y_attribute, my_x_attribute):
@@ -248,7 +248,7 @@ class DataExplorer(DataLoader):
                     index=False, bbox_inches='tight')
         plt.show()
 
-    def histogram_and_q_q(self, attribute: object) -> object:
+    def histogram_and_q_q(self, attribute):
         # define a new data set with the attributes missing dropped so that the NaN values are ignored
         my_data_set = self._train_data_set.dropna()
 
@@ -285,19 +285,23 @@ class DataExplorer(DataLoader):
         plt.show()
 
         stats.probplot(my_data_set[attribute], plot=plt)  # Q-Q plot
-        plt.title('Quantile-Quantile plot of ' + attribute)
+        plt.title('Quantile-Quantile plot of ' + str(attribute))
         plt.show()
 
 #  function that plots a triple stacked bar graph of attribute as the x coordinate and sub-attribute as the
     # attribute to be stacked within the bar (Needs to be generalised!
     def triple_stacked_bar_graph(self, attribute, sub_attribute):
         #  Computes a cross-tabulation of two user inputted attributes
-        attribute_and_sub_attribute_matrix = pd.crosstab(self._train_data_set[attribute], self._train_data_set[sub_attribute])
+        attribute_and_sub_attribute_matrix = pd.crosstab(self._train_data_set[attribute], self._train_data_set[
+            sub_attribute])
 
         #  defines the y values of the three sub attributes as the three columns in column_count matrix
-        sub_attribute_one_count = attribute_and_sub_attribute_matrix[self._train_data_set[sub_attribute].unique()[0]].values
-        sub_attribute_two_count = attribute_and_sub_attribute_matrix[self._train_data_set[sub_attribute].unique()[1]].values
-        sub_attribute_three_count = attribute_and_sub_attribute_matrix[self._train_data_set[sub_attribute].unique()[2]].values
+        sub_attribute_one_count = attribute_and_sub_attribute_matrix[
+            self._train_data_set[sub_attribute].unique()[0]].values
+        sub_attribute_two_count = attribute_and_sub_attribute_matrix[
+            self._train_data_set[sub_attribute].unique()[1]].values
+        sub_attribute_three_count = attribute_and_sub_attribute_matrix[
+            self._train_data_set[sub_attribute].unique()[2]].values
 
         x = attribute_and_sub_attribute_matrix.index  # set the x axis to the year which is the intex of
         #  attribute_and_sub_attribute_matrix
@@ -307,8 +311,8 @@ class DataExplorer(DataLoader):
         #  creates the 3 bars, bottom indicates which bar goes below the current bar
         sub_attribute_one_bar = plt.bar(x, sub_attribute_one_count, width)
         sub_attribute_two_bar = plt.bar(x, sub_attribute_two_count, width, bottom=sub_attribute_one_count, )
-        sub_attribute_three_bar = plt.bar(x, sub_attribute_three_count, width, bottom=sub_attribute_two_count
-                                                                                      + sub_attribute_one_count, )
+        sub_attribute_three_bar = plt.bar(x, sub_attribute_three_count, width, bottom=sub_attribute_two_count +
+                                                                                      sub_attribute_one_count, )
 
         plt.grid()
         plt.ylabel('Number Of Samples', fontsize=14)

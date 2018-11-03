@@ -1,5 +1,8 @@
 import pandas as pd
 
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+
 from Class_Data_Modeler import DataModeler
 
 
@@ -21,7 +24,7 @@ def main():
     ####################################################################################################################
     # Example of some of the graphs used to explore the data for the attribute: Age
     # These methods can and were used for all the attributes
-
+    '''
     # counts number of each age
     car_insurance_model.attribute_value_count('Age')
     # counts Sale or NoSale for each number of age
@@ -33,7 +36,7 @@ def main():
     # prints a summary of the distribution of the column 'Age' such as mean, standard deviation etc
     car_insurance_model.describe_attribute('Age')
     # plots a histogram of the attribute Age and also a quantile quantile plot
-    car_insurance_model.histogram_and_q_q('Age')
+    # car_insurance_model.histogram_and_q_q('Age')
     # plots a scatter plot of Age and Price
     car_insurance_model.scatter_plot('Age', 'Price')
     # plots a scatter plot of Age and Price for Sale and NoSale
@@ -48,6 +51,7 @@ def main():
     car_insurance_model.missing_data_ratio_bar_graph()
 
     car_insurance_model.heat_map()
+    '''
 
     ####################################################################################################################
     # PROCESSING
@@ -79,7 +83,7 @@ def main():
     # decided to add day_of_the_week column to see if any information can be extracted
     car_insurance_model.add_day_of_week_attribute()
     # bar graph of new column to see if any new information can be obtained
-    car_insurance_model.bar_graph_attribute_by_classification('days_of_the_week', 'Sale')
+    # car_insurance_model.bar_graph_attribute_by_classification('days_of_the_week', 'Sale')
     # can see that on Friday typically there are less sales hence decided to create new column
 
     # used similar method to extract month and year, found month would have added too many attributes when one hot
@@ -160,26 +164,29 @@ def main():
     # gridsearch for knn
 
     # uncomment to run grid search
-    # tuned_parameters_knn = [{'n_neighbors': [5, 15, 19]}]
-    # car_insurance_model.knn_model_grid_search(tuned_parameters_knn, 3)
+    grid_parameters_knn = [{'n_neighbors': [5, 15, 19]}]
+    car_insurance_model.classification_model_grid_search(KNeighborsClassifier, grid_parameters_knn, 2)
 
     # fit a knn with k=5 and print percentage accuracy for 10-fold cross validation and confusion matrix against the
     # test set
-    car_insurance_model.knn_model(15, 10)
+    tuned_parameters_knn = {'n_neighbors': 19}
+    car_insurance_model.classification_model(KNeighborsClassifier, tuned_parameters_knn, 10)
 
     ####################################################################################################################
     # SMV model
     # found these set of parameters to be the most optimum when performing a grid search
 
     # uncomment to run grid search
-    # tuned_parameters_svm = [{'kernel': ['rbf'], 'gamma': [1/15, 1/16, 1/17], 'C': [11, 10, 12]}]
-    # car_insurance_model.svm_model_grid_search(tuned_parameters_svm, 3)
+    tuned_parameters_svm = [{'kernel': ['rbf'], 'gamma': [1/15, 1/16, 1/17], 'C': [11, 10, 12],
+                            'decision_function_shape':['ovo']}]
+    car_insurance_model.classification_model_grid_search(SVC, tuned_parameters_svm, 2)
 
     # fit a svm and print percentage accuracy for 10-fold cross and shows the confusion matrix for the best
     # hyper-parameters found when performing the grid-search
 
     # k-fold cross validation for optimum hyper-parameters to validate SVM model
-    car_insurance_model.svm_model(1/16, 10, 10)
+    tuned_parameters_svm = {'C': 10, 'decision_function_shape': 'ovo', 'degree': 3, 'gamma': 1/16, 'kernel': 'rbf'}
+    car_insurance_model.classification_model(SVC, tuned_parameters_svm, 10)
     ####################################################################################################################
 
 
