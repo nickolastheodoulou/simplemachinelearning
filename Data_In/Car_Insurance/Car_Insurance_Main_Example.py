@@ -81,7 +81,14 @@ def main():
     # creating new features from the attribute date
 
     # decided to add day_of_the_week column to see if any information can be extracted
-    car_insurance_model.add_day_of_week_attribute()
+    ####################################################################################################################
+    # convert type of column date form object to datetime64
+    car_insurance_model._train_data_set['Date'] = pd.to_datetime(car_insurance_model._train_data_set['Date'],
+                                                                 infer_datetime_format=True)
+    # add new column named days_of_the_week that has the day of the week
+    car_insurance_model._train_data_set = car_insurance_model._train_data_set.assign(
+        days_of_the_week=car_insurance_model._train_data_set['Date'].dt.weekday_name)
+    ####################################################################################################################
     # bar graph of new column to see if any new information can be obtained
     # car_insurance_model.bar_graph_attribute_by_classification('days_of_the_week', 'Sale')
     # can see that on Friday typically there are less sales hence decided to create new column
@@ -107,8 +114,46 @@ def main():
 
     # compare how many values are imputed using this method
     car_insurance_model.train_missing_data_ratio_print()
-    car_insurance_model.impute_price()
-    car_insurance_model.impute_tax()
+    ####################################################################################################################
+    # impute price
+    # as only 5 values are missing for both Price and Tax, the mean is imputed for these values
+
+    # create a list of the index of the missing values in the price attribute
+    price_missing_value_index = car_insurance_model._train_data_set[
+        car_insurance_model._train_data_set['Price'].isnull()].index.tolist()
+
+    # loop through the missing value index for price
+    for i in price_missing_value_index:
+        # if the value for tax in the same column as price is greater than 34
+        if car_insurance_model._train_data_set['Tax'].values[i] > 33:
+            # set the value for price equal to ten times the value of tax in the same column
+            car_insurance_model._train_data_set['Price'].values[i] = car_insurance_model._train_data_set['Tax'].values[
+                                                                         i] * 10
+        else:
+            # else set the price to 5 times the tax
+            car_insurance_model._train_data_set['Price'].values[i] = car_insurance_model._train_data_set['Tax'].values[
+                                                                         i] * 5
+
+    print('The number of price values imputed is ', len(price_missing_value_index))
+    ####################################################################################################################
+    # impute tax
+    # create a list of the index of the missing values in the tax attribute
+    tax_missing_value_index = car_insurance_model._train_data_set[car_insurance_model._train_data_set['Tax'].isnull()].\
+        index.tolist()
+    # loop through the missing value index for price
+    for i in tax_missing_value_index:
+        # if the value for tax in the same column as price is greater than 34
+        if car_insurance_model._train_data_set['Price'].values[i] > 330:
+            # set the value for price equal to ten times the value of tax in the same column
+            car_insurance_model._train_data_set['Tax'].values[i] = car_insurance_model._train_data_set['Price'].values[
+                                                                       i] * 0.1
+        else:
+            # else set the price to 5 times the tax
+            car_insurance_model._train_data_set['Tax'].values[i] = car_insurance_model._train_data_set['Price'].values[
+                                                                       i] * 0.05
+
+    print('The number of tax values imputed is ', len(tax_missing_value_index))
+    ####################################################################################################################
     car_insurance_model.train_missing_data_ratio_print()
 
     # as only 5 values are missing for both Price and Tax, the mean is imputed for these values
@@ -126,7 +171,18 @@ def main():
     # customers that had this score to a new column however, found this to have no significant difference on the model
     # however, I decided to leave the code in the class DataPreprocessor:
 
-    # car_insurance_model.new_column_infinite_credit_score()
+    # create a list of the indices of the credit score with a score of 9999
+    credit_score_9999_index = car_insurance_model._train_data_set[car_insurance_model._train_data_set['Credit_Score'] ==
+                                                                  9999].index.tolist()
+
+    # create a new column for the credit scores with 9999 so they can be put into a different attribute
+    car_insurance_model._train_data_set['Infinite_Credit_Score'] = 0
+
+    for i in credit_score_9999_index:
+        # set the new column values to 1 (one hot encoding)
+        car_insurance_model._train_data_set['Infinite_Credit_Score'].values[i] = 1
+        # drop the credit score of 9999 from the attribute Credit_Score
+        car_insurance_model._train_data_set['Credit_Score'].values[i] = 0
 
     ####################################################################################################################
 
