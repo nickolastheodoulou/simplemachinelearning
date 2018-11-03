@@ -43,7 +43,7 @@ class DataModeler(DataPreprocessor):
               percent_accuracies)
 
     def random_forest(self):
-        my_random_forest_model = RandomForestClassifier(oob_score=False, n_estimators=10)
+        my_random_forest_model = RandomForestClassifier(oob_score=True, n_estimators=10)
         my_random_forest_model.fit(self._train_data_set, self._y_train.values.ravel())
         y_pred = my_random_forest_model.predict(self._test_data_set)
         print('For the Random Forest model the percentage accuracy is',

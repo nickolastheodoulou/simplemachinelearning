@@ -1,6 +1,7 @@
 import pandas as pd
 from scipy.special import boxcox
 import numpy as np
+from sklearn.neighbors import KNeighborsClassifier
 from Class_Data_Modeler import DataModeler
 from Class_Data_Preprocessor import DataPreprocessor
 from sklearn.ensemble import RandomForestClassifier
@@ -51,17 +52,17 @@ def main():
     model_adult.drop_attribute("fnlwgt")
     model_adult.drop_attribute("workclass")
     model_adult.drop_attribute("education-num")
-    model_adult.drop_attribute("marital-status")
-    model_adult.drop_attribute("occupation")
-    model_adult.one_hot_encode_attribute("relationship")
+    model_adult.one_hot_encode_attribute("marital-status")
+    model_adult.one_hot_encode_attribute("occupation")
+    model_adult.drop_attribute("relationship")
     model_adult.one_hot_encode_attribute("education")
     model_adult.drop_attribute("capital-gain")
     model_adult.drop_attribute('capital-loss')
-    model_adult.drop_attribute("hours-per-week")
+    #model_adult.drop_attribute("hours-per-week")
     model_adult.one_hot_encode_attribute("race")
     model_adult.one_hot_encode_attribute("sex")
     model_adult.drop_attribute("native-country")
-    model_adult.drop_attribute('age')
+    #model_adult.drop_attribute('age')
     print(model_adult._test_data_set)
 
     #model_adult.random_forest()
@@ -74,6 +75,8 @@ def main():
         model_adult._y_test.values[i] = model_adult._y_test.values[i].strip('.')
 
     my_random_forest_model = model_adult.random_forest()
+    tuned_parameters_knn = {'n_neighbors': 5}
+    my_knn = model_adult.classification_model(KNeighborsClassifier,tuned_parameters_knn, 10)
 
 if __name__ == "__main__":
     main()
