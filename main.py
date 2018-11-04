@@ -123,13 +123,12 @@ def main():
 
     my_random_forest_model = model_adult.random_forest()
     '''
-
     '''
-    grid_parameters_knn = [{'n_neighbors': [1, 3, 5, 7, 9, 11, 13]}]
+    grid_parameters_knn = [{'n_neighbors': [3, 5, 7]}]
     model_adult.classification_model_grid_search(KNeighborsClassifier, grid_parameters_knn, 3)
     '''
 
-    tuned_parameters_knn = {'n_neighbors': 5}
+    tuned_parameters_knn = {'n_neighbors': 3}
     model_adult.classification_model(KNeighborsClassifier, tuned_parameters_knn, 10)
 
 
