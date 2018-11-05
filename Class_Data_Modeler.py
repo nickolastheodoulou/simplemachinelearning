@@ -26,7 +26,7 @@ class DataModeler(DataPreprocessor):
         # print percent of correct predictions
         print('For', model, 'with', parameters, ' the percentage accuracy is', my_model.score(self._test_data_set,
                                                                                               self._y_test))
-
+        print(my_model.score(self._train_data_set, self._y_train))
         # print confusion matrix
         print('The confusion matrix for', model, 'with', parameters, 'is: \n', pd.crosstab(self._y_test, y_pred,
                                                                                            rownames=['True'],
@@ -43,7 +43,7 @@ class DataModeler(DataPreprocessor):
               percent_accuracies)
 
     def random_forest(self):
-        my_random_forest_model = RandomForestClassifier(oob_score=True, n_estimators=10)
+        my_random_forest_model = RandomForestClassifier(oob_score=True, n_estimators=10, class_weight={'>50K': 3.2,'<=50K':1.0})
         my_random_forest_model.fit(self._train_data_set, self._y_train.values.ravel())
         y_pred = my_random_forest_model.predict(self._test_data_set)
         print('For the Random Forest model the percentage accuracy is',

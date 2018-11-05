@@ -17,7 +17,7 @@ class DataLoader:  # class that stores the data set as an object. The purpose of
     #  method that shuffles the data set
     def shuffle_data_set(self):
         # shuffle using sklearn.utils, seed set to 0 to get the same shuffle each time to test model
-        self._train_data_set = shuffle(self._train_data_set, random_state=1)
+        self._train_data_set = shuffle(self._train_data_set, random_state=0)
 
     #  function that creates a new string column by combining two other columns
     def combine_columns(self, new_column_name, first_column_to_combine, second_column_to_combine):
