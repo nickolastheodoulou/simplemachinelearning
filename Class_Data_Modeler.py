@@ -17,18 +17,21 @@ class DataModeler(DataPreprocessor):
 
     def classification_model(self, model, parameters, number_of_folds):
         my_model = model(**parameters)  # unpack the dictionary and pass it in as the argument for the model
+        x_train = self._train_data_set
+        y_train = self._y_train.values.ravel()
+        x_test = self._test_data_set
+        y_test = self._y_test.values.ravel()
 
-        my_model.fit(self._train_data_set, self._y_train)  # fit the knn classifier to the data
+        my_model.fit(x_train, y_train)  # fit the knn classifier to the data
 
         # define the predicted value of y and true value of y to create a prediction matrix
-        y_pred = my_model.predict(self._test_data_set)
+        y_pred = my_model.predict(x_test)
 
         # print percent of correct predictions
-        print('For', model, 'with', parameters, ' the percentage accuracy is', my_model.score(self._test_data_set,
-                                                                                              self._y_test))
-        print(my_model.score(self._train_data_set, self._y_train))
+        print('For', model, 'with', parameters, ' the percentage accuracy is', my_model.score(x_test, y_test))
+        print(my_model.score(x_train, y_train))
         # print confusion matrix
-        print('The confusion matrix for', model, 'with', parameters, 'is: \n', pd.crosstab(self._y_test, y_pred,
+        print('The confusion matrix for', model, 'with', parameters, 'is: \n', pd.crosstab(y_test, y_pred,
                                                                                            rownames=['True'],
                                                                                            colnames=['Predicted'],
                                                                                            margins=True))
@@ -36,25 +39,10 @@ class DataModeler(DataPreprocessor):
         # Applying K-Fold cross validation
 
         # can add n_jobs =-1 to set all CPU's to work
-        percent_accuracies = cross_val_score(estimator=my_model, X=self._train_data_set, y=self._y_train,
-                                             cv=number_of_folds) * 100
+        percent_accuracies = cross_val_score(estimator=my_model, X=x_train, y=y_train, cv=number_of_folds) * 100
 
         print('For', model, 'with', parameters, ' the percentage accuracy of each ', number_of_folds, '-fold is:',
               percent_accuracies)
-
-    def random_forest(self):
-        my_random_forest_model = RandomForestClassifier(oob_score=True, n_estimators=10, class_weight={'>50K': 3.2,'<=50K':1.0})
-        my_random_forest_model.fit(self._train_data_set, self._y_train.values.ravel())
-        y_pred = my_random_forest_model.predict(self._test_data_set)
-        print('For the Random Forest model the percentage accuracy is',
-              my_random_forest_model.score(self._test_data_set, self._y_test.values.ravel()))
-        print('The confusion matrix for Random Fprest is: ',
-              pd.crosstab(self._y_test, y_pred, rownames=['True'], colnames=['Predicted'], margins=True))
-        percent_accuracies = cross_val_score(estimator=my_random_forest_model, X=self._train_data_set, y=self._y_train.
-                                             values.ravel(), cv=10) * 100
-
-        print(' the percentage accuracy of each ', 10,
-              '-fold is:', percent_accuracies)
 
     # Create a function called lasso
     # Takes in a list of alphas. Outputs a dataframe containing the coefficients of lasso regressions from each alpha.
