@@ -129,6 +129,15 @@ def main():
     # my_knn = model_adult.classification_model(KNeighborsClassifier, tuned_parameters_knn, 10)
     ####################################################################################################################
 
+    # need to return pred_y for models and create a method to submitt such as:
+    '''
+    submission = pd.DataFrame({
+        "PassengerId": test_df["PassengerId"],
+        "Survived": Y_pred
+    })
+    # submission.to_csv('../output/submission.csv', index=False)
+    '''
+
 
 if __name__ == "__main__":
     main()
