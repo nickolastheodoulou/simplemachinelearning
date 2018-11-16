@@ -10,6 +10,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import cross_validate
+from xgboost import XGBClassifier
 
 
 
@@ -31,14 +32,14 @@ def main():
                                           "occupation", "relationship", "race", "sex", "capital-gain", "capital-loss",
                                           "hours-per-week", "native-country", "salary"]
 
-    # model_adult.box_plot("age","salary")
+    # model_adult.box_plot("age", "salary")
     # model_adult.missing_data_ratio_bar_graph()
-    # model_adult.scatter_plot("hours-per-week","age")
-    # model_adult.train_missing_data_ratio_print()
-    # model_adult.test_missing_data_ratio_print()
+    # model_adult.scatter_plot("hours-per-week", "age")
+    model_adult.train_missing_data_ratio_print()
+    model_adult.test_missing_data_ratio_print()
 
     # model_adult.histogram_and_q_q("age")
-    model_adult.box_cox_trans_attribute("age", 0.25)
+    # model_adult.box_cox_trans_attribute("age", 0.25)
     model_adult.normalise_attribute("age")
     # model_adult.histogram_and_q_q("age")
 
@@ -107,6 +108,9 @@ def main():
     # delete the full stop in the test data set so that the test and predicted values can be compared
     for i in range(len(model_adult._y_test.values)):
         model_adult._y_test.values[i] = model_adult._y_test.values[i].strip('.')
+
+    tuned_parameters_xgboost = {'eta': 0.3}
+    my_xgboost =model_adult.classification_model(XGBClassifier, tuned_parameters_xgboost, 3)
 
     ####################################################################################################################
     # random forest model
