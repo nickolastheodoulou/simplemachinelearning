@@ -109,13 +109,27 @@ def main():
     for i in range(len(model_adult._y_test.values)):
         model_adult._y_test.values[i] = model_adult._y_test.values[i].strip('.')
 
-    tuned_parameters_xgboost = {'eta': 0.3}
-    my_xgboost =model_adult.classification_model(XGBClassifier, tuned_parameters_xgboost, 3)
+    # eta typical final values to be used: 0.01-0.2
+    # max_depth Typical values: 3 - 10
+    # subsample Typical values: 0.5-1
+    # colsample_bytree Typical values: 0.5-1
+    # lambda
+    # alpha
+
+    # grid_param_xgboost = {'eta': [0.01, 0.1, 0.2, 0.3], 'max_depth': [3, 6, 10], 'gamma': [0, 0.1, 1],
+    #                       "colsample_bytree": [0.5, 1]}
+    # grid_param_xgboost = {'eta': [0.01, 0.1, 0.2], 'max_depth': [6, 10]}
+    # model_adult.classification_model_grid_search(XGBClassifier, grid_param_xgboost, 3)
+
+    # tuned_parameters_xgboost = {'eta': 0.01, 'min_child_weight': 1, 'max_depth': 6, 'gamma': 0, 'subsample': 1,
+    #                             "colsample_bytree": 1, 'lambda': 1, 'alpha': 0}
+    tuned_parameters_xgboost = {'eta': 0.01, 'max_depth': 6}
+    model_adult.classification_model(XGBClassifier, tuned_parameters_xgboost, 10)
 
     ####################################################################################################################
     # random forest model
-    tuned_parameters_random_forest = {'oob_score': True, 'n_estimators': 10, 'class_weight': {'>50K': 3.2, '<=50K': 1}}
-    model_adult.classification_model(RandomForestClassifier, tuned_parameters_random_forest, 10)
+    # tuned_parameters_random_forest = {'oob_score': True, 'n_estimators': 10, 'class_weight': {'>50K': 3.2, '<=50K': 1}}
+    # model_adult.classification_model(RandomForestClassifier, tuned_parameters_random_forest, 10)
     ####################################################################################################################
 
     ####################################################################################################################
