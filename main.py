@@ -116,14 +116,16 @@ def main():
     # lambda
     # alpha
 
-    # grid_param_xgboost = {'eta': [0.01, 0.1, 0.2, 0.3], 'max_depth': [3, 6, 10], 'gamma': [0, 0.1, 1],
-    #                       "colsample_bytree": [0.5, 1]}
+    # grid_param_xgboost = {'eta': [0.01, 0.1, 0.2], 'max_depth': [3, 6], 'gamma': [0, 0.1, 1],
+    #                        "colsample_bytree": [0.5, 1]}
+    # grid_param_xgboost = {'eta': [0.01], 'max_depth': [6], 'gamma': [0], "colsample_bytree": [1], 'lambda': [0, 0.1, 1],
+    #                      'alpha': [0, 0.1, 1]}
     # grid_param_xgboost = {'eta': [0.01, 0.1, 0.2], 'max_depth': [6, 10]}
     # model_adult.classification_model_grid_search(XGBClassifier, grid_param_xgboost, 3)
 
-    # tuned_parameters_xgboost = {'eta': 0.01, 'min_child_weight': 1, 'max_depth': 6, 'gamma': 0, 'subsample': 1,
-    #                             "colsample_bytree": 1, 'lambda': 1, 'alpha': 0}
-    tuned_parameters_xgboost = {'eta': 0.01, 'max_depth': 6}
+    tuned_parameters_xgboost = {'eta': 0.01, 'min_child_weight': 1, 'max_depth': 6, 'gamma': 0, 'subsample': 1,
+                                "colsample_bytree": 1, 'lambda': 0, 'alpha': 0}
+    # tuned_parameters_xgboost = {'eta': 0.01, 'max_depth': 6}
     model_adult.classification_model(XGBClassifier, tuned_parameters_xgboost, 10)
 
     ####################################################################################################################
