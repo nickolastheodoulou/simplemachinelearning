@@ -1,5 +1,3 @@
-import matplotlib as mlp
-mlp.use('TkAgg')
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
@@ -7,7 +5,7 @@ import numpy as np
 
 from scipy import stats
 
-from Class_Data_Loader import DataLoader
+from simplemachinelearning.Class_Data_Loader import DataLoader
 
 
 class DataExplorer(DataLoader):

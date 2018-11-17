@@ -1,3 +1,5 @@
+from simplemachinelearning.Class_Data_Preprocessor import DataPreprocessor
+
 import pandas as pd
 
 from sklearn.model_selection import cross_val_score
@@ -6,7 +8,6 @@ from sklearn.metrics import classification_report
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import RobustScaler
 from sklearn.model_selection import GridSearchCV
-from Class_Data_Preprocessor import DataPreprocessor
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import Lasso
 

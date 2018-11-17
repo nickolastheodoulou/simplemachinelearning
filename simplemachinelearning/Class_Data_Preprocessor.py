@@ -3,7 +3,7 @@ import pandas as pd
 
 from scipy.special import boxcox
 
-from Class_Data_Explorer import DataExplorer
+from simplemachinelearning.Class_Data_Explorer import DataExplorer
 
 
 class DataPreprocessor(DataExplorer):
