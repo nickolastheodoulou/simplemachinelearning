@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='simplemachinelearning',
-      version='0.0.1',
+      version='0.0.2',
       description='Package to simplify machine learning',
       url='https://github.com/nickolastheodoulou/simplemachinelearning.git',
       author='nickolastheodoulou & DenJev',

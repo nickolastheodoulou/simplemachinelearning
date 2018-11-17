@@ -1,2 +1,4 @@
 *.idea/
 *.simplemachinelearning.egg-info/
+*.build/
+*.dist/

@@ -1,12 +1,11 @@
-import matplotlib.pyplot as plt
+from simplemachinelearning.Class_Data_Loader import DataLoader
+
 import seaborn as sns
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 from scipy import stats
-
-from simplemachinelearning.Class_Data_Loader import DataLoader
-
 
 class DataExplorer(DataLoader):
     def __init__(self, train_data_set, test_data_set):
