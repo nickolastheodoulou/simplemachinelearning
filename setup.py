@@ -10,3 +10,4 @@ setup(name='simplemachinelearning',
       packages=['simplemachinelearning'],
       install_requires=['pandas', 'sklearn', 'scipy', 'seaborn', 'numpy'],
       zip_safe=False)
+
