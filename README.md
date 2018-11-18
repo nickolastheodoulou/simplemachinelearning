@@ -57,5 +57,5 @@ test set respectively. Iris_Main_Example.py within Iris contains the example cod
 To run these example codes simply copy and paste any Main_Example.py into main.py and run.
 ## How to run the code ##
 Ensure all the packages are installed, set the working directory to Machine-Learning-Project and run main.py. If 
-there are any problems please email me at: <nickolastheodoulou@hotmail.com>.
+there are any problems please email us at: <nickolastheodoulou@hotmail.com> or <denisj123@hotmail.com>.
 
