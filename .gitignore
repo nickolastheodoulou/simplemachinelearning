@@ -2,3 +2,4 @@
 *.simplemachinelearning.egg-info/
 *.build/
 *.dist/
+*.build/lib/simplemachinelearning/
