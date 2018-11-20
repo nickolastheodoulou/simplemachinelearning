@@ -18,7 +18,7 @@ This was done by using inheritance where DataModeler -> DataPreprocessor -> Data
  is a symbol indicating 'inherited from'. 
 
 ## Packages Required: ##
-Environment set up in python 3.5 and runs with following packages:
+Environment set up in python 3.5 and runs with following packages (which are automatically installed when run pip install simplemachinelearning in the terminal):
 * numpy        
 * pandas       
 * matplotlib   
